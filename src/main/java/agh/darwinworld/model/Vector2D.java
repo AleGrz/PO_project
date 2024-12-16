@@ -1,26 +1,6 @@
 package agh.darwinworld.model;
 
-public class Vector2D {
-    private final int x;
-    private final int y;
-
-    public Vector2D(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public String toString() {
-        return "(" + x + "," + y + ")";
-    }
-
+public record Vector2D(int x, int y) {
     public boolean precedes(Vector2D other) {
         return x <= other.x && y <= other.y;
     }
@@ -51,14 +31,17 @@ public class Vector2D {
 
     public boolean equals(Object other) {
         if (this == other) return true;
-        if (!(other instanceof Vector2D)) return false;
-        Vector2D v = (Vector2D) other;
+        if (!(other instanceof Vector2D v)) return false;
         return x == v.x && y == v.y;
     }
 
     @Override
     public int hashCode() {
-        return 31 * Integer.hashCode(x) + Integer.hashCode(y);
+        return Integer.hashCode(x) + Integer.hashCode(y);
+    }
+
+    @Override
+    public String toString() {
+        return "(" + x + "," + y + ")";
     }
 }
-

@@ -2,38 +2,31 @@ package agh.darwinworld.model;
 
 import java.util.*;
 
-public class Animal extends WorldElement {
-    public final static int BREEDING_ENERGY_COST = 10;
-    public final static int EATING_ENERGY_RECEIVED = 10;
-    public final static int MAX_STARTING_GENOME_AMOUNT = 10;
+public class Animal {
     private final Random random = new Random();
 
     private final List<Direction> genome;
-    private Vector2D position;
     private Direction direction;
     private int energy;
-    private int age;
+    private int age = 0;
+    private int activatedGenome;
 
-    public Animal(Vector2D position, Direction direction) {
-        this.position = position;
-        this.direction = direction;
-        int n = random.nextInt(MAX_STARTING_GENOME_AMOUNT);
-        this.genome = new ArrayList<>(n);
+    public Animal(int genomeLength, int energy) {
+        this.genome = new ArrayList<>(genomeLength);
+        this.energy = energy;
         Direction[] directions = Direction.values();
-        for (int i = 0; i < n; i++) {
+        this.direction = directions[random.nextInt(directions.length)];
+        for (int i = 0; i < genomeLength; i++)
             genome.set(i, directions[random.nextInt(directions.length)]);
-        }
+        this.activatedGenome = random.nextInt(0, genomeLength);
     }
 
-    public Animal(Animal mommy, Animal daddy) {
-        if (daddy.energy - BREEDING_ENERGY_COST <= 0 || mommy.energy - BREEDING_ENERGY_COST <= 0) {
+    public Animal(Animal mommy, Animal daddy, int breedingEnergyCost, int minimalBreedingEnergy,
+                  int minMutations, int maxMutations) {
+        if (daddy.energy >= minimalBreedingEnergy || mommy.energy >= minimalBreedingEnergy)
             throw new IllegalArgumentException("Cannot create child of dead animal!");
-        }
-        if (!daddy.getPosition().equals(mommy.getPosition())) {
-            throw new IllegalArgumentException("Cannot create child of when animals are not at the same position!");
-        }
-        daddy.energy -= BREEDING_ENERGY_COST;
-        mommy.energy -= BREEDING_ENERGY_COST;
+        daddy.energy -= breedingEnergyCost;
+        mommy.energy -= breedingEnergyCost;
         int total = mommy.energy + daddy.energy;
         int mommyGenomeAmount = Math.round(mommy.genome.size() * ((float) mommy.energy / total));
         int daddyGenomeAmount = Math.round(daddy.genome.size() * ((float) daddy.energy / total));
@@ -47,27 +40,26 @@ public class Animal extends WorldElement {
             this.genome = secondGenomes;
             this.genome.addAll(firstGenomes);
         }
-        mutate();
-        this.position = daddy.getPosition();
-        this.direction = random.nextBoolean() ? daddy.getDirection() : mommy.getDirection();
-    }
-
-    public Vector2D getPosition() {
-        return position;
+        mutate(minMutations, maxMutations);
+        Direction[] directions = Direction.values();
+        this.energy = breedingEnergyCost * 2;
+        this.direction = directions[random.nextInt(0, directions.length)];
+        this.activatedGenome = random.nextInt(0, mommyGenomeAmount + daddyGenomeAmount);
     }
 
     public Direction getDirection() {
         return direction;
     }
 
-    public void move() {
-        Direction nextMove = genome.get(age % genome.size());
+    public Vector2D move(Vector2D pos) {
+
         // jak to zakodowac????
         age += 1;
+        return pos;
     }
 
-    public void mutate() {
-        int mutateAmount = random.nextInt(genome.size()) + 1;
+    public void mutate(int min, int max) {
+        int mutateAmount = random.nextInt(max - min) + min;
         ArrayList<Integer> indexes = new ArrayList<>();
         for (int i = 0; i < genome.size(); i++) indexes.add(i);
         Direction[] directions = Direction.values();
@@ -76,8 +68,12 @@ public class Animal extends WorldElement {
         }
     }
 
-    public void eat() {
-        energy += EATING_ENERGY_RECEIVED;
+    public int getEnergy() {
+        return energy;
+    }
+
+    public void eat(int energy) {
+        this.energy += energy;
     }
 
     public boolean isDead() {

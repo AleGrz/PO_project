@@ -1,23 +1,114 @@
 package agh.darwinworld;
 
 import agh.darwinworld.model.Animal;
-import agh.darwinworld.model.Grass;
+import agh.darwinworld.model.RandomPositionGenerator;
 import agh.darwinworld.model.Vector2D;
-import agh.darwinworld.model.WorldMap;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 public class Simulation implements Runnable {
-    ArrayList<Animal> animals = new ArrayList<>();
-    WorldMap worldMap;
+    private final int width;
+    private final int height;
+    private final int plantGrowingAmount;
+    private final int plantEnergyAmount;
+    private final int minimumBreedingEnergy;
+    private final int breedingEnergyCost;
+    private final int minimumMutationAmount;
+    private final int maximumMutationAmount;
+    private final HashMap<Vector2D, ArrayList<Animal>> animals = new HashMap<>();
+    private final HashSet<Vector2D> plants = new HashSet<>();
+
+    public Simulation(int width, int height, int startingPlantAmount,
+                      int plantGrowingAmount, int plantEnergyAmount,
+                      int animalAmount, int startingEnergyAmount,
+                      int minimumBreedingEnergy, int breedingEnergyCost,
+                      int minimumMutationAmount, int maximumMutationAmount,
+                      int animalGenomeLength) {
+        if (width <= 0 || height <= 0)
+            throw new IllegalArgumentException("Map size must be greater than 0!");
+        if (startingPlantAmount < 0)
+            throw new IllegalArgumentException("Plant amount must be greater than or equal to 0!");
+        if (plantGrowingAmount < 0)
+            throw new IllegalArgumentException("Amount of growing plants per turn must be greater than or equal to 0!");
+        if (plantEnergyAmount < 0)
+            throw new IllegalArgumentException("Amount of energy given to animal, when plant has been eaten must be greater than or equal to 0!");
+        if (animalAmount < 0)
+            throw new IllegalArgumentException("Animal amount must be greater than or equal to 0!");
+        if (startingEnergyAmount <= 0)
+            throw new IllegalArgumentException("Amount of starting animal energy must be greater than 0!");
+        if (minimumBreedingEnergy < 0)
+            throw new IllegalArgumentException("Minimum breeding energy must be greater than or equal to 0!");
+        if (breedingEnergyCost < 0)
+            throw new IllegalArgumentException("Breeding energy cost must be greater than or equal to 0!");
+        if (minimumMutationAmount < 0)
+            throw new IllegalArgumentException("Minimum mutation amount must be greater than or equal to 0!");
+        if (maximumMutationAmount < 0)
+            throw new IllegalArgumentException("Maximum mutation amount must be greater than or equal to 0!");
+        if (maximumMutationAmount < minimumMutationAmount)
+            throw new IllegalArgumentException("Maximum mutation amount must be greater than or equal to minimum mutation amount!");
+        if (animalGenomeLength <= 0)
+            throw new IllegalArgumentException("Animal genome length must be greater than 0!");
+        this.width = width;
+        this.height = height;
+        this.plantGrowingAmount = plantGrowingAmount;
+        this.plantEnergyAmount = plantEnergyAmount;
+        this.minimumBreedingEnergy = minimumBreedingEnergy;
+        this.breedingEnergyCost = breedingEnergyCost;
+        this.minimumMutationAmount = minimumMutationAmount;
+        this.maximumMutationAmount = maximumMutationAmount;
+        Random random = new Random();
+        for (int i = 0; i < animalAmount; i++) {
+            int x = random.nextInt(width);
+            int y = random.nextInt(height);
+            Vector2D v = new Vector2D(x, y);
+            Animal animal = new Animal(animalGenomeLength, startingEnergyAmount);
+            animals.computeIfAbsent(v, k -> new ArrayList<>());
+            animals.get(v).add(animal);
+        }
+
+        // na razie testowo bez generowania przy równiku
+        RandomPositionGenerator grassPosition = new RandomPositionGenerator(width, height, startingPlantAmount);
+        while(grassPosition.hasNext()) plants.add(grassPosition.next());
+    }
 
     @Override
     public void run() {
         while(!animals.isEmpty()) {
-            animals.removeIf(Animal::isDead);
-            for (Animal animal : animals) animal.move();
-            for (Animal animal : animals) animal.eat();
+            for (Vector2D position : animals.keySet()) {
+                for (Animal animal : animals.get(position)) {
+                    if (animal.isDead()) animals.remove(position);
+                }
+                if (animals.get(position).isEmpty())
+                    animals.remove(position);
+            }
+            for (Vector2D position : animals.keySet()) {
+                for (Animal animal : animals.get(position)) {
+                    animal.move(position); // todo
+                }
+                if (animals.get(position).isEmpty())
+                    animals.remove(position);
+            }
+            for (Vector2D position : animals.keySet()) {
+                Animal topAnimal = animals.get(position).stream()
+                        .max(Comparator.comparingInt(Animal::getEnergy))
+                        .orElseThrow(() -> new IllegalArgumentException("List must not be empty"));
+                topAnimal.eat(plantEnergyAmount);
+                plants.remove(position);
+            }
+            for (Vector2D position : animals.keySet()) {
+                List<Animal> topTwo = animals.get(position).stream()
+                        .sorted(Comparator.comparingInt(Animal::getEnergy).reversed())
+                        .limit(2)
+                        .toList();
+                if (topTwo.size() == 2 && topTwo.getFirst().getEnergy() >= minimumBreedingEnergy
+                        && topTwo.getLast().getEnergy() >= minimumBreedingEnergy) {
+                    Animal baby = new Animal(topTwo.getFirst(), topTwo.getLast(), breedingEnergyCost,
+                            minimumBreedingEnergy, minimumMutationAmount, maximumMutationAmount);
+                    animals.get(position).add(baby);
+                }
+            }
+            // brak randomowego mutowania
+            // powinny niby rosnac
         }
     }
 }
