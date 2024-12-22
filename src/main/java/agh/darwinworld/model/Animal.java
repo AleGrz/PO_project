@@ -87,13 +87,15 @@ public class Animal {
     }
 
     public Vector2D move(Vector2D position, int mapWidth, int mapHeight) {
-        this.direction = direction.rotate(genome[currentGene]);
-        currentGene = (currentGene + 1) % genome.length;
-        energy -= 1;
-        age += 1;
-        Vector2D newPos = position.add(direction.getValue()).normalize(mapWidth, null);
+        if (this.energy <= 0)
+            throw new IllegalStateException("Cannot move animal that is dead!");
+        this.direction = this.direction.rotate(this.genome[this.currentGene]);
+        this.currentGene = (this.currentGene + 1) % this.genome.length;
+        this.energy -= 1;
+        this.age += 1;
+        Vector2D newPos = position.add(this.direction.getValue()).normalize(mapWidth, null);
         if (newPos.y() < 0 || newPos.x() >= mapHeight){
-            this.direction = direction.rotate(MoveDirection.BACKWARD);
+            this.direction = this.direction.rotate(MoveDirection.BACKWARD);
             return position;
         }
         return newPos;

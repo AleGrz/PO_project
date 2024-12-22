@@ -18,6 +18,7 @@ public class Simulation implements Runnable {
     private final int maximumMutationAmount;
     private HashMap<Vector2D, ArrayList<Animal>> animals = new HashMap<>();
     private final HashSet<Vector2D> plants = new HashSet<>();
+    private boolean isRunning = false;
 
     public Simulation(int width, int height, int startingPlantAmount,
                       int plantGrowingAmount, int plantEnergyAmount,

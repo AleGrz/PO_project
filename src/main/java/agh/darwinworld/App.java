@@ -5,8 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import java.awt.event.ActionEvent;
 import java.util.Objects;
 
 public class App extends Application {
@@ -20,9 +18,5 @@ public class App extends Application {
         stage.setScene(new Scene(root));
         stage.setTitle("Darwin World Project");
         stage.show();
-    }
-
-    public void onGridClicked(ActionEvent actionEvent) {
-
     }
 }

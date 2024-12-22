@@ -34,8 +34,8 @@ public record Vector2D(int x, int y) {
             throw new IllegalArgumentException("Width must be greater than 0.");
         if (height != null && height <= 0)
             throw new IllegalArgumentException("Height must be greater than 0.");
-        int normalizedX = x() % (width == null ? x() + 1 : width);
-        int normalizedY = y() % (height == null ? y() + 1 : height);
+        int normalizedX = (width == null ? x() : x() % width);
+        int normalizedY = (height == null ? y() : y() % height);
         return new Vector2D(normalizedX, normalizedY);
     }
 
