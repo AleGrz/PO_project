@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import agh.darwinworld.control.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<FlowPane alignment="TOP_CENTER" columnHalignment="CENTER" minHeight="517.0" minWidth="400.0" orientation="VERTICAL"
+          rowValignment="TOP" vgap="5.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="agh.darwinworld.presenter.StartMenuPresenter">
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+   </padding>
+   <Label alignment="TOP_CENTER" contentDisplay="CENTER" text="Properties" textAlignment="CENTER"/>
+   <Label contentDisplay="RIGHT" text="Map height:">
+      <graphic>
+         <IntField fx:id="heightIntField" text="100"/>
+      </graphic>
+   </Label>
+   <Label contentDisplay="RIGHT" text="Map width:">
+      <graphic>
+         <IntField fx:id="widthIntField" text="100"/>
+      </graphic>
+   </Label>
+   <Label contentDisplay="RIGHT" layoutX="205.0" layoutY="72.0" text="Plants spawning at the start:">
+      <graphic>
+         <IntField fx:id="startingPlantAmountIntField" text="15"/>
+      </graphic>
+   </Label>
+   <Label contentDisplay="RIGHT" layoutX="172.0" layoutY="102.0" text="Plants growing in each day:">
+      <graphic>
+         <IntField fx:id="plantGrowingAmountIntField" text="10"/>
+      </graphic>
+   </Label>
+   <Label contentDisplay="RIGHT" layoutX="172.0" layoutY="132.0" text="Plant energy profit:">
+      <graphic>
+         <IntField fx:id="plantEnergyAmountIntField" text="15"/>
+      </graphic>
+   </Label>
+   <Label contentDisplay="RIGHT" layoutX="172.0" layoutY="162.0" text="Animals spawing at the start:">
+      <graphic>
+         <IntField fx:id="startingAnimalAmountIntField" text="10"/>
+      </graphic>
+   </Label>
+   <Label contentDisplay="RIGHT" layoutX="172.0" layoutY="192.0" text="Animal start energy:">
+      <graphic>
+         <IntField fx:id="startingEnergyAmountIntField" text="40"/>
+      </graphic>
+   </Label>
+   <Label contentDisplay="RIGHT" layoutX="172.0" layoutY="222.0" text="Minimum breeding energy:">
+      <graphic>
+         <IntField fx:id="minimumBreedingEnergyIntField" text="15"/>
+      </graphic>
+   </Label>
+   <Label contentDisplay="RIGHT" layoutX="172.0" layoutY="252.0" text="Breeding energy cost:">
+      <graphic>
+         <IntField fx:id="breedingEnergyCostIntField" text="10"/>
+      </graphic>
+   </Label>
+   <Label contentDisplay="RIGHT" layoutX="172.0" layoutY="282.0" text="Minimum mutation amount:">
+      <graphic>
+         <IntField fx:id="minimumMutationAmountIntField" text="4"/>
+      </graphic>
+   </Label>
+   <Label contentDisplay="RIGHT" layoutX="172.0" layoutY="312.0" text="Maximum mutation amount:">
+      <graphic>
+         <IntField fx:id="maximumMutationAmountIntField" text="10"/>
+      </graphic>
+   </Label>
+   <Label contentDisplay="RIGHT" layoutX="172.0" layoutY="342.0" text="Animal genome length:">
+      <graphic>
+         <IntField fx:id="animalGenomeLengthIntField" text="10"/>
+      </graphic>
+   </Label>
+   <Label contentDisplay="RIGHT" layoutX="72.0" layoutY="372.0" text="Fire frequency:">
+      <graphic>
+         <IntField fx:id="fireFrequencyIntField" text="10"/>
+      </graphic>
+   </Label>
+   <Label contentDisplay="RIGHT" layoutX="72.0" layoutY="432.0" text="Fire length:">
+      <graphic>
+         <IntField fx:id="fireLengthIntField" text="10"/>
+      </graphic>
+   </Label>
+   <Label contentDisplay="RIGHT" layoutX="172.0" layoutY="372.0" text="Simulation seed:">
+      <graphic>
+         <IntField fx:id="seedIntField" text="1"/>
+      </graphic>
+   </Label>
+   <Button onAction="#onSimulationStart" text="Start new simulation"/>
+</FlowPane>

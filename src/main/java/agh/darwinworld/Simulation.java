@@ -1,9 +1,7 @@
 package agh.darwinworld;
 
 import agh.darwinworld.model.Animal;
-import agh.darwinworld.model.RandomPositionGenerator;
 import agh.darwinworld.model.Vector2D;
-
 import java.util.*;
 
 public class Simulation implements Runnable {
@@ -16,8 +14,11 @@ public class Simulation implements Runnable {
     private final int breedingEnergyCost;
     private final int minimumMutationAmount;
     private final int maximumMutationAmount;
+    private final int fireFrequency;
+    private final int fireLength;
     private HashMap<Vector2D, ArrayList<Animal>> animals = new HashMap<>();
     private final HashSet<Vector2D> plants = new HashSet<>();
+    private HashMap<Vector2D, Integer> fire = new HashMap<Vector2D, Integer>();
     private boolean isRunning = false;
 
     public Simulation(int width, int height, int startingPlantAmount,
@@ -25,7 +26,7 @@ public class Simulation implements Runnable {
                       int animalAmount, int startingEnergyAmount,
                       int minimumBreedingEnergy, int breedingEnergyCost,
                       int minimumMutationAmount, int maximumMutationAmount,
-                      int animalGenomeLength, int seed) {
+                      int animalGenomeLength, int fireFrequency, int fireLength, int seed) {
         if (width <= 0 || height <= 0)
             throw new IllegalArgumentException("Map size must be greater than 0!");
         if (startingPlantAmount < 0)
@@ -58,6 +59,8 @@ public class Simulation implements Runnable {
         this.breedingEnergyCost = breedingEnergyCost;
         this.minimumMutationAmount = minimumMutationAmount;
         this.maximumMutationAmount = maximumMutationAmount;
+        this.fireFrequency = fireFrequency;
+        this.fireLength = fireLength;
         this.random = new Random(seed);
         for (int i = 0; i < animalAmount; i++) {
             int x = random.nextInt(width);
@@ -67,21 +70,24 @@ public class Simulation implements Runnable {
             animals.computeIfAbsent(v, k -> new ArrayList<>());
             animals.get(v).add(animal);
         }
-
-        // na razie testowo bez generowania przy równiku
-        RandomPositionGenerator grassPosition = new RandomPositionGenerator(width, height, startingPlantAmount);
-        while(grassPosition.hasNext()) plants.add(grassPosition.next());
+        growPlants();
     }
 
     @Override
     public void run() {
+        int step = 1;
         while(!animals.isEmpty()) {
             removeDeadAnimals();
             moveAnimals();
             feedAnimals();
             breedAnimals();
-            // brak randomowego mutowania
-            // powinny niby rosnac
+            growPlants();
+            propagateFire();
+            if (step%fireFrequency == 0) {
+                Vector2D randomPos = plants.toArray(new Vector2D[plants.size()])[random.nextInt(0,plants.size())];
+                fire.put(randomPos, fireLength);
+            }
+            step++;
         }
     }
 
@@ -106,9 +112,11 @@ public class Simulation implements Runnable {
 
             for (Animal animal : animalList) {
                 Vector2D newPosition = animal.move(position, width, height);
-                updatedAnimals
-                        .computeIfAbsent(newPosition, k -> new ArrayList<>())
-                        .add(animal);
+                if (!fire.containsKey(animal)) {
+                    updatedAnimals
+                            .computeIfAbsent(newPosition, k -> new ArrayList<>())
+                            .add(animal);
+                }
             }
         }
         animals = updatedAnimals;
@@ -141,5 +149,71 @@ public class Simulation implements Runnable {
                 animals.get(position).add(baby);
             }
         }
+    }
+
+    private void growPlants() {
+        int equatorHeight = Math.round(height*0.2f);
+        int barHeight = (int)Math.round((height - equatorHeight)/2f);
+        List<Vector2D> plantCandidates = new ArrayList<>();
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < barHeight; j++) {
+                if (!plants.contains(new Vector2D(i, j))) {
+                    plantCandidates.add(new Vector2D(i, j));
+                }
+            }
+            for (int j = barHeight+equatorHeight; j < height; j++) {
+                if (!plants.contains(new Vector2D(i, j))) {
+                    plantCandidates.add(new Vector2D(i, j));
+                }
+            }
+        }
+        plants.addAll(selectRandom(plantCandidates, Math.round(plantGrowingAmount*0.2f)));
+        plantCandidates = new ArrayList<>();
+        for (int i = 0; i < width; i++) {
+            for (int j = barHeight; j < barHeight+equatorHeight; j++) {
+                if (!plants.contains(new Vector2D(i, j))) {
+                    plantCandidates.add(new Vector2D(i, j));
+                }
+            }
+        }
+        plants.addAll(selectRandom(plantCandidates, Math.round(plantGrowingAmount*0.8f)));
+
+    }
+
+    public void propagateFire() {
+        HashMap<Vector2D, Integer> newFire = new HashMap<>();
+        for (Vector2D firePos: fire.keySet()) {
+            Vector2D[] directions = new Vector2D[]{
+                    firePos.add(new Vector2D(0,1)),
+                    firePos.add(new Vector2D(1,0)),
+                    firePos.add(new Vector2D(0,-1)),
+                    firePos.add(new Vector2D(-1,0)),
+                    };
+            for (Vector2D direction: directions) {
+                if (!fire.containsKey(direction)) {
+                    newFire.put(direction, fireLength);
+                }
+            }
+            if (fire.get(firePos) <= 0) {
+                fire.remove(firePos);
+            }
+            else {
+                fire.put(firePos, fire.get(firePos)-1);
+            }
+        }
+        fire.putAll(newFire);
+    }
+
+    private List<Vector2D> selectRandom(List<Vector2D> positions, int amount) {
+        Collections.shuffle(positions);
+        return positions.subList(0, amount);
+    }
+
+    private List<Animal> getAnimalsOnPosition(Vector2D position) {
+        return animals.get(position);
+    }
+
+    private boolean isPlantOnPosition(Vector2D position) {
+        return plants.contains(position);
     }
 }

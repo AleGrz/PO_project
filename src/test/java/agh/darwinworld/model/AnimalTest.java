@@ -61,7 +61,7 @@ public class AnimalTest {
 
     @Test
     public void testMoveWidthLoop() {
-        Random seededRandom = new Random(4098);
+        final Random seededRandom = new Random(4098);
         Animal animal = new Animal(seededRandom ,1, 10);
         assertEquals(animal.getCurrentGene(), MoveDirection.RIGHT);
         assertEquals(animal.getDirection(), MapDirection.NORTH);
@@ -72,7 +72,7 @@ public class AnimalTest {
 
     @Test
     public void testMutateNoChange() {
-        final int genomeLength = 10;
+        final int genomeLength = 100;
         Animal animal = new Animal(random ,genomeLength, 10);
         MoveDirection[] copiedGenome = Arrays.copyOf(animal.getGenome(), genomeLength);
         animal.mutate(0, 1);
@@ -81,7 +81,7 @@ public class AnimalTest {
 
     @Test
     public void testMutateInMaxRange() {
-        final int genomeLength = 10;
+        final int genomeLength = 100;
         Animal animal = new Animal(random ,genomeLength, 10);
         MoveDirection[] copiedGenome = Arrays.copyOf(animal.getGenome(), genomeLength);
         animal.mutate(0, 5);
@@ -100,5 +100,17 @@ public class AnimalTest {
         animal.eat(5);
         assertEquals(15, animal.getEnergy());
         assertThrows(IllegalArgumentException.class, () -> animal.eat(-1));
+    }
+
+    @Test
+    public void testChildrenAmount() {
+        final int genomeLength = 10;
+        final int energy = 20;
+        final int breedingEnergyCost = 10;
+        Animal dad = new Animal(random, genomeLength, energy);
+        Animal mom = new Animal(random, genomeLength, energy);
+        new Animal(dad, mom, breedingEnergyCost, 0, 0, 1);
+        assertEquals(dad.getChildrenAmount(), 1);
+        assertEquals(mom.getChildrenAmount(), 1);
     }
 }

@@ -31,6 +31,8 @@ public class Animal {
 
     public Animal(Animal mommy, Animal daddy, int breedingEnergyCost, int minimalBreedingEnergy,
                   int minMutations, int maxMutations) {
+        if (daddy.isDead() || mommy.isDead())
+            throw new IllegalArgumentException("Provided animal cannot be dead!");
         if (daddy.energy <= minimalBreedingEnergy || mommy.energy < minimalBreedingEnergy)
             throw new IllegalArgumentException("Provided animal has not enough energy!");
         daddy.energy -= breedingEnergyCost;
@@ -93,7 +95,7 @@ public class Animal {
         this.currentGene = (this.currentGene + 1) % this.genome.length;
         this.energy -= 1;
         this.age += 1;
-        Vector2D newPos = position.add(this.direction.getValue()).normalize(mapWidth, null);
+        Vector2D newPos = position.add(this.direction.getValue()).clamp(mapWidth, null);
         if (newPos.y() < 0 || newPos.x() >= mapHeight){
             this.direction = this.direction.rotate(MoveDirection.BACKWARD);
             return position;
@@ -102,6 +104,8 @@ public class Animal {
     }
 
     public void mutate(int min, int max) {
+        if (isDead())
+            throw new IllegalArgumentException("Cannot mutate genome when animal is dead!");
         if (min >= max)
             throw new IllegalArgumentException("Minimum amount of mutations has to be less than maximum amount of mutations!");
         int mutateAmount = random.nextInt(max - min) + min;
@@ -115,6 +119,8 @@ public class Animal {
     }
 
     public void eat(int energy) {
+        if (isDead())
+            throw new IllegalArgumentException("Animal cannot eat when is dead!");
         if (energy < 0)
             throw new IllegalArgumentException("Energy added must be greater than or equal to 0!");
         this.energy += energy;

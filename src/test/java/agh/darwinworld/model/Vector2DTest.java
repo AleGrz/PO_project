@@ -279,55 +279,55 @@ public class Vector2DTest {
     }
 
     @Test
-    public void testNormalizeNull() {
+    public void testClampNull() {
         Vector2D vector = new Vector2D(1, 1);
-        assertEquals(vector, vector.normalize(null, null));
+        assertEquals(vector, vector.clamp(null, null));
     }
 
     @Test
-    public void testNormalizeOnlyWidth() {
+    public void testClampOnlyWidth() {
         Vector2D vector = new Vector2D(3, 3);
-        assertEquals(new Vector2D(1, 3), vector.normalize(2, null));
+        assertEquals(new Vector2D(1, 3), vector.clamp(2, null));
     }
 
     @Test
-    public void testNormalizeOnlyHeight() {
+    public void testClampOnlyHeight() {
         Vector2D vector = new Vector2D(3, 3);
-        assertEquals(new Vector2D(3, 1), vector.normalize(null, 2));
+        assertEquals(new Vector2D(3, 1), vector.clamp(null, 2));
     }
 
     @Test
-    public void testNormalize() {
+    public void testClamp() {
         Vector2D vector = new Vector2D(3, 3);
-        assertEquals(new Vector2D(0, 1), vector.normalize(3, 2));
+        assertEquals(new Vector2D(0, 1), vector.clamp(3, 2));
     }
 
     @Test
-    public void testNormalizeIllegalArguments() {
+    public void testClampIllegalArguments() {
         Vector2D vector = new Vector2D(3, 3);
-        assertThrows(IllegalArgumentException.class, () -> vector.normalize(0, null),
+        assertThrows(IllegalArgumentException.class, () -> vector.clamp(0, null),
                 "IllegalArgumentException should be thrown when provided width is equal to 0.");
-        assertThrows(IllegalArgumentException.class, () -> vector.normalize(-1, null),
+        assertThrows(IllegalArgumentException.class, () -> vector.clamp(-1, null),
                 "IllegalArgumentException should be thrown when provided width is a negative number.");
-        assertThrows(IllegalArgumentException.class, () -> vector.normalize(null, 0),
+        assertThrows(IllegalArgumentException.class, () -> vector.clamp(null, 0),
                 "IllegalArgumentException should be thrown when provided height is equal to 0.");
-        assertThrows(IllegalArgumentException.class, () -> vector.normalize(null, -1),
+        assertThrows(IllegalArgumentException.class, () -> vector.clamp(null, -1),
                 "IllegalArgumentException should be thrown when provided height is a negative number.");
-        assertThrows(IllegalArgumentException.class, () -> vector.normalize(0, 1),
+        assertThrows(IllegalArgumentException.class, () -> vector.clamp(0, 1),
                 "IllegalArgumentException should be thrown when provided width is equal to 0.");
-        assertThrows(IllegalArgumentException.class, () -> vector.normalize(-1, 1),
+        assertThrows(IllegalArgumentException.class, () -> vector.clamp(-1, 1),
                 "IllegalArgumentException should be thrown when provided width is a negative number.");
-        assertThrows(IllegalArgumentException.class, () -> vector.normalize(0, 0),
+        assertThrows(IllegalArgumentException.class, () -> vector.clamp(0, 0),
                 "IllegalArgumentException should be thrown when provided width and height are equal to 0.");
-        assertThrows(IllegalArgumentException.class, () -> vector.normalize(-1, -1),
+        assertThrows(IllegalArgumentException.class, () -> vector.clamp(-1, -1),
                 "IllegalArgumentException should be thrown when provided width and height are negative numbers.");
-        assertThrows(IllegalArgumentException.class, () -> vector.normalize(0, -1),
+        assertThrows(IllegalArgumentException.class, () -> vector.clamp(0, -1),
                 "IllegalArgumentException should be thrown when provided width is equal to 0 and height is a negative number.");
-        assertThrows(IllegalArgumentException.class, () -> vector.normalize(-1, 0),
+        assertThrows(IllegalArgumentException.class, () -> vector.clamp(-1, 0),
                 "IllegalArgumentException should be thrown when provided height is equal to 0 and width is a negative number.");
-        assertThrows(IllegalArgumentException.class, () -> vector.normalize(1, 0),
+        assertThrows(IllegalArgumentException.class, () -> vector.clamp(1, 0),
                 "IllegalArgumentException should be thrown when provided height is equal to 0.");
-        assertThrows(IllegalArgumentException.class, () -> vector.normalize(1, -1),
+        assertThrows(IllegalArgumentException.class, () -> vector.clamp(1, -1),
                 "IllegalArgumentException should be thrown when provided height is a negative number.");
     }
 }

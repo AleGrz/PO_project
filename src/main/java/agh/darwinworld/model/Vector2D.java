@@ -29,7 +29,7 @@ public record Vector2D(int x, int y) {
         return new Vector2D(-x, -y);
     }
 
-    public Vector2D normalize(Integer width, Integer height) {
+    public Vector2D clamp(Integer width, Integer height) {
         if (width != null && width <= 0)
             throw new IllegalArgumentException("Width must be greater than 0.");
         if (height != null && height <= 0)
