@@ -29,6 +29,16 @@ public record Vector2D(int x, int y) {
         return new Vector2D(-x, -y);
     }
 
+    public Vector2D normalize(Integer width, Integer height) {
+        if (width != null && width <= 0)
+            throw new IllegalArgumentException("Width must be greater than 0.");
+        if (height != null && height <= 0)
+            throw new IllegalArgumentException("Height must be greater than 0.");
+        int normalizedX = x() % (width == null ? x() + 1 : width);
+        int normalizedY = y() % (height == null ? y() + 1 : height);
+        return new Vector2D(normalizedX, normalizedY);
+    }
+
     public boolean equals(Object other) {
         if (this == other) return true;
         if (!(other instanceof Vector2D v)) return false;
@@ -43,13 +53,5 @@ public record Vector2D(int x, int y) {
     @Override
     public String toString() {
         return "(" + x + "," + y + ")";
-    }
-
-    public Vector2D normalizeX(int width) {
-        return new Vector2D(x() % width, y());
-    }
-
-    public Vector2D normalizeY(int height) {
-        return new Vector2D(x(), y() % height);
     }
 }

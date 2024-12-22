@@ -91,7 +91,7 @@ public class Animal {
         currentGene = (currentGene + 1) % genome.length;
         energy -= 1;
         age += 1;
-        Vector2D newPos = position.add(direction.getValue()).normalizeX(mapWidth);
+        Vector2D newPos = position.add(direction.getValue()).normalize(mapWidth, null);
         if (newPos.y() < 0 || newPos.x() >= mapHeight){
             this.direction = direction.rotate(MoveDirection.BACKWARD);
             return position;

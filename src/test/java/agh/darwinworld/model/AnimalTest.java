@@ -17,14 +17,14 @@ public class AnimalTest {
     private Animal animalC;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         animalA = new Animal(random, GENOME_LENGTH, ENERGY + BREEDING_ENERGY_COST);
         animalB = new Animal(random, GENOME_LENGTH, ENERGY + BREEDING_ENERGY_COST);
         animalC = new Animal(animalA, animalB, BREEDING_ENERGY_COST, 0, 0, 1);
     }
 
     @Test
-    void testConstructorA() {
+    public void testConstructorA() {
         assertEquals(animalA.getEnergy(), ENERGY);
         assertEquals(animalA.getGenome().length, GENOME_LENGTH);
         assertEquals(animalA.getAge(), 0);
@@ -34,7 +34,7 @@ public class AnimalTest {
     }
 
     @Test
-    void testConstructorB() {
+    public void testConstructorB() {
         assertEquals(animalC.getEnergy(), BREEDING_ENERGY_COST * 2);
         assertEquals(animalC.getGenome().length, GENOME_LENGTH);
         assertEquals(animalC.getAge(), 0);
@@ -42,7 +42,7 @@ public class AnimalTest {
     // to rework up
 
     @Test
-    void testIsDead() {
+    public void testIsDead() {
         Animal animal = new Animal(random ,1, 0);
         assertTrue(animal.isDead());
     }
