@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.geometry.Insets?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            minHeight="550.0" minWidth="850.0"
+            fx:controller="agh.darwinworld.presenter.SimulationPresenter">
+    <center>
+        <GridPane minHeight="50" minWidth="50" style="-fx-background-color: blue;" fx:id="mapGrid" gridLinesVisible="true" alignment="CENTER" onMouseClicked="#onGridClicked"/>
+    </center>
+    <left>
+        <VBox visible="true" minWidth="150" spacing="10">
+            <HBox alignment="CENTER">
+                <Label>Statystyki symulacji</Label>
+            </HBox>
+            <HBox spacing="1">
+                <Label>Czas trwania:</Label>
+                <Label>10</Label>
+            </HBox>
+            <HBox spacing="1">
+                <Label>Ilość zwierząt:</Label>
+                <Label>10</Label>
+            </HBox>
+            <HBox spacing="1">
+                <Label>Ilość roślin:</Label>
+                <Label>10</Label>
+            </HBox>
+            <HBox alignment="CENTER">
+                <Label>Wybrane zwierze</Label>
+            </HBox>
+            <HBox alignment="CENTER">
+                <Label>BRAK</Label>
+            </HBox>
+            <padding>
+                <Insets left="10" right="10" top="10" bottom="10"/>
+            </padding>
+        </VBox>
+    </left>
+</BorderPane>

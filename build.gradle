@@ -22,7 +22,9 @@ javafx {
     modules = ['javafx.base', 'javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.media', 'javafx.swing', 'javafx.web']
 }
 
-mainClassName = 'agh.darwinworld.App'
+application {
+    getMainClass().set('agh.darwinworld.App')
+}
 
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')

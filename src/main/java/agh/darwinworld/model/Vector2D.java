@@ -44,4 +44,12 @@ public record Vector2D(int x, int y) {
     public String toString() {
         return "(" + x + "," + y + ")";
     }
+
+    public Vector2D normalizeX(int width) {
+        return new Vector2D(x() % width, y());
+    }
+
+    public Vector2D normalizeY(int height) {
+        return new Vector2D(x(), y() % height);
+    }
 }

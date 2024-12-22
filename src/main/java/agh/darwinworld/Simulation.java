@@ -7,6 +7,7 @@ import agh.darwinworld.model.Vector2D;
 import java.util.*;
 
 public class Simulation implements Runnable {
+    private Random random;
     private final int width;
     private final int height;
     private final int plantGrowingAmount;
@@ -15,7 +16,7 @@ public class Simulation implements Runnable {
     private final int breedingEnergyCost;
     private final int minimumMutationAmount;
     private final int maximumMutationAmount;
-    private final HashMap<Vector2D, ArrayList<Animal>> animals = new HashMap<>();
+    private HashMap<Vector2D, ArrayList<Animal>> animals = new HashMap<>();
     private final HashSet<Vector2D> plants = new HashSet<>();
 
     public Simulation(int width, int height, int startingPlantAmount,
@@ -23,7 +24,7 @@ public class Simulation implements Runnable {
                       int animalAmount, int startingEnergyAmount,
                       int minimumBreedingEnergy, int breedingEnergyCost,
                       int minimumMutationAmount, int maximumMutationAmount,
-                      int animalGenomeLength) {
+                      int animalGenomeLength, int seed) {
         if (width <= 0 || height <= 0)
             throw new IllegalArgumentException("Map size must be greater than 0!");
         if (startingPlantAmount < 0)
@@ -56,12 +57,12 @@ public class Simulation implements Runnable {
         this.breedingEnergyCost = breedingEnergyCost;
         this.minimumMutationAmount = minimumMutationAmount;
         this.maximumMutationAmount = maximumMutationAmount;
-        Random random = new Random();
+        this.random = new Random(seed);
         for (int i = 0; i < animalAmount; i++) {
             int x = random.nextInt(width);
             int y = random.nextInt(height);
             Vector2D v = new Vector2D(x, y);
-            Animal animal = new Animal(animalGenomeLength, startingEnergyAmount);
+            Animal animal = new Animal(random, animalGenomeLength, startingEnergyAmount);
             animals.computeIfAbsent(v, k -> new ArrayList<>());
             animals.get(v).add(animal);
         }
@@ -74,41 +75,70 @@ public class Simulation implements Runnable {
     @Override
     public void run() {
         while(!animals.isEmpty()) {
-            for (Vector2D position : animals.keySet()) {
-                for (Animal animal : animals.get(position)) {
-                    if (animal.isDead()) animals.remove(position);
-                }
-                if (animals.get(position).isEmpty())
-                    animals.remove(position);
-            }
-            for (Vector2D position : animals.keySet()) {
-                for (Animal animal : animals.get(position)) {
-                    animal.move(position); // todo
-                }
-                if (animals.get(position).isEmpty())
-                    animals.remove(position);
-            }
-            for (Vector2D position : animals.keySet()) {
-                Animal topAnimal = animals.get(position).stream()
-                        .max(Comparator.comparingInt(Animal::getEnergy))
-                        .orElseThrow(() -> new IllegalArgumentException("List must not be empty"));
-                topAnimal.eat(plantEnergyAmount);
-                plants.remove(position);
-            }
-            for (Vector2D position : animals.keySet()) {
-                List<Animal> topTwo = animals.get(position).stream()
-                        .sorted(Comparator.comparingInt(Animal::getEnergy).reversed())
-                        .limit(2)
-                        .toList();
-                if (topTwo.size() == 2 && topTwo.getFirst().getEnergy() >= minimumBreedingEnergy
-                        && topTwo.getLast().getEnergy() >= minimumBreedingEnergy) {
-                    Animal baby = new Animal(topTwo.getFirst(), topTwo.getLast(), breedingEnergyCost,
-                            minimumBreedingEnergy, minimumMutationAmount, maximumMutationAmount);
-                    animals.get(position).add(baby);
-                }
-            }
+            removeDeadAnimals();
+            moveAnimals();
+            feedAnimals();
+            breedAnimals();
             // brak randomowego mutowania
             // powinny niby rosnac
+        }
+    }
+
+    private void removeDeadAnimals() {
+        for (Vector2D position : animals.keySet()) {
+            for (Animal animal : animals.get(position)) {
+                if (animal.isDead()) animals.remove(position);
+            }
+            if (animals.get(position).isEmpty())
+                animals.remove(position);
+        }
+
+    }
+
+    private void moveAnimals() {
+        HashMap<Vector2D, ArrayList<Animal>> updatedAnimals = new HashMap<>();
+        for (Map.Entry<Vector2D, ArrayList<Animal>> entry : animals.entrySet()) {
+            Vector2D position = entry.getKey();
+            List<Animal> animalList = entry.getValue();
+
+            if (animalList.isEmpty()) continue;
+
+            for (Animal animal : animalList) {
+                Vector2D newPosition = animal.move(position, width, height);
+                updatedAnimals
+                        .computeIfAbsent(newPosition, k -> new ArrayList<>())
+                        .add(animal);
+            }
+        }
+        animals = updatedAnimals;
+    }
+
+    private void feedAnimals() {
+        for (Vector2D position : animals.keySet()) {
+            Animal topAnimal = animals.get(position).stream()
+                    .max(Comparator.comparingInt(Animal::getEnergy))
+                    .orElseThrow(() -> new IllegalArgumentException("List must not be empty"));
+            topAnimal.eat(plantEnergyAmount);
+            plants.remove(position);
+        }
+    }
+
+    private void breedAnimals() {
+        for (Vector2D position : animals.keySet()) {
+            List<Animal> topAnimals = animals.get(position).stream()
+                    .sorted(Comparator
+                            .comparingInt(Animal::getEnergy).reversed()
+                            .thenComparingInt(Animal::getAge).reversed()
+                            .thenComparingInt(Animal::getChildrenAmount).reversed()
+                            .thenComparing(a -> random.nextInt()))
+                    .limit(2)
+                    .toList();
+
+            if (topAnimals.size() == 2 && topAnimals.getLast().getEnergy() >= minimumBreedingEnergy) {
+                Animal baby = new Animal(topAnimals.getFirst(), topAnimals.getLast(), breedingEnergyCost,
+                        minimumBreedingEnergy, minimumMutationAmount, maximumMutationAmount);
+                animals.get(position).add(baby);
+            }
         }
     }
 }

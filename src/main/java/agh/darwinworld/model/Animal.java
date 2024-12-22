@@ -1,90 +1,130 @@
 package agh.darwinworld.model;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class Animal {
-    private final Random random = new Random();
+    private final Random random;
 
-    private final List<Direction> genome;
-    private Direction direction;
+    private final MoveDirection[] genome;
+    private MapDirection direction;
     private int energy;
+    private int currentGene;
     private int age = 0;
-    private int activatedGenome;
+    private int childrenAmount = 0;
 
-    public Animal(int genomeLength, int energy) {
-        this.genome = new ArrayList<>(genomeLength);
+    public Animal(Random random, int genomeLength, int energy) {
+        if (genomeLength < 0)
+            throw new IllegalArgumentException("Genome length must be greater than 0!");
+        if (energy < 0)
+            throw new IllegalArgumentException("Energy must be greater than or equal to 0!");
+        this.random = random;
+        this.genome = new MoveDirection[genomeLength];
         this.energy = energy;
-        Direction[] directions = Direction.values();
-        this.direction = directions[random.nextInt(directions.length)];
+        MapDirection[] mapDirections = MapDirection.values();
+        this.direction = mapDirections[random.nextInt(mapDirections.length)];
+        MoveDirection[] moveDirections = MoveDirection.values();
         for (int i = 0; i < genomeLength; i++)
-            genome.set(i, directions[random.nextInt(directions.length)]);
-        this.activatedGenome = random.nextInt(0, genomeLength);
+            genome[i] = moveDirections[random.nextInt(moveDirections.length)];
+        this.currentGene = random.nextInt(0, genomeLength);
     }
 
     public Animal(Animal mommy, Animal daddy, int breedingEnergyCost, int minimalBreedingEnergy,
                   int minMutations, int maxMutations) {
-        if (daddy.energy >= minimalBreedingEnergy || mommy.energy >= minimalBreedingEnergy)
-            throw new IllegalArgumentException("Cannot create child of dead animal!");
+        if (daddy.energy <= minimalBreedingEnergy || mommy.energy < minimalBreedingEnergy)
+            throw new IllegalArgumentException("Provided animal has not enough energy!");
         daddy.energy -= breedingEnergyCost;
         mommy.energy -= breedingEnergyCost;
+        this.random = daddy.random;
         int total = mommy.energy + daddy.energy;
-        int mommyGenomeAmount = Math.round(mommy.genome.size() * ((float) mommy.energy / total));
-        int daddyGenomeAmount = Math.round(daddy.genome.size() * ((float) daddy.energy / total));
+        int mommyGenomeAmount = Math.round(mommy.genome.length * ((float) mommy.energy / total));
+        int daddyGenomeAmount = Math.round(daddy.genome.length * ((float) daddy.energy / total));
         boolean mommyLeft = random.nextBoolean();
-        List<Direction> firstGenomes = mommy.extractGenomes(mommyLeft, mommyGenomeAmount);
-        List<Direction> secondGenomes = daddy.extractGenomes(!mommyLeft, daddyGenomeAmount);
+        MoveDirection[] firstGenomes = mommy.extractGenomes(mommyLeft, mommyGenomeAmount);
+        MoveDirection[] secondGenomes = daddy.extractGenomes(!mommyLeft, daddyGenomeAmount);
         if (mommyLeft) {
-            this.genome = firstGenomes;
-            genome.addAll(secondGenomes);
+            this.genome = Stream.concat(Arrays.stream(firstGenomes), Arrays.stream(secondGenomes))
+                    .toArray(MoveDirection[]::new);
         } else {
-            this.genome = secondGenomes;
-            this.genome.addAll(firstGenomes);
+            this.genome = Stream.concat(Arrays.stream(secondGenomes), Arrays.stream(firstGenomes))
+                    .toArray(MoveDirection[]::new);
         }
         mutate(minMutations, maxMutations);
-        Direction[] directions = Direction.values();
+        MapDirection[] directions = MapDirection.values();
         this.energy = breedingEnergyCost * 2;
         this.direction = directions[random.nextInt(0, directions.length)];
-        this.activatedGenome = random.nextInt(0, mommyGenomeAmount + daddyGenomeAmount);
+        this.currentGene = random.nextInt(0, mommyGenomeAmount + daddyGenomeAmount);
+        mommy.childrenAmount += 1;
+        daddy.childrenAmount += 1;
     }
 
-    public Direction getDirection() {
-        return direction;
+    public MapDirection getDirection() {
+        return this.direction;
     }
 
-    public Vector2D move(Vector2D pos) {
-
-        // jak to zakodowac????
-        age += 1;
-        return pos;
+    public MoveDirection[] getGenome() {
+        return this.genome;
     }
 
-    public void mutate(int min, int max) {
-        int mutateAmount = random.nextInt(max - min) + min;
-        ArrayList<Integer> indexes = new ArrayList<>();
-        for (int i = 0; i < genome.size(); i++) indexes.add(i);
-        Direction[] directions = Direction.values();
-        for (int i = 0; i < mutateAmount; i++) {
-            genome.set(indexes.get(i), directions[random.nextInt(directions.length)]);
-        }
+    public MoveDirection getCurrentGene() {
+        return this.genome[this.currentGene];
+    }
+
+    public int getAge() {
+        return this.age;
     }
 
     public int getEnergy() {
-        return energy;
+        return this.energy;
     }
 
-    public void eat(int energy) {
-        this.energy += energy;
+    public int getChildrenAmount() {
+        return this.childrenAmount;
     }
 
     public boolean isDead() {
         return energy <= 0;
     }
 
-    private List<Direction> extractGenomes(boolean leftPart, int amount) {
-        int leftIdx = leftPart ? 0 : genome.size() / 2;
-        int rightIdx = leftPart ? genome.size() / 2 : genome.size();
-        ArrayList<Direction> newList = new ArrayList<>(genome.subList(leftIdx, rightIdx));
-        Collections.shuffle(newList);
-        return newList.subList(0, amount);
+    public Vector2D move(Vector2D position, int mapWidth, int mapHeight) {
+        this.direction = direction.rotate(genome[currentGene]);
+        currentGene = (currentGene + 1) % genome.length;
+        energy -= 1;
+        age += 1;
+        Vector2D newPos = position.add(direction.getValue()).normalizeX(mapWidth);
+        if (newPos.y() < 0 || newPos.x() >= mapHeight){
+            this.direction = direction.rotate(MoveDirection.BACKWARD);
+            return position;
+        }
+        return newPos;
+    }
+
+    public void mutate(int min, int max) {
+        if (min >= max)
+            throw new IllegalArgumentException("Minimum amount of mutations has to be less than maximum amount of mutations!");
+        int mutateAmount = random.nextInt(max - min) + min;
+        ArrayList<Integer> indexes = new ArrayList<>();
+        for (int i = 0; i < genome.length; i++) indexes.add(i);
+        Collections.shuffle(indexes);
+        MoveDirection[] directions = MoveDirection.values();
+        for (int i = 0; i < mutateAmount; i++) {
+            genome[indexes.get(i)] = directions[random.nextInt(directions.length)];
+        }
+    }
+
+    public void eat(int energy) {
+        if (energy < 0)
+            throw new IllegalArgumentException("Energy added must be greater than or equal to 0!");
+        this.energy += energy;
+    }
+
+    private MoveDirection[] extractGenomes(boolean leftPart, int amount) {
+        if (amount == 0) return new MoveDirection[0];
+        if (amount < 0) throw new IllegalArgumentException("Amount must be greater than or equal to 0!");
+        int leftIdx = leftPart ? 0 : genome.length / 2;
+        int rightIdx = leftPart ? genome.length / 2 : genome.length;
+        MoveDirection[] newList = Arrays.copyOfRange(genome, leftIdx, rightIdx);
+        Collections.shuffle(Arrays.asList(newList));
+        return Arrays.copyOfRange(newList, 0, amount);
     }
 }
