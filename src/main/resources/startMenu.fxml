@@ -37,7 +37,7 @@
          <IntField fx:id="plantEnergyAmountIntField" text="15"/>
       </graphic>
    </Label>
-   <Label contentDisplay="RIGHT" layoutX="172.0" layoutY="162.0" text="Animals spawing at the start:">
+   <Label contentDisplay="RIGHT" layoutX="172.0" layoutY="162.0" text="Animals spawning at the start:">
       <graphic>
          <IntField fx:id="startingAnimalAmountIntField" text="10"/>
       </graphic>

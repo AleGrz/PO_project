@@ -2,12 +2,10 @@ package agh.darwinworld;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
-
 import java.util.Objects;
 
 public class App extends Application {

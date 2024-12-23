@@ -2,18 +2,29 @@ package agh.darwinworld.presenter;
 
 import agh.darwinworld.Simulation;
 import agh.darwinworld.control.IntField;
+import agh.darwinworld.helper.AlertHelper;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Objects;
 
 public class StartMenuPresenter {
@@ -49,7 +60,7 @@ public class StartMenuPresenter {
     private IntField seedIntField;
 
     public void onSimulationStart(ActionEvent actionEvent) {
-        Stage stage = (Stage)((Node) actionEvent.getSource()).getScene().getWindow();
+        Stage currentStage = (Stage)((Node) actionEvent.getSource()).getScene().getWindow();
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
@@ -76,15 +87,32 @@ public class StartMenuPresenter {
                     minimumMutationAmount, maximumMutationAmount, animalGenomeLength,
                     fireFrequency, fireLength, seedInt);
             presenter.setSimulation(simulation);
-            Stage newStage = new Stage();
-            Image appIcon = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("Icon.png")));
-            newStage.getIcons().add(appIcon);
-            newStage.setTitle("Simulation");
-            newStage.setScene(new Scene(root));
-            newStage.setMinWidth(root.minWidthProperty().getValue());
-            newStage.setMinHeight(root.minHeightProperty().getValue());
-            newStage.show();
+            Stage simulationStage = new Stage();
+            simulationStage.initOwner(currentStage);
+            simulationStage.getIcons().addAll(currentStage.getIcons());
+            simulationStage.setTitle("Simulation");
+            simulationStage.setScene(new Scene(root));
+            simulationStage.setOnShown(e -> {
+                Insets windowInsets = getWindowInsets(simulationStage);
+                simulationStage.setMinWidth(root.getMinWidth() + windowInsets.getLeft() + windowInsets.getRight());
+                simulationStage.setMinHeight(root.getMinHeight() + windowInsets.getTop() + windowInsets.getBottom());
+                simulationStage.setWidth(root.getMinWidth() + windowInsets.getLeft() + windowInsets.getRight());
+                simulationStage.setHeight(root.getMinHeight() + windowInsets.getTop() + windowInsets.getBottom());
+            });
+            simulationStage.show();
         } catch (Exception e) {
+            // TODO: Walidacja inputu i ładniejszy alert, poniższy alert tylko dla błędów!
+            AlertHelper.ShowExceptionAlert(currentStage, e);
         }
+    }
+
+    private Insets getWindowInsets(Stage stage) {
+        double stageWidth = stage.getWidth();
+        double stageHeight = stage.getHeight();
+        double contentWidth = stage.getScene().getWidth();
+        double contentHeight = stage.getScene().getHeight();
+        double horizontalInsets = (stageWidth - contentWidth) / 2;
+        double verticalInsets = stageHeight - contentHeight - horizontalInsets;
+        return new Insets(verticalInsets, horizontalInsets, verticalInsets, horizontalInsets);
     }
 }

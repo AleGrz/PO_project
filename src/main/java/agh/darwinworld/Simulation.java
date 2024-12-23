@@ -5,17 +5,23 @@ import agh.darwinworld.model.Vector2D;
 import java.util.*;
 
 public class Simulation implements Runnable {
-    private Random random;
+    private final Random random;
     private final int width;
     private final int height;
+    private final int startingPlantAmount;
     private final int plantGrowingAmount;
     private final int plantEnergyAmount;
+    private final int startingEnergyAmount;
+    private final int startingAnimalAmount;
     private final int minimumBreedingEnergy;
     private final int breedingEnergyCost;
     private final int minimumMutationAmount;
     private final int maximumMutationAmount;
+    private final int animalGenomeLength;
     private final int fireFrequency;
     private final int fireLength;
+    private final int seed;
+
     private HashMap<Vector2D, ArrayList<Animal>> animals = new HashMap<>();
     private final HashSet<Vector2D> plants = new HashSet<>();
     private HashMap<Vector2D, Integer> fire = new HashMap<Vector2D, Integer>();
@@ -23,7 +29,7 @@ public class Simulation implements Runnable {
 
     public Simulation(int width, int height, int startingPlantAmount,
                       int plantGrowingAmount, int plantEnergyAmount,
-                      int animalAmount, int startingEnergyAmount,
+                      int startingAnimalAmount, int startingEnergyAmount,
                       int minimumBreedingEnergy, int breedingEnergyCost,
                       int minimumMutationAmount, int maximumMutationAmount,
                       int animalGenomeLength, int fireFrequency, int fireLength, int seed) {
@@ -35,7 +41,7 @@ public class Simulation implements Runnable {
             throw new IllegalArgumentException("Amount of growing plants per turn must be greater than or equal to 0!");
         if (plantEnergyAmount < 0)
             throw new IllegalArgumentException("Amount of energy given to animal, when plant has been eaten must be greater than or equal to 0!");
-        if (animalAmount < 0)
+        if (startingAnimalAmount < 0)
             throw new IllegalArgumentException("Animal amount must be greater than or equal to 0!");
         if (startingEnergyAmount <= 0)
             throw new IllegalArgumentException("Amount of starting animal energy must be greater than 0!");
@@ -53,16 +59,21 @@ public class Simulation implements Runnable {
             throw new IllegalArgumentException("Animal genome length must be greater than 0!");
         this.width = width;
         this.height = height;
+        this.startingPlantAmount = startingPlantAmount;
         this.plantGrowingAmount = plantGrowingAmount;
         this.plantEnergyAmount = plantEnergyAmount;
+        this.startingEnergyAmount = startingEnergyAmount;
+        this.startingAnimalAmount = startingAnimalAmount;
         this.minimumBreedingEnergy = minimumBreedingEnergy;
         this.breedingEnergyCost = breedingEnergyCost;
         this.minimumMutationAmount = minimumMutationAmount;
         this.maximumMutationAmount = maximumMutationAmount;
+        this.animalGenomeLength = animalGenomeLength;
         this.fireFrequency = fireFrequency;
         this.fireLength = fireLength;
+        this.seed = seed;
         this.random = new Random(seed);
-        for (int i = 0; i < animalAmount; i++) {
+        for (int i = 0; i < startingAnimalAmount; i++) {
             int x = random.nextInt(width);
             int y = random.nextInt(height);
             Vector2D v = new Vector2D(x, y);
@@ -70,7 +81,67 @@ public class Simulation implements Runnable {
             animals.computeIfAbsent(v, k -> new ArrayList<>());
             animals.get(v).add(animal);
         }
-        growPlants();
+        growPlants(true);
+    }
+
+    public int getWidth() {
+        return this.width;
+    }
+
+    public int getHeight() {
+        return this.height;
+    }
+
+    public int getStartingPlantAmount() {
+        return this.startingPlantAmount;
+    }
+
+    public int getPlantGrowingAmount() {
+        return this.plantGrowingAmount;
+    }
+
+    public int getPlantEnergyAmount() {
+        return this.plantEnergyAmount;
+    }
+
+    public int getStartingEnergyAmount() {
+        return this.startingEnergyAmount;
+    }
+
+    public int getStartingAnimalAmount() {
+        return this.startingAnimalAmount;
+    }
+
+    public int getMinimumBreedingEnergy() {
+        return this.minimumBreedingEnergy;
+    }
+
+    public int getBreedingEnergyCost() {
+        return this.breedingEnergyCost;
+    }
+
+    public int getMinimumMutationAmount() {
+        return this.minimumMutationAmount;
+    }
+
+    public int getMaximumMutationAmount() {
+        return this.maximumMutationAmount;
+    }
+
+    public int getAnimalGenomeLength() {
+        return this.animalGenomeLength;
+    }
+
+    public int getFireFrequency() {
+        return this.fireFrequency;
+    }
+
+    public int getFireLength() {
+        return this.fireLength;
+    }
+
+    public int getSeed() {
+        return this.seed;
     }
 
     @Override
@@ -81,10 +152,10 @@ public class Simulation implements Runnable {
             moveAnimals();
             feedAnimals();
             breedAnimals();
-            growPlants();
+            growPlants(false);
             propagateFire();
-            if (step%fireFrequency == 0) {
-                Vector2D randomPos = plants.toArray(new Vector2D[plants.size()])[random.nextInt(0,plants.size())];
+            if (step % fireFrequency == 0) {
+                Vector2D randomPos = plants.toArray(new Vector2D[0])[random.nextInt(0,plants.size())];
                 fire.put(randomPos, fireLength);
             }
             step++;
@@ -151,7 +222,8 @@ public class Simulation implements Runnable {
         }
     }
 
-    private void growPlants() {
+
+    private void growPlants(boolean init) {
         int equatorHeight = Math.round(height*0.2f);
         int barHeight = (int)Math.round((height - equatorHeight)/2f);
         List<Vector2D> plantCandidates = new ArrayList<>();
@@ -167,7 +239,7 @@ public class Simulation implements Runnable {
                 }
             }
         }
-        plants.addAll(selectRandom(plantCandidates, Math.round(plantGrowingAmount*0.2f)));
+        plants.addAll(selectRandom(plantCandidates, Math.round((init ? startingPlantAmount : plantGrowingAmount) * 0.2f)));
         plantCandidates = new ArrayList<>();
         for (int i = 0; i < width; i++) {
             for (int j = barHeight; j < barHeight+equatorHeight; j++) {
@@ -176,7 +248,7 @@ public class Simulation implements Runnable {
                 }
             }
         }
-        plants.addAll(selectRandom(plantCandidates, Math.round(plantGrowingAmount*0.8f)));
+        plants.addAll(selectRandom(plantCandidates, Math.round((init ? startingPlantAmount : plantGrowingAmount) * 0.8f)));
 
     }
 
@@ -209,11 +281,11 @@ public class Simulation implements Runnable {
         return positions.subList(0, amount);
     }
 
-    private List<Animal> getAnimalsOnPosition(Vector2D position) {
-        return animals.get(position);
+    public List<Animal> getAnimalsOnPosition(Vector2D position) {
+        return animals.containsKey(position) ? animals.get(position) : new ArrayList<>();
     }
 
-    private boolean isPlantOnPosition(Vector2D position) {
+    public boolean isPlantOnPosition(Vector2D position) {
         return plants.contains(position);
     }
 }
