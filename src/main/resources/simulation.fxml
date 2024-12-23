@@ -1,45 +1,124 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.geometry.Insets?>
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            minHeight="550.0" minWidth="850.0"
-            fx:controller="agh.darwinworld.presenter.SimulationPresenter">
+<?import javafx.geometry.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane minHeight="550.0" minWidth="850.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.darwinworld.presenter.SimulationPresenter">
     <center>
-        <GridPane minHeight="50" minWidth="50" style="-fx-background-color: blue;" fx:id="mapGrid" gridLinesVisible="true" alignment="CENTER" onMouseClicked="#onGridClicked"/>
+        <GridPane fx:id="mapGrid" alignment="CENTER" gridLinesVisible="true" minHeight="50" minWidth="50" onMouseClicked="#onGridClicked" prefWidth="573.0" style="-fx-background-color: blue;" />
     </center>
     <left>
-        <VBox visible="true" minWidth="150" spacing="10">
-            <HBox alignment="CENTER">
-                <Label>Statystyki symulacji</Label>
-            </HBox>
-            <HBox spacing="1">
-                <Label>Czas trwania:</Label>
-                <Label>10</Label>
-            </HBox>
-            <HBox spacing="1">
-                <Label>Ilość zwierząt:</Label>
-                <Label>10</Label>
-            </HBox>
-            <HBox spacing="1">
-                <Label>Ilość roślin:</Label>
-                <Label>10</Label>
-            </HBox>
-            <HBox alignment="CENTER">
-                <Label>Wybrane zwierze</Label>
-            </HBox>
-            <HBox alignment="CENTER">
-                <Label>BRAK</Label>
-            </HBox>
-            <Button onAction="#onStartStopClicked"/>
+        <VBox minWidth="300.0" prefWidth="300.0" spacing="10" visible="true">
+         <GridPane alignment="TOP_CENTER">
+           <columnConstraints>
+             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+           </columnConstraints>
+           <rowConstraints>
+             <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+             <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+             <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="100.0" vgrow="SOMETIMES" />
+               <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="100.0" vgrow="SOMETIMES" />
+           </rowConstraints>
+            <children>
+                   <Label text="Simulation statistics" GridPane.columnSpan="2" GridPane.halignment="CENTER">Statystyki symulacji</Label>
+                   <Label contentDisplay="RIGHT" text="Time:" GridPane.rowIndex="1">
+                  <graphic>
+                         <Label>10</Label>
+                  </graphic>
+               </Label>
+               <Label contentDisplay="RIGHT" text="Dominant gene:" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <graphic>
+                     <Label text="10" />
+                  </graphic>
+               </Label>
+                   <Label contentDisplay="RIGHT" text="Animals amount:" GridPane.rowIndex="2">
+                  <graphic>
+                         <Label>10</Label>
+                  </graphic>
+               </Label>
+                   <Label contentDisplay="RIGHT" text="Plants amount:" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                  <graphic>
+                         <Label>10</Label>
+                  </graphic>
+               </Label>
+               <LineChart GridPane.columnSpan="2" GridPane.rowIndex="4" GridPane.rowSpan="2">
+                 <xAxis>
+                   <CategoryAxis side="BOTTOM" />
+                 </xAxis>
+                 <yAxis>
+                   <NumberAxis side="LEFT" />
+                 </yAxis>
+               </LineChart>
+            </children>
+         </GridPane>
+         <GridPane alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
+           <columnConstraints>
+             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+           </columnConstraints>
+           <rowConstraints>
+             <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+             <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+             <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+           </rowConstraints>
+            <children>
+                   <Label text="Selected animal" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER">Wybrane zwierze</Label>
+               <Label contentDisplay="RIGHT" text="Age:" GridPane.rowIndex="1">
+                  <graphic>
+                     <Label text="10" />
+                  </graphic>
+               </Label>
+               <Label contentDisplay="RIGHT" layoutX="10.0" layoutY="47.0" text="Energy:" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <graphic>
+                     <Label text="10" />
+                  </graphic>
+               </Label>
+               <Label contentDisplay="RIGHT" layoutX="125.0" layoutY="47.0" text="Children amount:" GridPane.rowIndex="2">
+                  <graphic>
+                     <Label text="10" />
+                  </graphic>
+               </Label>
+               <Label contentDisplay="RIGHT" layoutX="10.0" layoutY="77.0" text="Descendands amount:" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                  <graphic>
+                     <Label text="10" />
+                  </graphic>
+               </Label>
+               <Label alignment="TOP_CENTER" contentDisplay="RIGHT" layoutX="125.0" layoutY="77.0" text="Genotype:" GridPane.columnSpan="2" GridPane.rowIndex="4">
+                  <graphic>
+                     <Label contentDisplay="RIGHT" text="0011232421423" />
+                  </graphic>
+               </Label>
+               <Label contentDisplay="RIGHT" layoutX="125.0" layoutY="137.0" text="Total eaten plants:" GridPane.columnSpan="2" GridPane.rowIndex="3">
+                  <graphic>
+                     <Label text="10" />
+                  </graphic>
+               </Label>
+               <Label contentDisplay="RIGHT" layoutX="125.0" layoutY="167.0" text="Died at day:" GridPane.rowIndex="5">
+                  <graphic>
+                     <Label text="10" />
+                  </graphic>
+               </Label>
+            </children>
+         </GridPane>
+         <HBox alignment="CENTER">
+            <children>
+                  <Button onAction="#onStartStopClicked" text="Start">
+                  <padding>
+                     <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
+                  </padding>
+               </Button>
+            </children>
+         </HBox>
             <padding>
-                <Insets left="10" right="10" top="10" bottom="10"/>
+                <Insets bottom="10" left="10" right="10" top="10" />
             </padding>
         </VBox>
     </left>

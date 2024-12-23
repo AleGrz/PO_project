@@ -5,11 +5,13 @@ import agh.darwinworld.control.IntField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.util.Objects;
@@ -47,10 +49,11 @@ public class StartMenuPresenter {
     private IntField seedIntField;
 
     public void onSimulationStart(ActionEvent actionEvent) {
+        Stage stage = (Stage)((Node) actionEvent.getSource()).getScene().getWindow();
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
-            Parent root = loader.load();
+            BorderPane root = loader.load();
             SimulationPresenter presenter = loader.getController();
             Integer width = widthIntField.getValue();
             Integer height = heightIntField.getValue();
@@ -78,13 +81,10 @@ public class StartMenuPresenter {
             newStage.getIcons().add(appIcon);
             newStage.setTitle("Simulation");
             newStage.setScene(new Scene(root));
+            newStage.setMinWidth(root.minWidthProperty().getValue());
+            newStage.setMinHeight(root.minHeightProperty().getValue());
             newStage.show();
         } catch (Exception e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("Cannot start new simulation");
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
         }
     }
 }
