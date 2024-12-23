@@ -1,16 +1,11 @@
 package agh.darwinworld.presenter;
 
 import agh.darwinworld.Simulation;
-import agh.darwinworld.control.IntField;
+import agh.darwinworld.model.Animal;
+import agh.darwinworld.model.MoveDirection;
 import agh.darwinworld.model.Vector2D;
-import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
@@ -20,78 +15,92 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
-
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import javafx.util.Duration;
-
+import java.util.List;
 import java.util.Random;
 
 public class SimulationPresenter {
-    private Simulation simulation;
-    @FXML
-    private BorderPane containerBorderPane;
-    @FXML
-    private Label heightLabel;
-    @FXML
-    private Label widthLabel;
-    @FXML
-    private Label startingPlantAmountLabel;
-    @FXML
-    private Label plantGrowingAmountLabel;
-    @FXML
-    private Label plantEnergyAmountLabel;
-    @FXML
-    private Label startingAnimalAmountLabel;
-    @FXML
-    private Label startingEnergyAmountLabel;
-    @FXML
-    private Label minimumBreedingEnergyLabel;
-    @FXML
-    private Label breedingEnergyCostLabel;
-    @FXML
-    private Label minimumMutationAmountLabel;
-    @FXML
-    private Label maximumMutationAmountLabel;
-    @FXML
-    private Label animalGenomeLengthLabel;
-    @FXML
-    private Label fireFrequencyLabel;
-    @FXML
-    private Label fireLengthLabel;
-    @FXML
-    private Label seedLabel;
-    @FXML
-    private LineChart<Number, Number> dataLineChart;
-    @FXML
-    GridPane mapGrid;
+    @FXML private BorderPane containerBorderPane;
+    @FXML private Label heightLabel;
+    @FXML private Label widthLabel;
+    @FXML private Label startingPlantAmountLabel;
+    @FXML private Label plantGrowingAmountLabel;
+    @FXML private Label plantEnergyAmountLabel;
+    @FXML private Label startingAnimalAmountLabel;
+    @FXML private Label startingEnergyAmountLabel;
+    @FXML private Label minimumBreedingEnergyLabel;
+    @FXML private Label breedingEnergyCostLabel;
+    @FXML private Label minimumMutationAmountLabel;
+    @FXML private Label maximumMutationAmountLabel;
+    @FXML private Label animalGenomeLengthLabel;
+    @FXML private Label fireFrequencyLabel;
+    @FXML private Label fireLengthLabel;
+    @FXML private Label seedLabel;
+    @FXML private LineChart<Number, Number> dataLineChart;
+    @FXML private GridPane mapGrid;
+    @FXML private GridPane selectedAnimalGridPane;
+    @FXML private Label selectedAnimalAgeLabel;
+    @FXML private Label selectedAnimalEnergyLabel;
+    @FXML private Label selectedAnimalChildrenAmountLabel;
+    @FXML private Label selectedAnimalDescendantsAmountLabel;
+    @FXML private Label selectedAnimalGenomeLabel;
+    @FXML private Label selectedAnimalPlantsEatenAmountLabel;
+    @FXML private Label selectedAnimalDiedAtLabel;
 
+    private Simulation simulation;
+    private final SimpleObjectProperty<Animal> selectedAnimal = new SimpleObjectProperty<>(null);
+
+    private Vector2D mouseOverPosition;
+    private Label mouseOverCell;
+
+    @FXML
     public void initialize() {
         containerBorderPane.widthProperty().addListener((observable, oldValue, newValue) -> resizeMap());
         containerBorderPane.heightProperty().addListener((observable, oldValue, newValue) -> resizeMap());
+        selectedAnimalGridPane.setVisible(false);
+        selectedAnimal.addListener((observable, oldValue, newValue) -> updateSelectedAnimalData());
     }
 
+    public void updateSelectedAnimalData() {
+        Animal animal = selectedAnimal.getValue();
+        Platform.runLater(() -> {
+            selectedAnimalGridPane.setVisible(animal != null);
+            if (animal == null) return;
+            selectedAnimalAgeLabel.setText(Integer.toString(animal.getAge()));
+            selectedAnimalEnergyLabel.setText(Integer.toString(animal.getEnergy()));
+            selectedAnimalChildrenAmountLabel.setText(Integer.toString(animal.getChildrenAmount()));
+            selectedAnimalDescendantsAmountLabel.setText("MISSING DATA");
+            MoveDirection[] genome = animal.getGenome();
+            StringBuilder genomeString = new StringBuilder();
+            for (MoveDirection gene : genome) {
+                genomeString.append(gene.ordinal());
+            }
+            selectedAnimalGenomeLabel.setText(genomeString.toString());
+            selectedAnimalPlantsEatenAmountLabel.setText("MISSING DATA");
+            selectedAnimalDiedAtLabel.setText("MISSING DATA");
+        });
+    }
 
     public void setSimulation(Simulation simulation) {
         this.simulation = simulation;
+        this.selectedAnimal.set(null);
         Platform.runLater(() -> {
-            heightLabel.setText(String.valueOf(simulation.getHeight()));
-            widthLabel.setText(String.valueOf(simulation.getWidth()));
-            startingPlantAmountLabel.setText(String.valueOf(simulation.getStartingPlantAmount()));
-            plantGrowingAmountLabel.setText(String.valueOf(simulation.getPlantGrowingAmount()));
-            plantEnergyAmountLabel.setText(String.valueOf(simulation.getPlantEnergyAmount()));
-            startingEnergyAmountLabel.setText(String.valueOf(simulation.getStartingEnergyAmount()));
-            startingAnimalAmountLabel.setText(String.valueOf(simulation.getStartingAnimalAmount()));
-            minimumBreedingEnergyLabel.setText(String.valueOf(simulation.getMinimumBreedingEnergy()));
-            breedingEnergyCostLabel.setText(String.valueOf(simulation.getBreedingEnergyCost()));
-            minimumMutationAmountLabel.setText(String.valueOf(simulation.getMinimumMutationAmount()));
-            maximumMutationAmountLabel.setText(String.valueOf(simulation.getMaximumMutationAmount()));
-            animalGenomeLengthLabel.setText(String.valueOf(simulation.getAnimalGenomeLength()));
-            fireFrequencyLabel.setText(String.valueOf(simulation.getFireFrequency()));
-            fireLengthLabel.setText(String.valueOf(simulation.getFireLength()));
-            seedLabel.setText(String.valueOf(simulation.getSeed()));
+            heightLabel.setText(Integer.toString(simulation.getHeight()));
+            widthLabel.setText(Integer.toString(simulation.getWidth()));
+            startingPlantAmountLabel.setText(Integer.toString(simulation.getStartingPlantAmount()));
+            plantGrowingAmountLabel.setText(Integer.toString(simulation.getPlantGrowingAmount()));
+            plantEnergyAmountLabel.setText(Integer.toString(simulation.getPlantEnergyAmount()));
+            startingEnergyAmountLabel.setText(Integer.toString(simulation.getStartingEnergyAmount()));
+            startingAnimalAmountLabel.setText(Integer.toString(simulation.getStartingAnimalAmount()));
+            minimumBreedingEnergyLabel.setText(Integer.toString(simulation.getMinimumBreedingEnergy()));
+            breedingEnergyCostLabel.setText(Integer.toString(simulation.getBreedingEnergyCost()));
+            minimumMutationAmountLabel.setText(Integer.toString(simulation.getMinimumMutationAmount()));
+            maximumMutationAmountLabel.setText(Integer.toString(simulation.getMaximumMutationAmount()));
+            animalGenomeLengthLabel.setText(Integer.toString(simulation.getAnimalGenomeLength()));
+            fireFrequencyLabel.setText(Integer.toString(simulation.getFireFrequency()));
+            fireLengthLabel.setText(Integer.toString(simulation.getFireLength()));
+            seedLabel.setText(Integer.toString(simulation.getSeed()));
             drawMap();
         });
     }
@@ -105,88 +114,81 @@ public class SimulationPresenter {
 
     public void resizeMap() {
         double cellSize = calculateCellSize();
-        mapGrid.getColumnConstraints().forEach(x -> {
-            x.setMinWidth(cellSize);
-            x.setPrefWidth(cellSize);
-            x.setMaxWidth(cellSize);
-        });
-        mapGrid.getRowConstraints().forEach(x -> {
-            x.setMinHeight(cellSize);
-            x.setPrefHeight(cellSize);
-            x.setMaxHeight(cellSize);
-        });
-        mapGrid.getChildren().forEach(x -> {
-            if (x instanceof Label cell) {
-                cell.setFont(new Font(cellSize / 2));
-                cell.setMinSize(cellSize, cellSize);
-                cell.setPrefSize(cellSize, cellSize);
-                cell.setMaxSize(cellSize, cellSize);
-            }
-        });
+        boolean showGridLines = mapGrid.isGridLinesVisible();
+        mapGrid.setGridLinesVisible(false);
+        for (ColumnConstraints col : mapGrid.getColumnConstraints()) {
+            col.setMinWidth(cellSize);
+            col.setPrefWidth(cellSize);
+            col.setMaxWidth(cellSize);
+        }
+        for (RowConstraints row : mapGrid.getRowConstraints()) {
+            row.setMinHeight(cellSize);
+            row.setPrefHeight(cellSize);
+            row.setMaxHeight(cellSize);
+        }
+        defaultFont.set(new Font(cellSize / 2));
+        mapGrid.setGridLinesVisible(showGridLines);
+    }
+
+    ObjectProperty<Font> defaultFont = new SimpleObjectProperty<>(new Font(12));
+
+    public Label createCell(String text, int x, int y) {
+        Label label = new Label(text);
+        label.fontProperty().bind(defaultFont);
+        label.setAlignment(Pos.CENTER);
+        GridPane.setHgrow(label, Priority.ALWAYS);
+        GridPane.setVgrow(label, Priority.ALWAYS);
+        label.setMaxWidth(Double.MAX_VALUE);
+        label.setMaxHeight(Double.MAX_VALUE);
+        mapGrid.add(label, x, y);
+        GridPane.setHalignment(label, HPos.CENTER);
+        return label;
     }
 
     public void drawMap() {
-        if (!mapGrid.getChildren().isEmpty())
-            mapGrid.getChildren().retainAll(mapGrid.getChildren().getFirst());
-        mapGrid.getColumnConstraints().clear();
-        mapGrid.getRowConstraints().clear();
-        double cellSize = calculateCellSize();
-        mapGrid.getColumnConstraints().add(new ColumnConstraints(cellSize, cellSize, cellSize));
-        mapGrid.getRowConstraints().add(new RowConstraints(cellSize, cellSize, cellSize));
-        Label label = new Label("y/x");
-        label.setFont(new Font(cellSize / 2));
-        label.setAlignment(Pos.CENTER);
-        mapGrid.add(label, 0, 0);
-        GridPane.setHalignment(label, HPos.CENTER);
-        for(int i = 0; i < simulation.getWidth(); i++){
-            Label colLabel = new Label(Integer.toString(i));
-            colLabel.setFont(new Font(cellSize / 2));
-            GridPane.setHalignment(colLabel, HPos.CENTER);
-            colLabel.setAlignment(Pos.CENTER);
+        Platform.runLater(() -> {
+            if (!mapGrid.getChildren().isEmpty())
+                mapGrid.getChildren().retainAll(mapGrid.getChildren().getFirst());
+            mapGrid.getColumnConstraints().clear();
+            mapGrid.getRowConstraints().clear();
+            double cellSize = calculateCellSize();
             mapGrid.getColumnConstraints().add(new ColumnConstraints(cellSize, cellSize, cellSize));
-            mapGrid.add(colLabel, i + 1, 0);
-        }
-        for(int i = 0; i < simulation.getHeight(); i++){
-            Label rowLabel = new Label(Integer.toString(i));
-            rowLabel.setFont(new Font(cellSize / 2));
-            GridPane.setHalignment(rowLabel, HPos.CENTER);
-            rowLabel.setAlignment(Pos.CENTER);
             mapGrid.getRowConstraints().add(new RowConstraints(cellSize, cellSize, cellSize));
-            mapGrid.add(rowLabel, 0, i + 1);
-        }
-        for (int i = 0; i < simulation.getWidth(); i++){
-            for (int j = 0; j < simulation.getHeight(); j++){
-                Vector2D pos = new Vector2D(i + 1, j + 1);
-                int animalAmount = simulation.getAnimalsOnPosition(pos).size();
-                Label cell = new Label();
-                cell.setMinSize(cellSize, cellSize);
-                cell.setPrefSize(cellSize, cellSize);
-                cell.setMaxSize(cellSize, cellSize);
-                cell.setStyle(cell.getStyle() + "-fx-text-fill: white;");
-                cell.setAlignment(Pos.CENTER);
-                if (animalAmount > 15) {
-                    cell.setStyle(cell.getStyle() + "-fx-background-color: saddlebrown;");
-                } else if (animalAmount > 10) {
-                    cell.setStyle(cell.getStyle() + "-fx-background-color: sienna;");
-                } else if (animalAmount > 5) {
-                    cell.setStyle(cell.getStyle() + "-fx-background-color: chocolate;");
-                } else if (animalAmount > 3) {
-                    cell.setStyle(cell.getStyle() + "-fx-background-color: burlywood;");
-                } else if (animalAmount > 0) {
-                    cell.setStyle(cell.getStyle() + "-fx-background-color: wheat;");
-                } else if (simulation.isPlantOnPosition(pos)) {
-                    cell.setStyle(cell.getStyle() + "-fx-background-color: green;");
-                } else {
-                    cell.setStyle(cell.getStyle() + "-fx-background-color: lightgreen;");
-                }
-                if (simulation.isPlantOnPosition(pos)) {
-                    cell.setText("*");
-                    cell.setStyle(cell.getStyle() + "-fx-text-fill: white;");
-                    cell.setAlignment(Pos.CENTER);
-                }
-                mapGrid.add(cell, i + 1, j + 1);
+            createCell("y/x", 0, 0);
+            for (int i = 0; i < simulation.getWidth(); i++) {
+                mapGrid.getColumnConstraints().add(new ColumnConstraints(cellSize, cellSize, cellSize));
+                createCell(Integer.toString(i), i + 1, 0);
             }
-        }
+            for (int j = 0; j < simulation.getHeight(); j++) {
+                mapGrid.getRowConstraints().add(new RowConstraints(cellSize, cellSize, cellSize));
+                createCell(Integer.toString(j), 0, j + 1);
+            }
+            for (int i = 0; i < simulation.getWidth(); i++) {
+                for (int j = 0; j < simulation.getHeight(); j++) {
+                    Vector2D pos = new Vector2D(i, j);
+                    int animalAmount = simulation.getAnimalsOnPosition(pos).size();
+                    boolean isPlant = simulation.isPlantOnPosition(pos);
+                    Label cell = createCell(isPlant ? "*" : "", i + 1, j + 1);
+                    String style = "-fx-text-fill: white;";
+                    if (animalAmount > 15) {
+                        style += "-fx-background-color: saddlebrown;";
+                    } else if (animalAmount > 10) {
+                        style += "-fx-background-color: sienna;";
+                    } else if (animalAmount > 5) {
+                        style += "-fx-background-color: chocolate;";
+                    } else if (animalAmount > 3) {
+                        style += "-fx-background-color: burlywood;";
+                    } else if (animalAmount > 0) {
+                        style += "-fx-background-color: wheat;";
+                    } else if (isPlant) {
+                        style += "-fx-background-color: green;";
+                    } else {
+                        style += "-fx-background-color: lightgreen;";
+                    }
+                    cell.setStyle(style);
+                }
+            }
+        });
     }
 
     public void onStartStopClicked(ActionEvent actionEvent) {
@@ -203,11 +205,16 @@ public class SimulationPresenter {
         series.getData().add(new XYChart.Data<>(x.intValue() + 1, random.nextInt(0, 50)));
     }
 
-    public void onGridMouseClicked(MouseEvent mouseEvent) {
+    public void onGridMouseClicked(MouseEvent ignored) {
+        if (mouseOverPosition == null) return;
+        List<Animal> animals = simulation.getAnimalsOnPosition(mouseOverPosition);
+        if (animals.size() == 1)
+            selectedAnimal.set(animals.getFirst());
+        else
+            selectedAnimal.set(null);
     }
-    Label mouseOverCell = null;
 
-    public void onGridMouseEntered(MouseEvent mouseEvent) {
+    public void onGridMouseEnteredOrMoved(MouseEvent mouseEvent) {
         double x = mouseEvent.getX();
         double y = mouseEvent.getY();
         double cellSize = calculateCellSize();
@@ -216,47 +223,28 @@ public class SimulationPresenter {
         int colIndex = (int) ((x - gapH) / cellSize);
         int rowIndex = (int) ((y - gapV) / cellSize);
         if (colIndex < 1 || rowIndex < 1) {
-            clearmouseOverCell();
+            clearMouseOverCell();
             return;
         }
         Node clickedNode = getNodeByRowColumn(mapGrid, rowIndex, colIndex);
         if (clickedNode instanceof Label cell) {
-            if (mouseOverCell == cell) return;
-            clearmouseOverCell();
+            if (this.mouseOverCell == cell) return;
+            clearMouseOverCell();
             cell.setStyle(cell.getStyle() + "-fx-border-color: red; -fx-border-width: 1px;");
-            mouseOverCell = cell;
+            this.mouseOverCell = cell;
+            this.mouseOverPosition = new Vector2D(colIndex - 1, rowIndex - 1);
         }
     }
 
-    public void onGridMouseExited(MouseEvent mouseEvent) {
-        clearmouseOverCell();
+    public void onGridMouseExited(MouseEvent ignored) {
+        clearMouseOverCell();
     }
 
-    public void onGridMouseMoved(MouseEvent mouseEvent) {
-        double x = mouseEvent.getX();
-        double y = mouseEvent.getY();
-        double cellSize = calculateCellSize();
-        double gapH = (mapGrid.getWidth() - cellSize * (simulation.getWidth() + 1)) / 2;
-        double gapV = (mapGrid.getHeight() - cellSize * (simulation.getHeight() + 1)) / 2;
-        int colIndex = (int) ((x - gapH) / cellSize);
-        int rowIndex = (int) ((y - gapV) / cellSize);
-        if (colIndex < 1 || rowIndex < 1) {
-            clearmouseOverCell();
-            return;
-        }
-        Node clickedNode = getNodeByRowColumn(mapGrid, rowIndex, colIndex);
-        if (clickedNode instanceof Label cell) {
-            if (mouseOverCell == cell) return;
-            clearmouseOverCell();
-            cell.setStyle(cell.getStyle() + "-fx-border-color: red; -fx-border-width: 1px;");
-            mouseOverCell = cell;
-        }
-    }
-
-    private void clearmouseOverCell() {
+    private void clearMouseOverCell() {
         if (mouseOverCell == null) return;
-        mouseOverCell.setStyle(mouseOverCell.getStyle().replace("-fx-border-color: red; -fx-border-width: 1px;", ""));
-        mouseOverCell = null;
+        this.mouseOverCell.setStyle(mouseOverCell.getStyle().replace("-fx-border-color: red; -fx-border-width: 1px;", ""));
+        this.mouseOverCell = null;
+        this.mouseOverPosition = null;
     }
 
     private Node getNodeByRowColumn(GridPane gridPane, int row, int col) {
