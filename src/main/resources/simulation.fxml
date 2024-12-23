@@ -356,7 +356,7 @@
    <center>
       <BorderPane fx:id="containerBorderPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <center>
-              <GridPane fx:id="mapGrid" alignment="CENTER" gridLinesVisible="true" onMouseClicked="#onGridClicked" BorderPane.alignment="CENTER">
+              <GridPane fx:id="mapGrid" alignment="CENTER" onMouseClicked="#onGridMouseClicked" onMouseEntered="#onGridMouseEntered" onMouseExited="#onGridMouseExited" onMouseMoved="#onGridMouseMoved" snapToPixel="false" BorderPane.alignment="CENTER">
          </GridPane>
          </center>
       </BorderPane>
