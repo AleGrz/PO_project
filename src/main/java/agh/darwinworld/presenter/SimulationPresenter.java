@@ -226,8 +226,8 @@ public class SimulationPresenter {
             clearMouseOverCell();
             return;
         }
-        Node clickedNode = getNodeByRowColumn(mapGrid, rowIndex, colIndex);
-        if (clickedNode instanceof Label cell) {
+        Label cell = getCellByRowColumn(rowIndex, colIndex);
+        if (cell != null) {
             if (this.mouseOverCell == cell) return;
             clearMouseOverCell();
             cell.setStyle(cell.getStyle() + "-fx-border-color: red; -fx-border-width: 1px;");
@@ -247,15 +247,15 @@ public class SimulationPresenter {
         this.mouseOverPosition = null;
     }
 
-    private Node getNodeByRowColumn(GridPane gridPane, int row, int col) {
-        for (Node node : gridPane.getChildren()) {
+    private Label getCellByRowColumn(int row, int col) {
+        for (Node node : mapGrid.getChildren()) {
             Integer rowIndex = GridPane.getRowIndex(node);
             Integer colIndex = GridPane.getColumnIndex(node);
             rowIndex = rowIndex == null ? 0 : rowIndex;
             colIndex = colIndex == null ? 0 : colIndex;
 
-            if (rowIndex == row && colIndex == col) {
-                return node;
+            if (rowIndex == row && colIndex == col && node instanceof Label label) {
+                return label;
             }
         }
         return null;
