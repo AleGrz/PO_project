@@ -1,16 +1,9 @@
 package agh.darwinworld.presenter;
 
 import agh.darwinworld.Simulation;
-import agh.darwinworld.control.IntField;
+import agh.darwinworld.model.SimulationStepListener;
 import agh.darwinworld.model.Vector2D;
-import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
@@ -23,11 +16,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import javafx.util.Duration;
 
 import java.util.Random;
 
-public class SimulationPresenter {
+public class SimulationPresenter implements SimulationStepListener {
     private Simulation simulation;
     @FXML
     private BorderPane containerBorderPane;
@@ -184,6 +176,8 @@ public class SimulationPresenter {
         Number x = series.getData().getLast().getXValue();
         Random random = new Random();
         series.getData().add(new XYChart.Data<>(x.intValue() + 1, random.nextInt(0, 50)));
+        simulation.addStepListener(this);
+        simulation.run();
     }
 
     public void onGridClicked(MouseEvent mouseEvent) {

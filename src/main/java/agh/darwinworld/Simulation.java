@@ -1,7 +1,10 @@
 package agh.darwinworld;
 
 import agh.darwinworld.model.Animal;
+import agh.darwinworld.model.SimulationStepListener;
 import agh.darwinworld.model.Vector2D;
+
+import javax.swing.*;
 import java.util.*;
 
 public class Simulation implements Runnable {
@@ -26,13 +29,14 @@ public class Simulation implements Runnable {
     private final HashSet<Vector2D> plants = new HashSet<>();
     private HashMap<Vector2D, Integer> fire = new HashMap<Vector2D, Integer>();
     private boolean isRunning = false;
+    private final List<SimulationStepListener> listeners = new ArrayList<>();
 
-    public Simulation(int width, int height, int startingPlantAmount,
-                      int plantGrowingAmount, int plantEnergyAmount,
-                      int startingAnimalAmount, int startingEnergyAmount,
-                      int minimumBreedingEnergy, int breedingEnergyCost,
-                      int minimumMutationAmount, int maximumMutationAmount,
-                      int animalGenomeLength, int fireFrequency, int fireLength, int seed) {
+    public static void InputValidator(int width, int height, int startingPlantAmount,
+                                 int plantGrowingAmount, int plantEnergyAmount,
+                                 int startingAnimalAmount, int startingEnergyAmount,
+                                 int minimumBreedingEnergy, int breedingEnergyCost,
+                                 int minimumMutationAmount, int maximumMutationAmount,
+                                 int animalGenomeLength, int fireFrequency, int fireLength, int seed) {
         if (width <= 0 || height <= 0)
             throw new IllegalArgumentException("Map size must be greater than 0!");
         if (startingPlantAmount < 0)
@@ -57,6 +61,17 @@ public class Simulation implements Runnable {
             throw new IllegalArgumentException("Maximum mutation amount must be greater than or equal to minimum mutation amount!");
         if (animalGenomeLength <= 0)
             throw new IllegalArgumentException("Animal genome length must be greater than 0!");
+    }
+
+    public Simulation(int width, int height, int startingPlantAmount,
+                      int plantGrowingAmount, int plantEnergyAmount,
+                      int startingAnimalAmount, int startingEnergyAmount,
+                      int minimumBreedingEnergy, int breedingEnergyCost,
+                      int minimumMutationAmount, int maximumMutationAmount,
+                      int animalGenomeLength, int fireFrequency, int fireLength, int seed) {
+        InputValidator(width, height, startingPlantAmount, plantGrowingAmount, plantEnergyAmount,
+                startingAnimalAmount, startingEnergyAmount, minimumBreedingEnergy, breedingEnergyCost,
+                minimumMutationAmount, maximumMutationAmount, animalGenomeLength, fireFrequency, fireLength, seed);
         this.width = width;
         this.height = height;
         this.startingPlantAmount = startingPlantAmount;
@@ -158,6 +173,7 @@ public class Simulation implements Runnable {
                 Vector2D randomPos = plants.toArray(new Vector2D[0])[random.nextInt(0,plants.size())];
                 fire.put(randomPos, fireLength);
             }
+            listeners.forEach(SimulationStepListener::drawMap);
             step++;
         }
     }
@@ -287,5 +303,9 @@ public class Simulation implements Runnable {
 
     public boolean isPlantOnPosition(Vector2D position) {
         return plants.contains(position);
+    }
+
+    public void addStepListener(SimulationStepListener listener) {
+        listeners.add(listener);
     }
 }

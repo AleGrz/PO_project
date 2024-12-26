@@ -41,25 +41,25 @@ public class Vector2DTest {
     @Test
     public void testEqualsOther() {
         Vector2D v1 = new Vector2D(-1,1);
-        assertNotEquals(v1, -1);
-        assertNotEquals(v1, 1);
-        assertNotEquals(v1, "(-1,1)");
+        assertNotEquals(-1, v1);
+        assertNotEquals(1, v1);
+        assertNotEquals("(-1,1)", v1);
     }
 
     @Test
     public void testEqualsNull() {
         Vector2D v1 = new Vector2D(-1,1);
         Vector2D v2 = new Vector2D(0,0);
-        assertNotEquals(v1, null);
-        assertNotEquals(v2, null);
+        assertNotEquals(null, v1);
+        assertNotEquals(null, v2);
     }
 
     @Test
     public void testToString() {
         Vector2D v1 = new Vector2D(1,2);
         Vector2D v2 = new Vector2D(-1,-2);
-        assertEquals(v1.toString(), "(1,2)");
-        assertEquals(v2.toString(), "(-1,-2)");
+        assertEquals("(1,2)", v1.toString());
+        assertEquals("(-1,-2)", v2.toString());
     }
 
     @Test

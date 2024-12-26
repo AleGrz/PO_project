@@ -10,10 +10,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -114,5 +111,9 @@ public class StartMenuPresenter {
         double horizontalInsets = (stageWidth - contentWidth) / 2;
         double verticalInsets = stageHeight - contentHeight - horizontalInsets;
         return new Insets(verticalInsets, horizontalInsets, verticalInsets, horizontalInsets);
+    }
+
+    public void seedGenerate(ActionEvent actionEvent) {
+        seedIntField.setValue((int) (Math.random() * Integer.MAX_VALUE));
     }
 }
