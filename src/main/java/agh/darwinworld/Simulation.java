@@ -241,7 +241,7 @@ public class Simulation implements Runnable {
 
     private void growPlants(boolean init) {
         int equatorHeight = Math.round(height*0.2f);
-        int barHeight = (int)Math.round((height - equatorHeight)/2f);
+        int barHeight = Math.round((height - equatorHeight)/2f);
         List<Vector2D> plantCandidates = new ArrayList<>();
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < barHeight; j++) {
@@ -294,7 +294,7 @@ public class Simulation implements Runnable {
 
     private List<Vector2D> selectRandom(List<Vector2D> positions, int amount) {
         Collections.shuffle(positions);
-        return positions.subList(0, amount);
+        return positions.subList(0, Math.min(amount, positions.size()));
     }
 
     public List<Animal> getAnimalsOnPosition(Vector2D position) {
