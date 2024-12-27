@@ -12,7 +12,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 public class AlertHelper {
-    public static void ShowExceptionAlert(Window owner, Exception e) {
+    public static void ShowExceptionAlert(Window owner, Throwable e) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.initOwner(owner);
         alert.setTitle("Exception");

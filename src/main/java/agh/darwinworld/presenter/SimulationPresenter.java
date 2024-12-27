@@ -1,6 +1,7 @@
 package agh.darwinworld.presenter;
 
 import agh.darwinworld.Simulation;
+import agh.darwinworld.helper.AlertHelper;
 import agh.darwinworld.model.Animal;
 import agh.darwinworld.model.MoveDirection;
 import agh.darwinworld.model.SimulationStepListener;
@@ -10,15 +11,21 @@ import javafx.beans.property.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Pair;
 
 import java.util.List;
@@ -233,11 +240,11 @@ public class SimulationPresenter implements SimulationStepListener {
             }
             for (int j = 0; j < simulation.getHeight(); j++) {
                 mapGrid.getRowConstraints().add(new RowConstraints(cellSize, cellSize, cellSize));
-                createCell(Integer.toString(simulation.getHeight()-j-1), 0, j+1, null);
+                createCell(Integer.toString(simulation.getHeight() - j - 1), 0, j+1, null);
             }
             for (int i = 0; i < simulation.getWidth(); i++) {
                 for (int j = 0; j < simulation.getHeight(); j++) {
-                    Vector2D pos = new Vector2D(i, simulation.getHeight()-j);
+                    Vector2D pos = new Vector2D(i, simulation.getHeight() - j - 1);
                     int animalAmount = simulation.getAnimalsOnPosition(pos).size();
                     boolean isPlant = simulation.isPlantOnPosition(pos);
                     Label cell = createCell(isPlant ? "*" : "", i + 1, j + 1, "cell");
@@ -258,8 +265,16 @@ public class SimulationPresenter implements SimulationStepListener {
         //Number x = series.getData().getLast().getXValue();
         //Random random = new Random();
         //series.getData().add(new XYChart.Data<>(x.intValue() + 1, random.nextInt(0, 50)));
+        Stage currentStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         if (simulationThread == null) {
             simulationThread = new Thread(simulation);
+            simulationThread.setUncaughtExceptionHandler((thread, throwable) -> {
+                Platform.runLater(() -> {
+                    AlertHelper.ShowExceptionAlert(currentStage, throwable);
+                    startStopButton.setDisable(true);
+                });
+            });
+            simulationThread.setDaemon(true);
             simulationThread.start();
         }
         if (simulation.isRunning()) {
@@ -272,29 +287,55 @@ public class SimulationPresenter implements SimulationStepListener {
     }
 
     public void onGridMouseClicked(MouseEvent mouseEvent) {
+        Stage currentStage = (Stage)((Node)mouseEvent.getSource()).getScene().getWindow();
         double x = mouseEvent.getX();
         double y = mouseEvent.getY();
         double cellSize = calculateCellSize();
         double gapH = (mapGrid.getWidth() - cellSize * (simulation.getWidth() + 1)) / 2;
         double gapV = (mapGrid.getHeight() - cellSize * (simulation.getHeight() + 1)) / 2;
         int colIndex = (int) ((x - gapH) / cellSize) - 1;
-        int rowIndex = simulation.getHeight() - (int) ((y - gapV) / cellSize) + 1;
+        int rowIndex = simulation.getHeight() - (int) ((y - gapV) / cellSize);
         Vector2D mouseOverPosition = new Vector2D(colIndex, rowIndex);
         List<Animal> animals = simulation.getAnimalsOnPosition(mouseOverPosition);
-        if (animals.size() == 1)
+        if (animals.size() == 1) {
             selectedAnimal.set(new Pair<>(mouseOverPosition, animals.getFirst()));
-        else
+        } else if (animals.size() > 1 ) {
+            Stage modal = new Stage();
+            modal.setX(mouseEvent.getScreenX());
+            modal.setY(mouseEvent.getScreenY());
+            modal.initModality(Modality.WINDOW_MODAL);
+            modal.initOwner(currentStage);
+            modal.initStyle(StageStyle.UNDECORATED);
+            VBox content = new VBox(10);
+            for (int i = 0; i < animals.size(); i++) {
+                Button button = new Button("Animal " + (i + 1));
+                button.setFont(new Font(11));
+                final int index = i;
+                button.setOnAction(event -> {
+                    selectedAnimal.set(new Pair<>(mouseOverPosition, animals.get(index)));
+                    modal.close();
+                });
+                content.getChildren().add(button);
+            }
+            content.setPadding(new Insets(5, 5, 5, 5));
+            ScrollPane scrollPane = new ScrollPane(content);
+            scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+            scrollPane.setFitToWidth(true);
+            scrollPane.getStylesheets().add("styles.css");
+            Scene scene = new Scene(scrollPane);
+            modal.setScene(scene);
+            modal.setMaxHeight(100);
+            modal.show();
+        } else {
             selectedAnimal.set(null);
+        }
     }
-
 
     private Label getCellByRowColumn(Vector2D pos) {
         for (Node node : mapGrid.getChildren()) {
-            Integer rowIndex = GridPane.getRowIndex(node);
-            Integer colIndex = GridPane.getColumnIndex(node);
-            rowIndex = rowIndex == null ? 0 : rowIndex;
-            colIndex = colIndex == null ? 0 : colIndex;
-            if (rowIndex == simulation.getHeight() - pos.y() + 1 && colIndex - 1 == pos.x()
+            int rowIndex = GridPane.getRowIndex(node);
+            int colIndex = GridPane.getColumnIndex(node);
+            if (rowIndex == simulation.getHeight() - pos.y() && colIndex - 1 == pos.x()
                     && node instanceof Label label) {
                 return label;
             }
@@ -307,8 +348,8 @@ public class SimulationPresenter implements SimulationStepListener {
         Platform.runLater(() -> {
             int oldAnimalAmount = simulation.getAnimalsOnPosition(oldPosition).size();
             int newAnimalAmount = simulation.getAnimalsOnPosition(newPosition).size();
-            Label oldCell = getCellByRowColumn(oldPosition.add(new Vector2D(1,1)));
-            Label newCell = getCellByRowColumn(newPosition.add(new Vector2D(1,1)));
+            Label oldCell = getCellByRowColumn(oldPosition);
+            Label newCell = getCellByRowColumn(newPosition);
             if (oldCell != null) {
                 oldCell.setStyle(computeStyle(oldAnimalAmount, simulation.isPlantOnPosition(oldPosition)));
             }
@@ -325,7 +366,7 @@ public class SimulationPresenter implements SimulationStepListener {
     @Override
     public void addPlant(Vector2D position) {
         Platform.runLater(() -> {
-            Label cell = getCellByRowColumn(position.add(new Vector2D(1,1)));
+            Label cell = getCellByRowColumn(position);
             if (cell != null) {
                 cell.setText("*");
                 cell.setStyle(computeStyle(simulation.getAnimalsOnPosition(position).size(), true));
@@ -336,7 +377,7 @@ public class SimulationPresenter implements SimulationStepListener {
     @Override
     public void addAnimal(Vector2D position) {
         Platform.runLater(() -> {
-            Label cell = getCellByRowColumn(position.add(new Vector2D(1,1)));
+            Label cell = getCellByRowColumn(position);
             if (cell != null) {
                 cell.setStyle(computeStyle(simulation.getAnimalsOnPosition(position).size(), false));
             }
@@ -346,7 +387,7 @@ public class SimulationPresenter implements SimulationStepListener {
     @Override
     public void removePlant(Vector2D position) {
         Platform.runLater(() -> {
-            Label cell = getCellByRowColumn(position.add(new Vector2D(1,1)));
+            Label cell = getCellByRowColumn(position);
             if (cell != null) {
                 cell.setText("");
                 cell.setStyle(computeStyle(simulation.getAnimalsOnPosition(position).size(), false));
@@ -357,7 +398,7 @@ public class SimulationPresenter implements SimulationStepListener {
     @Override
     public void removeAnimal(Vector2D position) {
         Platform.runLater(() -> {
-            Label cell = getCellByRowColumn(position.add(new Vector2D(1,1)));
+            Label cell = getCellByRowColumn(position);
             if (cell != null) {
                 cell.setStyle(computeStyle(simulation.getAnimalsOnPosition(position).size(),
                         simulation.isPlantOnPosition(position)));
