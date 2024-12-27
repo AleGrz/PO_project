@@ -3,6 +3,7 @@ package agh.darwinworld.presenter;
 import agh.darwinworld.Simulation;
 import agh.darwinworld.model.Animal;
 import agh.darwinworld.model.MoveDirection;
+import agh.darwinworld.model.SimulationStepListener;
 import agh.darwinworld.model.Vector2D;
 import javafx.application.Platform;
 import javafx.beans.property.*;
@@ -20,7 +21,7 @@ import javafx.scene.text.Font;
 import java.util.List;
 import java.util.Random;
 
-public class SimulationPresenter {
+public class SimulationPresenter implements SimulationStepListener {
     @FXML private BorderPane containerBorderPane;
     @FXML private Label heightLabel;
     @FXML private Label widthLabel;
@@ -54,6 +55,8 @@ public class SimulationPresenter {
     private Vector2D mouseOverPosition;
     private Label mouseOverCell;
 
+    private int currentCellSize;
+
     @FXML
     public void initialize() {
         containerBorderPane.widthProperty().addListener((observable, oldValue, newValue) -> resizeMap());
@@ -84,6 +87,7 @@ public class SimulationPresenter {
 
     public void setSimulation(Simulation simulation) {
         this.simulation = simulation;
+        simulation.addStepListener(this);
         this.selectedAnimal.set(null);
         Platform.runLater(() -> {
             heightLabel.setText(Integer.toString(simulation.getHeight()));
@@ -104,16 +108,18 @@ public class SimulationPresenter {
             drawMap();
         });
     }
-    public double calculateCellSize() {
+    public int calculateCellSize() {
         int rowCount = simulation.getWidth() + 1;
         int colCount = simulation.getHeight() + 1;
-        double width = (containerBorderPane.getWidth() - rowCount) / rowCount;
-        double height = (containerBorderPane.getHeight() - colCount) / colCount;
+        int width = (int) ((containerBorderPane.getWidth() - rowCount) / rowCount);
+        int height = (int) ((containerBorderPane.getHeight() - colCount) / colCount);
         return Math.min(height, width);
     }
 
     public void resizeMap() {
-        double cellSize = calculateCellSize();
+        int cellSize = calculateCellSize();
+        if (cellSize == currentCellSize) return;
+        currentCellSize = cellSize;
         boolean showGridLines = mapGrid.isGridLinesVisible();
         mapGrid.setGridLinesVisible(false);
         for (ColumnConstraints col : mapGrid.getColumnConstraints()) {
@@ -126,7 +132,7 @@ public class SimulationPresenter {
             row.setPrefHeight(cellSize);
             row.setMaxHeight(cellSize);
         }
-        defaultFont.set(new Font(cellSize / 2));
+        defaultFont.set(new Font(cellSize / 2f));
         mapGrid.setGridLinesVisible(showGridLines);
     }
 
@@ -143,6 +149,26 @@ public class SimulationPresenter {
         mapGrid.add(label, x, y);
         GridPane.setHalignment(label, HPos.CENTER);
         return label;
+    }
+
+    private static String computeStyle(int animalAmount, boolean isPlant) {
+        String style = "-fx-text-fill: white;";
+        if (animalAmount > 15) {
+            style += "-fx-background-color: saddlebrown;";
+        } else if (animalAmount > 10) {
+            style += "-fx-background-color: sienna;";
+        } else if (animalAmount > 5) {
+            style += "-fx-background-color: chocolate;";
+        } else if (animalAmount > 3) {
+            style += "-fx-background-color: burlywood;";
+        } else if (animalAmount > 0) {
+            style += "-fx-background-color: wheat;";
+        } else if (isPlant) {
+            style += "-fx-background-color: green;";
+        } else {
+            style += "-fx-background-color: lightgreen;";
+        }
+        return style;
     }
 
     public void drawMap() {
@@ -169,23 +195,7 @@ public class SimulationPresenter {
                     int animalAmount = simulation.getAnimalsOnPosition(pos).size();
                     boolean isPlant = simulation.isPlantOnPosition(pos);
                     Label cell = createCell(isPlant ? "*" : "", i + 1, j + 1);
-                    String style = "-fx-text-fill: white;";
-                    if (animalAmount > 15) {
-                        style += "-fx-background-color: saddlebrown;";
-                    } else if (animalAmount > 10) {
-                        style += "-fx-background-color: sienna;";
-                    } else if (animalAmount > 5) {
-                        style += "-fx-background-color: chocolate;";
-                    } else if (animalAmount > 3) {
-                        style += "-fx-background-color: burlywood;";
-                    } else if (animalAmount > 0) {
-                        style += "-fx-background-color: wheat;";
-                    } else if (isPlant) {
-                        style += "-fx-background-color: green;";
-                    } else {
-                        style += "-fx-background-color: lightgreen;";
-                    }
-                    cell.setStyle(style);
+                    cell.setStyle(computeStyle(animalAmount, isPlant));
                 }
             }
         });
@@ -203,6 +213,8 @@ public class SimulationPresenter {
         Number x = series.getData().getLast().getXValue();
         Random random = new Random();
         series.getData().add(new XYChart.Data<>(x.intValue() + 1, random.nextInt(0, 50)));
+        Thread thread = new Thread(simulation);
+        thread.start();
     }
 
     public void onGridMouseClicked(MouseEvent ignored) {
@@ -259,5 +271,64 @@ public class SimulationPresenter {
             }
         }
         return null;
+    }
+
+    @Override
+    public void moveAnimal(Vector2D oldPosition, Vector2D newPosition) {
+        Platform.runLater(() -> {
+            int oldAnimalAmount = simulation.getAnimalsOnPosition(oldPosition).size();
+            int newAnimalAmount = simulation.getAnimalsOnPosition(newPosition).size();
+            Label oldCell = getCellByRowColumn(oldPosition.y() + 1, oldPosition.x() + 1);
+            Label newCell = getCellByRowColumn(newPosition.y() + 1, newPosition.x() + 1);
+            if (oldCell != null) {
+                oldCell.setStyle(computeStyle(oldAnimalAmount, simulation.isPlantOnPosition(oldPosition)));
+            }
+            if (newCell != null) {
+                newCell.setStyle(computeStyle(newAnimalAmount, simulation.isPlantOnPosition(newPosition)));
+            }
+        });
+    }
+
+    @Override
+    public void addPlant(Vector2D position) {
+        Platform.runLater(() -> {
+            Label cell = getCellByRowColumn(position.y() + 1, position.x() + 1);
+            if (cell != null) {
+                cell.setText("*");
+                cell.setStyle(computeStyle(simulation.getAnimalsOnPosition(position).size(), true));
+            }
+        });
+    }
+
+    @Override
+    public void addAnimal(Vector2D position) {
+        Platform.runLater(() -> {
+            Label cell = getCellByRowColumn(position.y() + 1, position.x() + 1);
+            if (cell != null) {
+                cell.setStyle(computeStyle(simulation.getAnimalsOnPosition(position).size(), false));
+            }
+        });
+    }
+
+    @Override
+    public void removePlant(Vector2D position) {
+        Platform.runLater(() -> {
+            Label cell = getCellByRowColumn(position.y() + 1, position.x() + 1);
+            if (cell != null) {
+                cell.setText("");
+                cell.setStyle(computeStyle(simulation.getAnimalsOnPosition(position).size(), false));
+            }
+        });
+    }
+
+    @Override
+    public void removeAnimal(Vector2D position) {
+        Platform.runLater(() -> {
+            Label cell = getCellByRowColumn(position.y() + 1, position.x() + 1);
+            if (cell != null) {
+                cell.setStyle(computeStyle(simulation.getAnimalsOnPosition(position).size(),
+                                           simulation.isPlantOnPosition(position)));
+            }
+        });
     }
 }
