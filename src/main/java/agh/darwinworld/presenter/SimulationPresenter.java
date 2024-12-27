@@ -14,6 +14,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.input.MouseEvent;
@@ -48,6 +49,7 @@ public class SimulationPresenter implements SimulationStepListener {
     @FXML private Label selectedAnimalGenomeLabel;
     @FXML private Label selectedAnimalPlantsEatenAmountLabel;
     @FXML private Label selectedAnimalDiedAtLabel;
+    @FXML private Button startStopButton;
 
     private Simulation simulation;
     private final SimpleObjectProperty<Animal> selectedAnimal = new SimpleObjectProperty<>(null);
@@ -56,6 +58,7 @@ public class SimulationPresenter implements SimulationStepListener {
     private Label mouseOverCell;
 
     private int currentCellSize;
+    private Thread simulationThread;
 
     @FXML
     public void initialize() {
@@ -202,19 +205,27 @@ public class SimulationPresenter implements SimulationStepListener {
     }
 
     public void onStartStopClicked(ActionEvent actionEvent) {
-        if (dataLineChart.getData().isEmpty()) {
-            XYChart.Series<Number, Number> series = new XYChart.Series<>();
-            series.setName("Random name");
-            series.getData().add(new XYChart.Data<>(0, 15));
-            dataLineChart.getData().add(series);
-            return;
+        //if (dataLineChart.getData().isEmpty()) {
+        //    XYChart.Series<Number, Number> series = new XYChart.Series<>();
+        //    series.setName("Random name");
+        //    series.getData().add(new XYChart.Data<>(0, 15));
+        //    dataLineChart.getData().add(series);
+        //}
+        //XYChart.Series<Number, Number> series = dataLineChart.getData().getFirst();
+        //Number x = series.getData().getLast().getXValue();
+        //Random random = new Random();
+        //series.getData().add(new XYChart.Data<>(x.intValue() + 1, random.nextInt(0, 50)));
+        if (simulationThread == null) {
+            simulationThread = new Thread(simulation);
+            simulationThread.start();
         }
-        XYChart.Series<Number, Number> series = dataLineChart.getData().getFirst();
-        Number x = series.getData().getLast().getXValue();
-        Random random = new Random();
-        series.getData().add(new XYChart.Data<>(x.intValue() + 1, random.nextInt(0, 50)));
-        Thread thread = new Thread(simulation);
-        thread.start();
+        if (simulation.isRunning()) {
+            simulation.stop();
+            startStopButton.setText("Start");
+        } else {
+            simulation.start();
+            startStopButton.setText("Stop");
+        }
     }
 
     public void onGridMouseClicked(MouseEvent ignored) {

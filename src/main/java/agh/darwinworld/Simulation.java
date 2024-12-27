@@ -163,18 +163,21 @@ public class Simulation implements Runnable {
     public void run() {
         int step = 1;
         while(!animals.isEmpty()) {
-            removeDeadAnimals();
-            moveAnimals();
-            feedAnimals();
-            breedAnimals();
-            growPlants(plantGrowingAmount);
-            propagateFire();
-            if (step % fireFrequency == 0) {
-                Vector2D randomPos = plants.toArray(new Vector2D[0])[random.nextInt(0,plants.size())];
-                fire.put(randomPos, fireLength);
+            if (isRunning) {
+                removeDeadAnimals();
+                moveAnimals();
+                feedAnimals();
+                breedAnimals();
+                growPlants(plantGrowingAmount);
+                propagateFire();
+                if (step % fireFrequency == 0) {
+                    Vector2D randomPos = plants.toArray(new Vector2D[0])[random.nextInt(0,plants.size())];
+                    fire.put(randomPos, fireLength);
+                }
+                System.out.println("Step: " + step + " Animals: " + animals.size() + " Plants: " + plants.size());
             }
             try {
-                Thread.sleep(10000);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -241,6 +244,7 @@ public class Simulation implements Runnable {
                 Animal baby = new Animal(topAnimals.getFirst(), topAnimals.getLast(), breedingEnergyCost,
                         minimumBreedingEnergy, minimumMutationAmount, maximumMutationAmount);
                 animals.get(position).add(baby);
+                listeners.forEach(listener -> listener.addAnimal(position));
             }
         }
     }
@@ -317,5 +321,17 @@ public class Simulation implements Runnable {
 
     public void addStepListener(SimulationStepListener listener) {
         listeners.add(listener);
+    }
+
+    public void start() {
+        isRunning = true;
+    }
+
+    public void stop() {
+        isRunning = false;
+    }
+
+    public boolean isRunning() {
+        return isRunning;
     }
 }
