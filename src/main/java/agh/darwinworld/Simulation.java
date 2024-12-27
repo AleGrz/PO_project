@@ -159,9 +159,10 @@ public class Simulation implements Runnable {
         return this.seed;
     }
 
+    private int step = 1;
+
     @Override
     public void run() {
-        int step = 1;
         while(!animals.isEmpty()) {
             if (isRunning) {
                 removeDeadAnimals();
@@ -174,13 +175,15 @@ public class Simulation implements Runnable {
                 //    Vector2D randomPos = plants.toArray(new Vector2D[0])[random.nextInt(0,plants.size())];
                 //    fire.put(randomPos, fireLength);
                 //}
+                step++;
             }
             try {
+                //noinspection BusyWait
                 Thread.sleep(100);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                System.out.println("Stopping simulation loop's sleep!");
+                return;
             }
-            step++;
         }
     }
 

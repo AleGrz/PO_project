@@ -108,8 +108,6 @@ public class SimulationPresenter implements SimulationStepListener {
         Platform.runLater(() -> {
             Stage stage = (Stage) rootBorderPane.getScene().getWindow();
             stage.setOnCloseRequest(event -> {
-                if (simulation != null)
-                    simulation.stop();
                 if (simulationThread != null && simulationThread.isAlive()) {
                     try {
                         simulationThread.interrupt();
@@ -279,29 +277,33 @@ public class SimulationPresenter implements SimulationStepListener {
         //    XYChart.Series<Number, Number> series = new XYChart.Series<>();
         //    series.setName("Random name");
         //    series.getData().add(new XYChart.Data<>(0, 15));
-        //    dataLineChart.getData().add(series);
+        //    dataLineChart.getData().add(series);2
         //}
         //XYChart.Series<Number, Number> series = dataLineChart.getData().getFirst();
         //Number x = series.getData().getLast().getXValue();
         //Random random = new Random();
         //series.getData().add(new XYChart.Data<>(x.intValue() + 1, random.nextInt(0, 50)));
         Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        if (simulationThread == null) {
-            simulationThread = new Thread(simulation);
-            simulationThread.setUncaughtExceptionHandler((thread, throwable) -> {
-                Platform.runLater(() -> {
-                    AlertHelper.ShowExceptionAlert(currentStage, throwable);
-                    startStopButton.setDisable(true);
+        try {
+            if (simulationThread == null) {
+                simulationThread = new Thread(simulation);
+                simulationThread.setUncaughtExceptionHandler((thread, throwable) -> {
+                    Platform.runLater(() -> {
+                        AlertHelper.ShowExceptionAlert(currentStage, throwable);
+                        startStopButton.setDisable(true);
+                    });
                 });
-            });
-            simulationThread.start();
-        }
-        if (simulation.isRunning()) {
-            simulation.stop();
-            startStopButton.setText("Start");
-        } else {
-            simulation.start();
-            startStopButton.setText("Stop");
+                simulationThread.start();
+            }
+            if (simulation.isRunning()) {
+                simulation.stop();
+                startStopButton.setText("Start");
+            } else {
+                simulation.start();
+                startStopButton.setText("Stop");
+            }
+        } catch (Exception e) {
+            AlertHelper.ShowExceptionAlert(currentStage, e);
         }
     }
 
@@ -367,7 +369,8 @@ public class SimulationPresenter implements SimulationStepListener {
     public void moveAnimal(Vector2D oldPosition, Vector2D newPosition) {
         Platform.runLater(() -> {
             int oldAnimalAmount = simulation.getAnimalsOnPosition(oldPosition).size();
-            int newAnimalAmount = simulation.getAnimalsOnPosition(newPosition).size();
+            List<Animal> newAnimals = simulation.getAnimalsOnPosition(newPosition);
+            int newAnimalAmount = newAnimals.size();
             Label oldCell = getCellByRowColumn(oldPosition);
             Label newCell = getCellByRowColumn(newPosition);
             if (oldCell != null) {
@@ -377,7 +380,7 @@ public class SimulationPresenter implements SimulationStepListener {
                 newCell.setStyle(computeStyle(newAnimalAmount, simulation.isPlantOnPosition(newPosition)));
             }
             Pair<Vector2D, Animal> animal = selectedAnimal.get();
-            if (animal != null && oldPosition.equals(animal.getKey())) {
+            if (animal != null && oldPosition.equals(animal.getKey()) && newAnimals.contains(animal.getValue())) {
                 selectedAnimal.set(new Pair<>(newPosition, animal.getValue()));
             }
         });
