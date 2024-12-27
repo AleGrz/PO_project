@@ -10,14 +10,12 @@ import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -29,15 +27,9 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Pair;
 
-import java.net.URL;
 import java.util.List;
-import java.util.Objects;
-import java.util.Random;
-import java.util.ResourceBundle;
 
 public class SimulationPresenter implements SimulationStepListener {
-    @FXML
-    private BorderPane containerBorderPane;
     @FXML
     private Label heightLabel;
     @FXML
@@ -92,17 +84,20 @@ public class SimulationPresenter implements SimulationStepListener {
     private Button startStopButton;
     @FXML
     private BorderPane rootBorderPane;
+    @FXML
+    private VBox leftVBox;
+    @FXML
+    private VBox topVBox;
 
     private final SimpleObjectProperty<Pair<Vector2D, Animal>> selectedAnimal = new SimpleObjectProperty<>(null);
-
-    private int currentCellSize;
+    private double lastCalculatedCellSize;
     private Simulation simulation;
     private Thread simulationThread;
 
     @FXML
     public void initialize() {
-        containerBorderPane.widthProperty().addListener((observable, oldValue, newValue) -> resizeMap());
-        containerBorderPane.heightProperty().addListener((observable, oldValue, newValue) -> resizeMap());
+        rootBorderPane.widthProperty().addListener((observable, oldValue, newValue) -> resizeMap());
+        rootBorderPane.heightProperty().addListener((observable, oldValue, newValue) -> resizeMap());
         selectedAnimalGridPane.setVisible(false);
         selectedAnimal.addListener((observable, oldValue, newValue) -> updateSelectedAnimalData(oldValue, newValue));
         Platform.runLater(() -> {
@@ -184,18 +179,20 @@ public class SimulationPresenter implements SimulationStepListener {
         }
     }
 
-    public int calculateCellSize() {
+    public double calculateCellSize() {
+        double gridWidth = rootBorderPane.getWidth() - leftVBox.getWidth();
+        double gridHeight = rootBorderPane.getHeight() - topVBox.getHeight();
         int rowCount = simulation.getWidth() + 1;
         int colCount = simulation.getHeight() + 1;
-        int width = (int) ((containerBorderPane.getWidth() - rowCount) / rowCount);
-        int height = (int) ((containerBorderPane.getHeight() - colCount) / colCount);
+        double width = (int) ((gridWidth - rowCount) / rowCount);
+        double height = (int) ((gridHeight - colCount) / colCount);
         return Math.min(height, width);
     }
 
     public void resizeMap() {
-        int cellSize = calculateCellSize();
-        if (cellSize == currentCellSize) return;
-        currentCellSize = cellSize;
+        double cellSize = calculateCellSize();
+        if (lastCalculatedCellSize == cellSize) return;
+        lastCalculatedCellSize = cellSize;
         boolean showGridLines = mapGrid.isGridLinesVisible();
         mapGrid.setGridLinesVisible(false);
         for (ColumnConstraints col : mapGrid.getColumnConstraints()) {
@@ -335,6 +332,7 @@ public class SimulationPresenter implements SimulationStepListener {
             modal.initOwner(currentStage);
             modal.initStyle(StageStyle.UNDECORATED);
             VBox content = new VBox(10);
+            boolean isRunning = simulation.isRunning();
             for (int i = 0; i < animals.size(); i++) {
                 Button button = new Button("Animal " + (i + 1));
                 button.setFont(new Font(11));
@@ -342,6 +340,8 @@ public class SimulationPresenter implements SimulationStepListener {
                 button.setOnAction(event -> {
                     selectedAnimal.set(new Pair<>(mouseOverPosition, animals.get(index)));
                     modal.close();
+                    if (isRunning)
+                        simulation.start();
                 });
                 content.getChildren().add(button);
             }
@@ -353,6 +353,7 @@ public class SimulationPresenter implements SimulationStepListener {
             Scene scene = new Scene(scrollPane);
             modal.setScene(scene);
             modal.setMaxHeight(100);
+            simulation.stop();
             modal.show();
         } else {
             selectedAnimal.set(null);

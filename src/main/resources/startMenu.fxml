@@ -72,18 +72,23 @@
     <IntField fx:id="fireLengthIntField" text="10" GridPane.columnIndex="1" GridPane.halignment="LEFT"
               GridPane.rowIndex="14"/>
 
-    <Label text="Simulation seed:" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="15"/>
-    <IntField fx:id="seedIntField" text="1" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="15"/>
+    <Label text="Refresh time (ms):" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="15"/>
+    <IntField fx:id="refreshTimeIntField" text="10" GridPane.columnIndex="1" GridPane.halignment="LEFT"
+              GridPane.rowIndex="15"/>
+
+    <Label text="Simulation seed:" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="16"/>
+    <IntField fx:id="seedIntField" text="1" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="16"/>
     <Button onAction="#onSeedGenerate" text="🎲" GridPane.columnIndex="1" GridPane.halignment="RIGHT"
-            GridPane.rowIndex="15"/>
+            GridPane.rowIndex="16"/>
 
     <Button onAction="#onSimulationStart" text="Start new simulation" GridPane.columnSpan="2"
-            GridPane.halignment="CENTER" GridPane.rowIndex="16"/>
+            GridPane.halignment="CENTER" GridPane.rowIndex="17"/>
     <columnConstraints>
         <ColumnConstraints/>
         <ColumnConstraints/>
     </columnConstraints>
     <rowConstraints>
+        <RowConstraints/>
         <RowConstraints/>
         <RowConstraints/>
         <RowConstraints/>

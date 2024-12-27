@@ -21,6 +21,7 @@ public class Simulation implements Runnable {
     private final int animalGenomeLength;
     private final int fireFrequency;
     private final int fireLength;
+    private final int refreshTime;
     private final int seed;
 
     private HashMap<Vector2D, ArrayList<Animal>> animals = new HashMap<>();
@@ -34,7 +35,8 @@ public class Simulation implements Runnable {
                                       int startingAnimalAmount, int startingEnergyAmount,
                                       int minimumBreedingEnergy, int breedingEnergyCost,
                                       int minimumMutationAmount, int maximumMutationAmount,
-                                      int animalGenomeLength, int fireFrequency, int fireLength, int ignored) {
+                                      int animalGenomeLength, int fireFrequency, int fireLength,
+                                      int refreshTime, int ignored) {
         if (width <= 0 || height <= 0)
             throw new IllegalArgumentException("Map size must be greater than 0!");
         if (startingPlantAmount < 0)
@@ -63,6 +65,8 @@ public class Simulation implements Runnable {
             throw new IllegalArgumentException("Fire frequency must be greater than or equal to 0!");
         if (fireLength < 1)
             throw new IllegalArgumentException("Fire length must be greater than or equal to 1!");
+        if (refreshTime < 10)
+            throw new IllegalArgumentException("Refresh time must be greater than or equalt to 10!");
     }
 
     public Simulation(int width, int height, int startingPlantAmount,
@@ -70,10 +74,12 @@ public class Simulation implements Runnable {
                       int startingAnimalAmount, int startingEnergyAmount,
                       int minimumBreedingEnergy, int breedingEnergyCost,
                       int minimumMutationAmount, int maximumMutationAmount,
-                      int animalGenomeLength, int fireFrequency, int fireLength, int seed) {
+                      int animalGenomeLength, int fireFrequency, int fireLength,
+                      int refreshTime, int seed) {
         InputValidator(width, height, startingPlantAmount, plantGrowingAmount, plantEnergyAmount,
                 startingAnimalAmount, startingEnergyAmount, minimumBreedingEnergy, breedingEnergyCost,
-                minimumMutationAmount, maximumMutationAmount, animalGenomeLength, fireFrequency, fireLength, seed);
+                minimumMutationAmount, maximumMutationAmount, animalGenomeLength, fireFrequency,
+                fireLength, refreshTime, seed);
         this.width = width;
         this.height = height;
         this.startingPlantAmount = startingPlantAmount;
@@ -88,6 +94,7 @@ public class Simulation implements Runnable {
         this.animalGenomeLength = animalGenomeLength;
         this.fireFrequency = fireFrequency;
         this.fireLength = fireLength;
+        this.refreshTime = refreshTime;
         this.seed = seed;
         this.random = new Random(seed);
         for (int i = 0; i < startingAnimalAmount; i++) {
@@ -157,6 +164,10 @@ public class Simulation implements Runnable {
         return this.fireLength;
     }
 
+    public int getRefreshTime() {
+        return this.refreshTime;
+    }
+
     public int getSeed() {
         return this.seed;
     }
@@ -181,7 +192,7 @@ public class Simulation implements Runnable {
             }
             try {
                 //noinspection BusyWait
-                Thread.sleep(100);
+                Thread.sleep(this.refreshTime);
             } catch (InterruptedException e) {
                 System.out.println("Stopping simulation loop's sleep!");
                 return;

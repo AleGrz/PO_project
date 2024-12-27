@@ -43,6 +43,8 @@ public class StartMenuPresenter {
     @FXML
     private IntField fireLengthIntField;
     @FXML
+    private IntField refreshTimeIntField;
+    @FXML
     private IntField seedIntField;
 
     @FXML
@@ -71,8 +73,12 @@ public class StartMenuPresenter {
             int animalGenomeLength = getValidatedIntFieldValue(animalGenomeLengthIntField, "Animal genome length", 1, null);
             int fireFrequency = getValidatedIntFieldValue(fireFrequencyIntField, "Fire frequency", 1, null);
             int fireLength = getValidatedIntFieldValue(fireLengthIntField, "Fire length", 1, null);
+            int refreshTime = getValidatedIntFieldValue(refreshTimeIntField, "RefreshTime", 10, null);
             int seedInt = getValidatedIntFieldValue(seedIntField, "Seed", null, null);
-            Simulation simulation = new Simulation(width, height, startingPlantAmount, plantGrowingAmount, plantEnergyAmount, startingAnimalAmount, startingEnergyAmount, minimumBreedingEnergy, breedingEnergyCost, minimumMutationAmount, maximumMutationAmount, animalGenomeLength, fireFrequency, fireLength, seedInt);
+            Simulation simulation = new Simulation(width, height, startingPlantAmount, plantGrowingAmount,
+                    plantEnergyAmount, startingAnimalAmount, startingEnergyAmount, minimumBreedingEnergy,
+                    breedingEnergyCost, minimumMutationAmount, maximumMutationAmount, animalGenomeLength,
+                    fireFrequency, fireLength, refreshTime, seedInt);
             presenter.setSimulation(simulation);
             Stage simulationStage = new Stage();
             simulationStage.initOwner(currentStage);
