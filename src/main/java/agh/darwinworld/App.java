@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
+
 import java.util.Objects;
 
 public class App extends Application {
