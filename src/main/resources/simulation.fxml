@@ -7,7 +7,8 @@
 <?import javafx.scene.text.*?>
 
 <BorderPane minHeight="560.0" minWidth="850.0" xmlns="http://javafx.com/javafx/17.0.12"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.darwinworld.presenter.SimulationPresenter">
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.darwinworld.presenter.SimulationPresenter"
+            stylesheets="styles.css">
     <left>
         <VBox minWidth="300.0" prefWidth="300.0" spacing="10">
             <GridPane alignment="TOP_CENTER">
@@ -378,9 +379,8 @@
     <center>
         <BorderPane fx:id="containerBorderPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <center>
-                <GridPane fx:id="mapGrid" alignment="CENTER" onMouseClicked="#onGridMouseClicked"
-                          onMouseEntered="#onGridMouseEnteredOrMoved" onMouseExited="#onGridMouseExited"
-                          onMouseMoved="#onGridMouseEnteredOrMoved" snapToPixel="false" BorderPane.alignment="CENTER">
+                <GridPane fx:id="mapGrid" alignment="CENTER" onMouseClicked="#onGridMouseClicked" snapToPixel="false"
+                          BorderPane.alignment="CENTER">
                 </GridPane>
             </center>
         </BorderPane>
