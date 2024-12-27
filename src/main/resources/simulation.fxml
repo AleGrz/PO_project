@@ -8,7 +8,8 @@
 
 <BorderPane minHeight="560.0" minWidth="850.0" xmlns="http://javafx.com/javafx/17.0.12"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.darwinworld.presenter.SimulationPresenter"
-            stylesheets="styles.css">
+            stylesheets="styles.css"
+            fx:id="rootBorderPane">
     <left>
         <VBox minWidth="300.0" prefWidth="300.0" spacing="10">
             <GridPane alignment="TOP_CENTER">

@@ -10,6 +10,7 @@ import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -28,9 +29,11 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Pair;
 
+import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.ResourceBundle;
 
 public class SimulationPresenter implements SimulationStepListener {
     @FXML
@@ -87,6 +90,8 @@ public class SimulationPresenter implements SimulationStepListener {
     private Label selectedAnimalDiedAtLabel;
     @FXML
     private Button startStopButton;
+    @FXML
+    private BorderPane rootBorderPane;
 
     private Simulation simulation;
     private final SimpleObjectProperty<Pair<Vector2D, Animal>> selectedAnimal = new SimpleObjectProperty<>(null);
@@ -100,6 +105,20 @@ public class SimulationPresenter implements SimulationStepListener {
         containerBorderPane.heightProperty().addListener((observable, oldValue, newValue) -> resizeMap());
         selectedAnimalGridPane.setVisible(false);
         selectedAnimal.addListener((observable, oldValue, newValue) -> updateSelectedAnimalData(oldValue, newValue));
+        Platform.runLater(() -> {
+            Stage stage = (Stage) rootBorderPane.getScene().getWindow();
+            stage.setOnCloseRequest(event -> {
+                if (simulation != null)
+                    simulation.stop();
+                if (simulationThread != null) {
+                    try {
+                        simulationThread.interrupt();
+                    } catch (SecurityException e) {
+                        AlertHelper.ShowExceptionAlert(stage, e);
+                    }
+                }
+            });
+        });
     }
 
     public void updateSelectedAnimalData(Pair<Vector2D, Animal> oldValue, Pair<Vector2D, Animal> newValue) {
@@ -241,11 +260,11 @@ public class SimulationPresenter implements SimulationStepListener {
             }
             for (int j = 0; j < simulation.getHeight(); j++) {
                 mapGrid.getRowConstraints().add(new RowConstraints(cellSize, cellSize, cellSize));
-                createCell(Integer.toString(simulation.getHeight() - j - 1), 0, j+1, null);
+                createCell(Integer.toString(simulation.getHeight() - j - 1), 0, j + 1, null);
             }
             for (int i = 0; i < simulation.getWidth(); i++) {
                 for (int j = 0; j < simulation.getHeight(); j++) {
-                    Vector2D pos = new Vector2D(i, simulation.getHeight()-j-1);
+                    Vector2D pos = new Vector2D(i, simulation.getHeight() - j - 1);
                     int animalAmount = simulation.getAnimalsOnPosition(pos).size();
                     boolean isPlant = simulation.isPlantOnPosition(pos);
                     Label cell = createCell(isPlant ? "*" : "", i + 1, j + 1, "cell");
@@ -266,7 +285,7 @@ public class SimulationPresenter implements SimulationStepListener {
         //Number x = series.getData().getLast().getXValue();
         //Random random = new Random();
         //series.getData().add(new XYChart.Data<>(x.intValue() + 1, random.nextInt(0, 50)));
-        Stage currentStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         if (simulationThread == null) {
             simulationThread = new Thread(simulation);
             simulationThread.setUncaughtExceptionHandler((thread, throwable) -> {
@@ -275,7 +294,6 @@ public class SimulationPresenter implements SimulationStepListener {
                     startStopButton.setDisable(true);
                 });
             });
-            simulationThread.setDaemon(true);
             simulationThread.start();
         }
         if (simulation.isRunning()) {
@@ -288,7 +306,7 @@ public class SimulationPresenter implements SimulationStepListener {
     }
 
     public void onGridMouseClicked(MouseEvent mouseEvent) {
-        Stage currentStage = (Stage)((Node)mouseEvent.getSource()).getScene().getWindow();
+        Stage currentStage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
         double x = mouseEvent.getX();
         double y = mouseEvent.getY();
         double cellSize = calculateCellSize();
@@ -300,7 +318,7 @@ public class SimulationPresenter implements SimulationStepListener {
         List<Animal> animals = simulation.getAnimalsOnPosition(mouseOverPosition);
         if (animals.size() == 1) {
             selectedAnimal.set(new Pair<>(mouseOverPosition, animals.getFirst()));
-        } else if (animals.size() > 1 ) {
+        } else if (animals.size() > 1) {
             Stage modal = new Stage();
             modal.setX(mouseEvent.getScreenX());
             modal.setY(mouseEvent.getScreenY());
