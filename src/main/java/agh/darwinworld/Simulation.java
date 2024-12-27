@@ -3,8 +3,6 @@ package agh.darwinworld;
 import agh.darwinworld.model.Animal;
 import agh.darwinworld.model.SimulationStepListener;
 import agh.darwinworld.model.Vector2D;
-
-import javax.swing.*;
 import java.util.*;
 
 public class Simulation implements Runnable {
@@ -27,7 +25,7 @@ public class Simulation implements Runnable {
 
     private HashMap<Vector2D, ArrayList<Animal>> animals = new HashMap<>();
     private final HashSet<Vector2D> plants = new HashSet<>();
-    private HashMap<Vector2D, Integer> fire = new HashMap<Vector2D, Integer>();
+    private final HashMap<Vector2D, Integer> fire = new HashMap<>();
     private boolean isRunning = false;
     private final List<SimulationStepListener> listeners = new ArrayList<>();
 
@@ -36,7 +34,7 @@ public class Simulation implements Runnable {
                                       int startingAnimalAmount, int startingEnergyAmount,
                                       int minimumBreedingEnergy, int breedingEnergyCost,
                                       int minimumMutationAmount, int maximumMutationAmount,
-                                      int animalGenomeLength, int fireFrequency, int fireLength, int seed) {
+                                      int animalGenomeLength, int fireFrequency, int fireLength, int ignored) {
         if (width <= 0 || height <= 0)
             throw new IllegalArgumentException("Map size must be greater than 0!");
         if (startingPlantAmount < 0)
@@ -61,6 +59,10 @@ public class Simulation implements Runnable {
             throw new IllegalArgumentException("Maximum mutation amount must be greater than or equal to minimum mutation amount!");
         if (animalGenomeLength <= 0)
             throw new IllegalArgumentException("Animal genome length must be greater than 0!");
+        if (fireFrequency < 0)
+            throw new IllegalArgumentException("Fire frequency must be greater than or equal to 0!");
+        if (fireLength < 1)
+            throw new IllegalArgumentException("Fire length must be greater than or equal to 1!");
     }
 
     public Simulation(int width, int height, int startingPlantAmount,
@@ -210,6 +212,9 @@ public class Simulation implements Runnable {
         }
         for (Map.Entry<Vector2D, ArrayList<Animal>> entry : animalsToRemove.entrySet()) {
             animals.get(entry.getKey()).removeAll(entry.getValue());
+        }
+        for (Vector2D position : emptyPositions) {
+            animals.remove(position);
         }
 
     }
