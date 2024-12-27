@@ -14,6 +14,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.input.MouseEvent;
@@ -24,63 +25,39 @@ import java.util.List;
 import java.util.Random;
 
 public class SimulationPresenter implements SimulationStepListener {
-    @FXML
-    private BorderPane containerBorderPane;
-    @FXML
-    private Label heightLabel;
-    @FXML
-    private Label widthLabel;
-    @FXML
-    private Label startingPlantAmountLabel;
-    @FXML
-    private Label plantGrowingAmountLabel;
-    @FXML
-    private Label plantEnergyAmountLabel;
-    @FXML
-    private Label startingAnimalAmountLabel;
-    @FXML
-    private Label startingEnergyAmountLabel;
-    @FXML
-    private Label minimumBreedingEnergyLabel;
-    @FXML
-    private Label breedingEnergyCostLabel;
-    @FXML
-    private Label minimumMutationAmountLabel;
-    @FXML
-    private Label maximumMutationAmountLabel;
-    @FXML
-    private Label animalGenomeLengthLabel;
-    @FXML
-    private Label fireFrequencyLabel;
-    @FXML
-    private Label fireLengthLabel;
-    @FXML
-    private Label seedLabel;
-    @FXML
-    private LineChart<Number, Number> dataLineChart;
-    @FXML
-    private GridPane mapGrid;
-    @FXML
-    private GridPane selectedAnimalGridPane;
-    @FXML
-    private Label selectedAnimalAgeLabel;
-    @FXML
-    private Label selectedAnimalEnergyLabel;
-    @FXML
-    private Label selectedAnimalChildrenAmountLabel;
-    @FXML
-    private Label selectedAnimalDescendantsAmountLabel;
-    @FXML
-    private Label selectedAnimalGenomeLabel;
-    @FXML
-    private Label selectedAnimalPlantsEatenAmountLabel;
-    @FXML
-    private Label selectedAnimalDiedAtLabel;
+    @FXML private BorderPane containerBorderPane;
+    @FXML private Label heightLabel;
+    @FXML private Label widthLabel;
+    @FXML private Label startingPlantAmountLabel;
+    @FXML private Label plantGrowingAmountLabel;
+    @FXML private Label plantEnergyAmountLabel;
+    @FXML private Label startingAnimalAmountLabel;
+    @FXML private Label startingEnergyAmountLabel;
+    @FXML private Label minimumBreedingEnergyLabel;
+    @FXML private Label breedingEnergyCostLabel;
+    @FXML private Label minimumMutationAmountLabel;
+    @FXML private Label maximumMutationAmountLabel;
+    @FXML private Label animalGenomeLengthLabel;
+    @FXML private Label fireFrequencyLabel;
+    @FXML private Label fireLengthLabel;
+    @FXML private Label seedLabel;
+    @FXML private LineChart<Number, Number> dataLineChart;
+    @FXML private GridPane mapGrid;
+    @FXML private GridPane selectedAnimalGridPane;
+    @FXML private Label selectedAnimalAgeLabel;
+    @FXML private Label selectedAnimalEnergyLabel;
+    @FXML private Label selectedAnimalChildrenAmountLabel;
+    @FXML private Label selectedAnimalDescendantsAmountLabel;
+    @FXML private Label selectedAnimalGenomeLabel;
+    @FXML private Label selectedAnimalPlantsEatenAmountLabel;
+    @FXML private Label selectedAnimalDiedAtLabel;
+    @FXML private Button startStopButton;
 
     private Simulation simulation;
     private final SimpleObjectProperty<Pair<Vector2D, Animal>> selectedAnimal = new SimpleObjectProperty<>(null);
 
     private int currentCellSize;
+    private Thread simulationThread;
 
     @FXML
     public void initialize() {
@@ -244,19 +221,27 @@ public class SimulationPresenter implements SimulationStepListener {
     }
 
     public void onStartStopClicked(ActionEvent actionEvent) {
-        if (dataLineChart.getData().isEmpty()) {
-            XYChart.Series<Number, Number> series = new XYChart.Series<>();
-            series.setName("Random name");
-            series.getData().add(new XYChart.Data<>(0, 15));
-            dataLineChart.getData().add(series);
-            return;
+        //if (dataLineChart.getData().isEmpty()) {
+        //    XYChart.Series<Number, Number> series = new XYChart.Series<>();
+        //    series.setName("Random name");
+        //    series.getData().add(new XYChart.Data<>(0, 15));
+        //    dataLineChart.getData().add(series);
+        //}
+        //XYChart.Series<Number, Number> series = dataLineChart.getData().getFirst();
+        //Number x = series.getData().getLast().getXValue();
+        //Random random = new Random();
+        //series.getData().add(new XYChart.Data<>(x.intValue() + 1, random.nextInt(0, 50)));
+        if (simulationThread == null) {
+            simulationThread = new Thread(simulation);
+            simulationThread.start();
         }
-        XYChart.Series<Number, Number> series = dataLineChart.getData().getFirst();
-        Number x = series.getData().getLast().getXValue();
-        Random random = new Random();
-        series.getData().add(new XYChart.Data<>(x.intValue() + 1, random.nextInt(0, 50)));
-        Thread thread = new Thread(simulation);
-        thread.start();
+        if (simulation.isRunning()) {
+            simulation.stop();
+            startStopButton.setText("Start");
+        } else {
+            simulation.start();
+            startStopButton.setText("Stop");
+        }
     }
 
     public void onGridMouseClicked(MouseEvent mouseEvent) {

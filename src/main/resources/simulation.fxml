@@ -144,7 +144,7 @@
                 </Label>
             </GridPane>
             <HBox alignment="CENTER">
-                <Button onAction="#onStartStopClicked" text="Start">
+                <Button fx:id="startStopButton" onAction="#onStartStopClicked" text="Start">
                     <padding>
                         <Insets bottom="5.0" left="15.0" right="15.0" top="5.0"/>
                     </padding>
