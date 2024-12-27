@@ -21,7 +21,7 @@ public class App extends Application {
         GridPane root = loader.load();
         stage.setScene(new Scene(root));
         stage.setTitle("Darwin World Project");
-        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("Icon.png"))));
+        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("icon.png"))));
         stage.setResizable(false);
         stage.show();
     }
