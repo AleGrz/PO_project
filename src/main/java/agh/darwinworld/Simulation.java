@@ -32,11 +32,11 @@ public class Simulation implements Runnable {
     private final List<SimulationStepListener> listeners = new ArrayList<>();
 
     public static void InputValidator(int width, int height, int startingPlantAmount,
-                                 int plantGrowingAmount, int plantEnergyAmount,
-                                 int startingAnimalAmount, int startingEnergyAmount,
-                                 int minimumBreedingEnergy, int breedingEnergyCost,
-                                 int minimumMutationAmount, int maximumMutationAmount,
-                                 int animalGenomeLength, int fireFrequency, int fireLength, int seed) {
+                                      int plantGrowingAmount, int plantEnergyAmount,
+                                      int startingAnimalAmount, int startingEnergyAmount,
+                                      int minimumBreedingEnergy, int breedingEnergyCost,
+                                      int minimumMutationAmount, int maximumMutationAmount,
+                                      int animalGenomeLength, int fireFrequency, int fireLength, int seed) {
         if (width <= 0 || height <= 0)
             throw new IllegalArgumentException("Map size must be greater than 0!");
         if (startingPlantAmount < 0)
@@ -163,18 +163,18 @@ public class Simulation implements Runnable {
 
     @Override
     public void run() {
-        while(!animals.isEmpty()) {
+        while (!animals.isEmpty()) {
             if (isRunning) {
                 removeDeadAnimals();
                 moveAnimals();
                 feedAnimals();
                 breedAnimals();
                 growPlants(plantGrowingAmount);
-                //propagateFire();
-                //if (step % fireFrequency == 0) {
-                //    Vector2D randomPos = plants.toArray(new Vector2D[0])[random.nextInt(0,plants.size())];
-                //    fire.put(randomPos, fireLength);
-                //}
+                propagateFire();
+                if (step % fireFrequency == 0) {
+                    Vector2D randomPos = plants.toArray(new Vector2D[0])[random.nextInt(plants.size())];
+                    fire.put(randomPos, fireLength);
+                }
                 step++;
             }
             try {
@@ -267,8 +267,8 @@ public class Simulation implements Runnable {
 
 
     private void growPlants(int amount) {
-        int equatorHeight = Math.round(height*0.2f);
-        int barHeight = Math.round((height - equatorHeight)/2f);
+        int equatorHeight = Math.round(height * 0.2f);
+        int barHeight = Math.round((height - equatorHeight) / 2f);
         List<Vector2D> plantCandidates = new ArrayList<>();
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < barHeight; j++) {
@@ -276,7 +276,7 @@ public class Simulation implements Runnable {
                     plantCandidates.add(new Vector2D(i, j));
                 }
             }
-            for (int j = barHeight+equatorHeight; j < height; j++) {
+            for (int j = barHeight + equatorHeight; j < height; j++) {
                 if (!plants.contains(new Vector2D(i, j))) {
                     plantCandidates.add(new Vector2D(i, j));
                 }
@@ -285,7 +285,7 @@ public class Simulation implements Runnable {
         plants.addAll(selectRandom(plantCandidates, Math.round(amount * 0.2f)));
         plantCandidates = new ArrayList<>();
         for (int i = 0; i < width; i++) {
-            for (int j = barHeight; j < barHeight+equatorHeight; j++) {
+            for (int j = barHeight; j < barHeight + equatorHeight; j++) {
                 if (!plants.contains(new Vector2D(i, j))) {
                     plantCandidates.add(new Vector2D(i, j));
                 }
@@ -300,23 +300,21 @@ public class Simulation implements Runnable {
 
     public void propagateFire() {
         HashMap<Vector2D, Integer> newFire = new HashMap<>();
-        for (Vector2D firePos: fire.keySet()) {
+        for (Map.Entry<Vector2D, Integer> fireData : fire.entrySet()) {
+            Vector2D position = fireData.getKey();
             Vector2D[] directions = new Vector2D[]{
-                    firePos.add(new Vector2D(0,1)),
-                    firePos.add(new Vector2D(1,0)),
-                    firePos.add(new Vector2D(0,-1)),
-                    firePos.add(new Vector2D(-1,0)),
-                    };
-            for (Vector2D direction: directions) {
-                if (!fire.containsKey(direction)) {
-                    newFire.put(direction, fireLength);
-                }
+                    position.add(new Vector2D(0, 1)),
+                    position.add(new Vector2D(1, 0)),
+                    position.add(new Vector2D(0, -1)),
+                    position.add(new Vector2D(-1, 0)),
+            };
+            for (Vector2D direction : directions) {
+                newFire.put(direction, fireLength);
             }
-            if (fire.get(firePos) <= 0) {
-                fire.remove(firePos);
-            }
-            else {
-                fire.put(firePos, fire.get(firePos)-1);
+            if (fireData.getValue() <= 0) {
+                fire.remove(position);
+            } else {
+                fireData.setValue(fireData.getValue() - 1);
             }
         }
         fire.putAll(newFire);

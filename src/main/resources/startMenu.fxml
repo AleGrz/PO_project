@@ -14,11 +14,11 @@
     <Label text="Properties" GridPane.columnSpan="2" GridPane.halignment="CENTER"/>
 
     <Label text="Map height:" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="1"/>
-    <IntField fx:id="heightIntField" text="50" GridPane.columnIndex="1" GridPane.halignment="LEFT"
+    <IntField fx:id="heightIntField" text="25" GridPane.columnIndex="1" GridPane.halignment="LEFT"
               GridPane.rowIndex="1"/>
 
     <Label text="Map width:" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="2"/>
-    <IntField fx:id="widthIntField" text="100" GridPane.columnIndex="1" GridPane.halignment="LEFT"
+    <IntField fx:id="widthIntField" text="50" GridPane.columnIndex="1" GridPane.halignment="LEFT"
               GridPane.rowIndex="2"/>
 
     <Label text="Plants spawning at the start:" GridPane.columnIndex="0" GridPane.halignment="RIGHT"
