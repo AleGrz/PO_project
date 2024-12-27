@@ -342,6 +342,10 @@ public class Simulation implements Runnable {
         listeners.add(listener);
     }
 
+    public void removeStepListener(SimulationStepListener listener) {
+        listeners.remove(listener);
+    }
+
     public void start() {
         isRunning = true;
     }

@@ -93,10 +93,10 @@ public class SimulationPresenter implements SimulationStepListener {
     @FXML
     private BorderPane rootBorderPane;
 
-    private Simulation simulation;
     private final SimpleObjectProperty<Pair<Vector2D, Animal>> selectedAnimal = new SimpleObjectProperty<>(null);
 
     private int currentCellSize;
+    private Simulation simulation;
     private Thread simulationThread;
 
     @FXML
@@ -107,15 +107,7 @@ public class SimulationPresenter implements SimulationStepListener {
         selectedAnimal.addListener((observable, oldValue, newValue) -> updateSelectedAnimalData(oldValue, newValue));
         Platform.runLater(() -> {
             Stage stage = (Stage) rootBorderPane.getScene().getWindow();
-            stage.setOnCloseRequest(event -> {
-                if (simulationThread != null && simulationThread.isAlive()) {
-                    try {
-                        simulationThread.interrupt();
-                    } catch (SecurityException e) {
-                        AlertHelper.ShowExceptionAlert(stage, e);
-                    }
-                }
-            });
+            stage.setOnCloseRequest(windowEvent -> stopSimulationThread());
         });
     }
 
@@ -154,8 +146,12 @@ public class SimulationPresenter implements SimulationStepListener {
     }
 
     public void setSimulation(Simulation simulation) {
+        if (this.simulation != null) {
+            this.simulation.removeStepListener(this);
+            stopSimulationThread();
+        }
         this.simulation = simulation;
-        simulation.addStepListener(this);
+        this.simulation.addStepListener(this);
         this.selectedAnimal.set(null);
         Platform.runLater(() -> {
             heightLabel.setText(Integer.toString(simulation.getHeight()));
@@ -175,6 +171,17 @@ public class SimulationPresenter implements SimulationStepListener {
             seedLabel.setText(Integer.toString(simulation.getSeed()));
             drawMap();
         });
+    }
+
+    private void stopSimulationThread() {
+        Stage stage = (Stage) rootBorderPane.getScene().getWindow();
+        if (simulationThread != null && simulationThread.isAlive()) {
+            try {
+                simulationThread.interrupt();
+            } catch (SecurityException e) {
+                Platform.runLater(() -> AlertHelper.ShowExceptionAlert(stage, e));
+            }
+        }
     }
 
     public int calculateCellSize() {
@@ -423,8 +430,7 @@ public class SimulationPresenter implements SimulationStepListener {
         Platform.runLater(() -> {
             Label cell = getCellByRowColumn(position);
             if (cell != null) {
-                cell.setStyle(computeStyle(simulation.getAnimalsOnPosition(position).size(),
-                        simulation.isPlantOnPosition(position)));
+                cell.setStyle(computeStyle(simulation.getAnimalsOnPosition(position).size(), simulation.isPlantOnPosition(position)));
             }
         });
     }
