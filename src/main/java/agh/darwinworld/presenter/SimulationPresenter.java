@@ -274,6 +274,7 @@ public class SimulationPresenter implements SimulationStepListener {
                     startStopButton.setDisable(true);
                 });
             });
+            simulationThread.setDaemon(true);
             simulationThread.start();
         }
         if (simulation.isRunning()) {
