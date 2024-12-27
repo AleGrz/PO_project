@@ -29,6 +29,7 @@ import javafx.stage.StageStyle;
 import javafx.util.Pair;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class SimulationPresenter implements SimulationStepListener {
@@ -244,7 +245,7 @@ public class SimulationPresenter implements SimulationStepListener {
             }
             for (int i = 0; i < simulation.getWidth(); i++) {
                 for (int j = 0; j < simulation.getHeight(); j++) {
-                    Vector2D pos = new Vector2D(i, simulation.getHeight() - j - 1);
+                    Vector2D pos = new Vector2D(i, simulation.getHeight()-j-1);
                     int animalAmount = simulation.getAnimalsOnPosition(pos).size();
                     boolean isPlant = simulation.isPlantOnPosition(pos);
                     Label cell = createCell(isPlant ? "*" : "", i + 1, j + 1, "cell");
@@ -331,11 +332,12 @@ public class SimulationPresenter implements SimulationStepListener {
         }
     }
 
+
     private Label getCellByRowColumn(Vector2D pos) {
         for (Node node : mapGrid.getChildren()) {
             int rowIndex = GridPane.getRowIndex(node);
             int colIndex = GridPane.getColumnIndex(node);
-            if (rowIndex == simulation.getHeight() - pos.y() && colIndex - 1 == pos.x()
+            if (pos.equals(new Vector2D(colIndex - 1, simulation.getHeight() - rowIndex))
                     && node instanceof Label label) {
                 return label;
             }

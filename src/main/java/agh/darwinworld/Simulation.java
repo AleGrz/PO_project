@@ -169,12 +169,11 @@ public class Simulation implements Runnable {
                 feedAnimals();
                 breedAnimals();
                 growPlants(plantGrowingAmount);
-                propagateFire();
-                if (step % fireFrequency == 0) {
-                    Vector2D randomPos = plants.toArray(new Vector2D[0])[random.nextInt(0,plants.size())];
-                    fire.put(randomPos, fireLength);
-                }
-                System.out.println("Step: " + step + " Animals: " + animals.size() + " Plants: " + plants.size());
+                //propagateFire();
+                //if (step % fireFrequency == 0) {
+                //    Vector2D randomPos = plants.toArray(new Vector2D[0])[random.nextInt(0,plants.size())];
+                //    fire.put(randomPos, fireLength);
+                //}
             }
             try {
                 Thread.sleep(100);
@@ -189,7 +188,7 @@ public class Simulation implements Runnable {
         for (Vector2D position : animals.keySet()) {
             for (Animal animal : animals.get(position)) {
                 if (animal.isDead()) {
-                    animals.remove(position);
+                    animals.get(position).remove(animal);
                     listeners.forEach(listener -> listener.removeAnimal(position));
                 }
             }
@@ -311,11 +310,11 @@ public class Simulation implements Runnable {
         return positions.subList(0, Math.min(amount, positions.size()));
     }
 
-    public List<Animal> getAnimalsOnPosition(Vector2D position) {
+    public synchronized List<Animal> getAnimalsOnPosition(Vector2D position) {
         return animals.containsKey(position) ? animals.get(position) : new ArrayList<>();
     }
 
-    public boolean isPlantOnPosition(Vector2D position) {
+    public synchronized boolean isPlantOnPosition(Vector2D position) {
         return plants.contains(position);
     }
 

@@ -29,13 +29,13 @@ public record Vector2D(int x, int y) {
         return new Vector2D(-x, -y);
     }
 
-    public Vector2D clamp(Integer width, Integer height) {
+    public Vector2D normalize(Integer width, Integer height) {
         if (width != null && width <= 0)
             throw new IllegalArgumentException("Width must be greater than 0.");
         if (height != null && height <= 0)
             throw new IllegalArgumentException("Height must be greater than 0.");
-        int normalizedX = (width == null ? x() : x() % width);
-        int normalizedY = (height == null ? y() : y() % height);
+        int normalizedX = (width == null) ? x() : ((x() % width) + width) % width;
+        int normalizedY = (height == null) ? y() : ((y() % height) + height) % height;
         return new Vector2D(normalizedX, normalizedY);
     }
 
