@@ -114,11 +114,11 @@ public class SimulationPresenter implements SimulationStepListener {
             if ((newPosition != null && !newPosition.equals(oldPosition)) ||
                     (oldPosition != null && !oldPosition.equals(newPosition))) {
                 if (oldPosition != null) {
-                    Label oldCell = getCellByRowColumn(oldPosition);
+                    Region oldCell = getCellByRowColumn(oldPosition);
                     if (oldCell != null) oldCell.getStyleClass().remove("selected");
                 }
                 if (newPosition != null) {
-                    Label newCell = getCellByRowColumn(newPosition);
+                    Region newCell = getCellByRowColumn(newPosition);
                     if (newCell != null) newCell.getStyleClass().add("selected");
                 }
             }
@@ -211,19 +211,30 @@ public class SimulationPresenter implements SimulationStepListener {
 
     ObjectProperty<Font> defaultFont = new SimpleObjectProperty<>(new Font(12));
 
-    public Label createCell(String text, int x, int y, String styleClass) {
-        Label label = new Label(text);
-        label.fontProperty().bind(defaultFont);
-        label.setAlignment(Pos.CENTER);
-        GridPane.setHgrow(label, Priority.ALWAYS);
-        GridPane.setVgrow(label, Priority.ALWAYS);
-        label.setMaxWidth(Double.MAX_VALUE);
-        label.setMaxHeight(Double.MAX_VALUE);
+    public Label createLabelCell(String text, int x, int y) {
+        Label cell = new Label(text);
+        cell.fontProperty().bind(defaultFont);
+        cell.setAlignment(Pos.CENTER);
+        GridPane.setHgrow(cell, Priority.ALWAYS);
+        GridPane.setVgrow(cell, Priority.ALWAYS);
+        cell.setMaxWidth(Double.MAX_VALUE);
+        cell.setMaxHeight(Double.MAX_VALUE);
+        mapGrid.add(cell, x, y);
+        GridPane.setHalignment(cell, HPos.CENTER);
+        return cell;
+    }
+
+    public Region createCell(int x, int y, String styleClass) {
+        Region cell = new Region();
+        GridPane.setHgrow(cell, Priority.ALWAYS);
+        GridPane.setVgrow(cell, Priority.ALWAYS);
+        cell.setMaxWidth(Double.MAX_VALUE);
+        cell.setMaxHeight(Double.MAX_VALUE);
         if (styleClass != null)
-            label.getStyleClass().add(styleClass);
-        mapGrid.add(label, x, y);
-        GridPane.setHalignment(label, HPos.CENTER);
-        return label;
+            cell.getStyleClass().add(styleClass);
+        mapGrid.add(cell, x, y);
+        GridPane.setHalignment(cell, HPos.CENTER);
+        return cell;
     }
 
     private static String computeStyle(int animalAmount, boolean isPlant) {
@@ -255,21 +266,21 @@ public class SimulationPresenter implements SimulationStepListener {
             double cellSize = calculateCellSize();
             mapGrid.getColumnConstraints().add(new ColumnConstraints(cellSize, cellSize, cellSize));
             mapGrid.getRowConstraints().add(new RowConstraints(cellSize, cellSize, cellSize));
-            createCell("y/x", 0, 0, null);
+            createLabelCell("y/x", 0, 0);
             for (int i = 0; i < simulation.getWidth(); i++) {
                 mapGrid.getColumnConstraints().add(new ColumnConstraints(cellSize, cellSize, cellSize));
-                createCell(Integer.toString(i), i + 1, 0, null);
+                createLabelCell(Integer.toString(i), i + 1, 0);
             }
             for (int j = 0; j < simulation.getHeight(); j++) {
                 mapGrid.getRowConstraints().add(new RowConstraints(cellSize, cellSize, cellSize));
-                createCell(Integer.toString(simulation.getHeight() - j - 1), 0, j + 1, null);
+                createLabelCell(Integer.toString(simulation.getHeight() - j - 1), 0, j + 1);
             }
             for (int i = 0; i < simulation.getWidth(); i++) {
                 for (int j = 0; j < simulation.getHeight(); j++) {
                     Vector2D pos = new Vector2D(i, simulation.getHeight() - j - 1);
                     int animalAmount = simulation.getAnimalsOnPosition(pos).size();
                     boolean isPlant = simulation.isPlantOnPosition(pos);
-                    Label cell = createCell(isPlant ? "*" : "", i + 1, j + 1, "cell");
+                    Region cell = createCell(i + 1, j + 1, "cell");
                     cell.setStyle(computeStyle(animalAmount, isPlant));
                 }
             }
@@ -361,13 +372,13 @@ public class SimulationPresenter implements SimulationStepListener {
     }
 
 
-    private Label getCellByRowColumn(Vector2D pos) {
+    private Region getCellByRowColumn(Vector2D pos) {
         for (Node node : mapGrid.getChildren()) {
             int rowIndex = GridPane.getRowIndex(node);
             int colIndex = GridPane.getColumnIndex(node);
             if (pos.equals(new Vector2D(colIndex - 1, simulation.getHeight() - rowIndex))
-                    && node instanceof Label label) {
-                return label;
+                    && node instanceof Region region) {
+                return region;
             }
         }
         return null;
@@ -379,8 +390,8 @@ public class SimulationPresenter implements SimulationStepListener {
             int oldAnimalAmount = simulation.getAnimalsOnPosition(oldPosition).size();
             List<Animal> newAnimals = simulation.getAnimalsOnPosition(newPosition);
             int newAnimalAmount = newAnimals.size();
-            Label oldCell = getCellByRowColumn(oldPosition);
-            Label newCell = getCellByRowColumn(newPosition);
+            Region oldCell = getCellByRowColumn(oldPosition);
+            Region newCell = getCellByRowColumn(newPosition);
             if (oldCell != null) {
                 oldCell.setStyle(computeStyle(oldAnimalAmount, simulation.isPlantOnPosition(oldPosition)));
             }
@@ -397,9 +408,8 @@ public class SimulationPresenter implements SimulationStepListener {
     @Override
     public void addPlant(Vector2D position) {
         Platform.runLater(() -> {
-            Label cell = getCellByRowColumn(position);
+            Region cell = getCellByRowColumn(position);
             if (cell != null) {
-                cell.setText("*");
                 cell.setStyle(computeStyle(simulation.getAnimalsOnPosition(position).size(), true));
             }
         });
@@ -408,7 +418,7 @@ public class SimulationPresenter implements SimulationStepListener {
     @Override
     public void addAnimal(Vector2D position) {
         Platform.runLater(() -> {
-            Label cell = getCellByRowColumn(position);
+            Region cell = getCellByRowColumn(position);
             if (cell != null) {
                 cell.setStyle(computeStyle(simulation.getAnimalsOnPosition(position).size(), false));
             }
@@ -418,9 +428,8 @@ public class SimulationPresenter implements SimulationStepListener {
     @Override
     public void removePlant(Vector2D position) {
         Platform.runLater(() -> {
-            Label cell = getCellByRowColumn(position);
+            Region cell = getCellByRowColumn(position);
             if (cell != null) {
-                cell.setText("");
                 cell.setStyle(computeStyle(simulation.getAnimalsOnPosition(position).size(), false));
             }
         });
@@ -429,7 +438,7 @@ public class SimulationPresenter implements SimulationStepListener {
     @Override
     public void removeAnimal(Vector2D position) {
         Platform.runLater(() -> {
-            Label cell = getCellByRowColumn(position);
+            Region cell = getCellByRowColumn(position);
             if (cell != null) {
                 cell.setStyle(computeStyle(simulation.getAnimalsOnPosition(position).size(), simulation.isPlantOnPosition(position)));
             }
