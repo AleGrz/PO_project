@@ -30,6 +30,11 @@ public class StartMenuPresenter {
     @FXML private IntField fireLengthIntField;
     @FXML private IntField seedIntField;
 
+    @FXML
+    public void initialize() {
+        generateSeed();
+    }
+
     public void onSimulationStart(ActionEvent actionEvent) {
         Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         try {
@@ -47,7 +52,7 @@ public class StartMenuPresenter {
             int minimumBreedingEnergy = getValidatedIntFieldValue(minimumBreedingEnergyIntField, "Minimum breeding energy", 1, null);
             int breedingEnergyCost = getValidatedIntFieldValue(breedingEnergyCostIntField, "Breeding energy cost", 1, null);
             int minimumMutationAmount = getValidatedIntFieldValue(minimumMutationAmountIntField, "Minimum mutation amount", 0, null);
-            int maximumMutationAmount = getValidatedIntFieldValue(maximumMutationAmountIntField, "Maximum mutation amount", 0, null);
+            int maximumMutationAmount = getValidatedIntFieldValue(maximumMutationAmountIntField, "Maximum mutation amount", 1, null);
             int animalGenomeLength = getValidatedIntFieldValue(animalGenomeLengthIntField, "Animal genome length", 1, null);
             int fireFrequency = getValidatedIntFieldValue(fireFrequencyIntField, "Fire frequency", 1, null);
             int fireLength = getValidatedIntFieldValue(fireLengthIntField, "Fire length", 1, null);
@@ -74,7 +79,15 @@ public class StartMenuPresenter {
         }
     }
 
-    public int getValidatedIntFieldValue(IntField intField, String propertyName, Integer min, Integer max) throws Exception {
+    public void onSeedGenerate(ActionEvent ignored) {
+        generateSeed();
+    }
+
+    private void generateSeed() {
+        seedIntField.setValue((int) (Math.random() * Integer.MAX_VALUE));
+    }
+
+    private int getValidatedIntFieldValue(IntField intField, String propertyName, Integer min, Integer max) throws Exception {
         Integer value = intField.getValue();
         String recapitalizedPropertyName = propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1).toLowerCase();
         if (value == null)
@@ -94,9 +107,5 @@ public class StartMenuPresenter {
         double horizontalInsets = (stageWidth - contentWidth) / 2;
         double verticalInsets = stageHeight - contentHeight - horizontalInsets;
         return new Insets(verticalInsets, horizontalInsets, verticalInsets, horizontalInsets);
-    }
-
-    public void seedGenerate(ActionEvent ignored) {
-        seedIntField.setValue((int) (Math.random() * Integer.MAX_VALUE));
     }
 }
