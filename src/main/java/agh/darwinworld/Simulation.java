@@ -98,10 +98,10 @@ public class Simulation implements Runnable {
         this.seed = seed;
         this.random = new Random(seed);
         for (int i = 0; i < startingAnimalAmount; i++) {
-            int x = random.nextInt(width);
-            int y = random.nextInt(height);
+            int x = this.random.nextInt(width);
+            int y = this.random.nextInt(height);
             Vector2D v = new Vector2D(x, y);
-            Animal animal = new Animal(random, animalGenomeLength, startingEnergyAmount);
+            Animal animal = new Animal(this.random, animalGenomeLength, startingEnergyAmount);
             animals.computeIfAbsent(v, k -> new ArrayList<>());
             animals.get(v).add(animal);
         }
@@ -337,7 +337,7 @@ public class Simulation implements Runnable {
     }
 
     private List<Vector2D> selectRandom(List<Vector2D> positions, int amount) {
-        Collections.shuffle(positions);
+        Collections.shuffle(positions, this.random);
         return positions.subList(0, Math.min(amount, positions.size()));
     }
 

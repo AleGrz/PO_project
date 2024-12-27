@@ -26,7 +26,7 @@ public class Animal {
         MoveDirection[] moveDirections = MoveDirection.values();
         for (int i = 0; i < genomeLength; i++)
             genome[i] = moveDirections[random.nextInt(moveDirections.length)];
-        this.currentGene = random.nextInt(0, genomeLength);
+        this.currentGene = random.nextInt(genomeLength);
     }
 
     public Animal(Animal mommy, Animal daddy, int breedingEnergyCost, int minimalBreedingEnergy,
@@ -119,7 +119,7 @@ public class Animal {
         int mutateAmount = random.nextInt(max - min) + min;
         ArrayList<Integer> indexes = new ArrayList<>();
         for (int i = 0; i < genome.length; i++) indexes.add(i);
-        Collections.shuffle(indexes);
+        Collections.shuffle(indexes, this.random);
         MoveDirection[] directions = MoveDirection.values();
         for (int i = 0; i < mutateAmount; i++) {
             genome[indexes.get(i)] = directions[random.nextInt(directions.length)];
