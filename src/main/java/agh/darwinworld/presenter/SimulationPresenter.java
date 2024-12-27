@@ -18,42 +18,67 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
+import javafx.util.Pair;
+
 import java.util.List;
 import java.util.Random;
 
 public class SimulationPresenter implements SimulationStepListener {
-    @FXML private BorderPane containerBorderPane;
-    @FXML private Label heightLabel;
-    @FXML private Label widthLabel;
-    @FXML private Label startingPlantAmountLabel;
-    @FXML private Label plantGrowingAmountLabel;
-    @FXML private Label plantEnergyAmountLabel;
-    @FXML private Label startingAnimalAmountLabel;
-    @FXML private Label startingEnergyAmountLabel;
-    @FXML private Label minimumBreedingEnergyLabel;
-    @FXML private Label breedingEnergyCostLabel;
-    @FXML private Label minimumMutationAmountLabel;
-    @FXML private Label maximumMutationAmountLabel;
-    @FXML private Label animalGenomeLengthLabel;
-    @FXML private Label fireFrequencyLabel;
-    @FXML private Label fireLengthLabel;
-    @FXML private Label seedLabel;
-    @FXML private LineChart<Number, Number> dataLineChart;
-    @FXML private GridPane mapGrid;
-    @FXML private GridPane selectedAnimalGridPane;
-    @FXML private Label selectedAnimalAgeLabel;
-    @FXML private Label selectedAnimalEnergyLabel;
-    @FXML private Label selectedAnimalChildrenAmountLabel;
-    @FXML private Label selectedAnimalDescendantsAmountLabel;
-    @FXML private Label selectedAnimalGenomeLabel;
-    @FXML private Label selectedAnimalPlantsEatenAmountLabel;
-    @FXML private Label selectedAnimalDiedAtLabel;
+    @FXML
+    private BorderPane containerBorderPane;
+    @FXML
+    private Label heightLabel;
+    @FXML
+    private Label widthLabel;
+    @FXML
+    private Label startingPlantAmountLabel;
+    @FXML
+    private Label plantGrowingAmountLabel;
+    @FXML
+    private Label plantEnergyAmountLabel;
+    @FXML
+    private Label startingAnimalAmountLabel;
+    @FXML
+    private Label startingEnergyAmountLabel;
+    @FXML
+    private Label minimumBreedingEnergyLabel;
+    @FXML
+    private Label breedingEnergyCostLabel;
+    @FXML
+    private Label minimumMutationAmountLabel;
+    @FXML
+    private Label maximumMutationAmountLabel;
+    @FXML
+    private Label animalGenomeLengthLabel;
+    @FXML
+    private Label fireFrequencyLabel;
+    @FXML
+    private Label fireLengthLabel;
+    @FXML
+    private Label seedLabel;
+    @FXML
+    private LineChart<Number, Number> dataLineChart;
+    @FXML
+    private GridPane mapGrid;
+    @FXML
+    private GridPane selectedAnimalGridPane;
+    @FXML
+    private Label selectedAnimalAgeLabel;
+    @FXML
+    private Label selectedAnimalEnergyLabel;
+    @FXML
+    private Label selectedAnimalChildrenAmountLabel;
+    @FXML
+    private Label selectedAnimalDescendantsAmountLabel;
+    @FXML
+    private Label selectedAnimalGenomeLabel;
+    @FXML
+    private Label selectedAnimalPlantsEatenAmountLabel;
+    @FXML
+    private Label selectedAnimalDiedAtLabel;
 
     private Simulation simulation;
-    private final SimpleObjectProperty<Animal> selectedAnimal = new SimpleObjectProperty<>(null);
-
-    private Vector2D mouseOverPosition;
-    private Label mouseOverCell;
+    private final SimpleObjectProperty<Pair<Vector2D, Animal>> selectedAnimal = new SimpleObjectProperty<>(null);
 
     private int currentCellSize;
 
@@ -62,19 +87,33 @@ public class SimulationPresenter implements SimulationStepListener {
         containerBorderPane.widthProperty().addListener((observable, oldValue, newValue) -> resizeMap());
         containerBorderPane.heightProperty().addListener((observable, oldValue, newValue) -> resizeMap());
         selectedAnimalGridPane.setVisible(false);
-        selectedAnimal.addListener((observable, oldValue, newValue) -> updateSelectedAnimalData());
+        selectedAnimal.addListener((observable, oldValue, newValue) -> updateSelectedAnimalData(oldValue, newValue));
     }
 
-    public void updateSelectedAnimalData() {
-        Animal animal = selectedAnimal.getValue();
+    public void updateSelectedAnimalData(Pair<Vector2D, Animal> oldValue, Pair<Vector2D, Animal> newValue) {
         Platform.runLater(() -> {
-            selectedAnimalGridPane.setVisible(animal != null);
-            if (animal == null) return;
-            selectedAnimalAgeLabel.setText(Integer.toString(animal.getAge()));
-            selectedAnimalEnergyLabel.setText(Integer.toString(animal.getEnergy()));
-            selectedAnimalChildrenAmountLabel.setText(Integer.toString(animal.getChildrenAmount()));
+            Vector2D oldPosition = oldValue == null ? null : oldValue.getKey();
+            Vector2D newPosition = newValue == null ? null : newValue.getKey();
+            ;
+            if ((newPosition != null && !newPosition.equals(oldPosition)) ||
+                    (oldPosition != null && !oldPosition.equals(newPosition))) {
+                if (oldPosition != null) {
+                    Label oldCell = getCellByRowColumn(oldPosition);
+                    if (oldCell != null) oldCell.getStyleClass().remove("selected");
+                }
+                if (newPosition != null) {
+                    Label newCell = getCellByRowColumn(newPosition);
+                    if (newCell != null) newCell.getStyleClass().add("selected");
+                }
+            }
+            selectedAnimalGridPane.setVisible(newValue != null);
+            if (newValue == null) return;
+            Animal newAnimal = newValue.getValue();
+            selectedAnimalAgeLabel.setText(Integer.toString(newAnimal.getAge()));
+            selectedAnimalEnergyLabel.setText(Integer.toString(newAnimal.getEnergy()));
+            selectedAnimalChildrenAmountLabel.setText(Integer.toString(newAnimal.getChildrenAmount()));
             selectedAnimalDescendantsAmountLabel.setText("MISSING DATA");
-            MoveDirection[] genome = animal.getGenome();
+            MoveDirection[] genome = newAnimal.getGenome();
             StringBuilder genomeString = new StringBuilder();
             for (MoveDirection gene : genome) {
                 genomeString.append(gene.ordinal());
@@ -108,6 +147,7 @@ public class SimulationPresenter implements SimulationStepListener {
             drawMap();
         });
     }
+
     public int calculateCellSize() {
         int rowCount = simulation.getWidth() + 1;
         int colCount = simulation.getHeight() + 1;
@@ -138,7 +178,7 @@ public class SimulationPresenter implements SimulationStepListener {
 
     ObjectProperty<Font> defaultFont = new SimpleObjectProperty<>(new Font(12));
 
-    public Label createCell(String text, int x, int y) {
+    public Label createCell(String text, int x, int y, String styleClass) {
         Label label = new Label(text);
         label.fontProperty().bind(defaultFont);
         label.setAlignment(Pos.CENTER);
@@ -146,6 +186,8 @@ public class SimulationPresenter implements SimulationStepListener {
         GridPane.setVgrow(label, Priority.ALWAYS);
         label.setMaxWidth(Double.MAX_VALUE);
         label.setMaxHeight(Double.MAX_VALUE);
+        if (styleClass != null)
+            label.getStyleClass().add(styleClass);
         mapGrid.add(label, x, y);
         GridPane.setHalignment(label, HPos.CENTER);
         return label;
@@ -180,21 +222,21 @@ public class SimulationPresenter implements SimulationStepListener {
             double cellSize = calculateCellSize();
             mapGrid.getColumnConstraints().add(new ColumnConstraints(cellSize, cellSize, cellSize));
             mapGrid.getRowConstraints().add(new RowConstraints(cellSize, cellSize, cellSize));
-            createCell("y/x", 0, 0);
+            createCell("y/x", 0, 0, null);
             for (int i = 0; i < simulation.getWidth(); i++) {
                 mapGrid.getColumnConstraints().add(new ColumnConstraints(cellSize, cellSize, cellSize));
-                createCell(Integer.toString(i), i + 1, 0);
+                createCell(Integer.toString(i), i + 1, 0, null);
             }
             for (int j = 0; j < simulation.getHeight(); j++) {
                 mapGrid.getRowConstraints().add(new RowConstraints(cellSize, cellSize, cellSize));
-                createCell(Integer.toString(j), 0, j + 1);
+                createCell(Integer.toString(j), 0, j + 1, null);
             }
             for (int i = 0; i < simulation.getWidth(); i++) {
                 for (int j = 0; j < simulation.getHeight(); j++) {
                     Vector2D pos = new Vector2D(i, j);
                     int animalAmount = simulation.getAnimalsOnPosition(pos).size();
                     boolean isPlant = simulation.isPlantOnPosition(pos);
-                    Label cell = createCell(isPlant ? "*" : "", i + 1, j + 1);
+                    Label cell = createCell(isPlant ? "*" : "", i + 1, j + 1, "cell");
                     cell.setStyle(computeStyle(animalAmount, isPlant));
                 }
             }
@@ -217,56 +259,30 @@ public class SimulationPresenter implements SimulationStepListener {
         thread.start();
     }
 
-    public void onGridMouseClicked(MouseEvent ignored) {
-        if (mouseOverPosition == null) return;
-        List<Animal> animals = simulation.getAnimalsOnPosition(mouseOverPosition);
-        if (animals.size() == 1)
-            selectedAnimal.set(animals.getFirst());
-        else
-            selectedAnimal.set(null);
-    }
-
-    public void onGridMouseEnteredOrMoved(MouseEvent mouseEvent) {
+    public void onGridMouseClicked(MouseEvent mouseEvent) {
         double x = mouseEvent.getX();
         double y = mouseEvent.getY();
         double cellSize = calculateCellSize();
         double gapH = (mapGrid.getWidth() - cellSize * (simulation.getWidth() + 1)) / 2;
         double gapV = (mapGrid.getHeight() - cellSize * (simulation.getHeight() + 1)) / 2;
-        int colIndex = (int) ((x - gapH) / cellSize);
-        int rowIndex = (int) ((y - gapV) / cellSize);
-        if (colIndex < 1 || rowIndex < 1) {
-            clearMouseOverCell();
-            return;
-        }
-        Label cell = getCellByRowColumn(rowIndex, colIndex);
-        if (cell != null) {
-            if (this.mouseOverCell == cell) return;
-            clearMouseOverCell();
-            cell.setStyle(cell.getStyle() + "-fx-border-color: red; -fx-border-width: 1px;");
-            this.mouseOverCell = cell;
-            this.mouseOverPosition = new Vector2D(colIndex - 1, rowIndex - 1);
-        }
+        int colIndex = (int) ((x - gapH) / cellSize) - 1;
+        int rowIndex = (int) ((y - gapV) / cellSize) - 1;
+        Vector2D mouseOverPosition = new Vector2D(colIndex, rowIndex);
+        List<Animal> animals = simulation.getAnimalsOnPosition(mouseOverPosition);
+        if (animals.size() == 1)
+            selectedAnimal.set(new Pair<>(mouseOverPosition, animals.getFirst()));
+        else
+            selectedAnimal.set(null);
     }
 
-    public void onGridMouseExited(MouseEvent ignored) {
-        clearMouseOverCell();
-    }
 
-    private void clearMouseOverCell() {
-        if (mouseOverCell == null) return;
-        this.mouseOverCell.setStyle(mouseOverCell.getStyle().replace("-fx-border-color: red; -fx-border-width: 1px;", ""));
-        this.mouseOverCell = null;
-        this.mouseOverPosition = null;
-    }
-
-    private Label getCellByRowColumn(int row, int col) {
+    private Label getCellByRowColumn(Vector2D pos) {
         for (Node node : mapGrid.getChildren()) {
             Integer rowIndex = GridPane.getRowIndex(node);
             Integer colIndex = GridPane.getColumnIndex(node);
             rowIndex = rowIndex == null ? 0 : rowIndex;
             colIndex = colIndex == null ? 0 : colIndex;
-
-            if (rowIndex == row && colIndex == col && node instanceof Label label) {
+            if (rowIndex - 1 == pos.y() && colIndex - 1 == pos.x() && node instanceof Label label) {
                 return label;
             }
         }
@@ -278,13 +294,17 @@ public class SimulationPresenter implements SimulationStepListener {
         Platform.runLater(() -> {
             int oldAnimalAmount = simulation.getAnimalsOnPosition(oldPosition).size();
             int newAnimalAmount = simulation.getAnimalsOnPosition(newPosition).size();
-            Label oldCell = getCellByRowColumn(oldPosition.y() + 1, oldPosition.x() + 1);
-            Label newCell = getCellByRowColumn(newPosition.y() + 1, newPosition.x() + 1);
+            Label oldCell = getCellByRowColumn(oldPosition);
+            Label newCell = getCellByRowColumn(newPosition);
             if (oldCell != null) {
                 oldCell.setStyle(computeStyle(oldAnimalAmount, simulation.isPlantOnPosition(oldPosition)));
             }
             if (newCell != null) {
                 newCell.setStyle(computeStyle(newAnimalAmount, simulation.isPlantOnPosition(newPosition)));
+            }
+            Pair<Vector2D, Animal> animal = selectedAnimal.get();
+            if (animal != null && oldPosition.equals(animal.getKey())) {
+                selectedAnimal.set(new Pair<>(newPosition, animal.getValue()));
             }
         });
     }
@@ -292,7 +312,7 @@ public class SimulationPresenter implements SimulationStepListener {
     @Override
     public void addPlant(Vector2D position) {
         Platform.runLater(() -> {
-            Label cell = getCellByRowColumn(position.y() + 1, position.x() + 1);
+            Label cell = getCellByRowColumn(position);
             if (cell != null) {
                 cell.setText("*");
                 cell.setStyle(computeStyle(simulation.getAnimalsOnPosition(position).size(), true));
@@ -303,7 +323,7 @@ public class SimulationPresenter implements SimulationStepListener {
     @Override
     public void addAnimal(Vector2D position) {
         Platform.runLater(() -> {
-            Label cell = getCellByRowColumn(position.y() + 1, position.x() + 1);
+            Label cell = getCellByRowColumn(position);
             if (cell != null) {
                 cell.setStyle(computeStyle(simulation.getAnimalsOnPosition(position).size(), false));
             }
@@ -313,7 +333,7 @@ public class SimulationPresenter implements SimulationStepListener {
     @Override
     public void removePlant(Vector2D position) {
         Platform.runLater(() -> {
-            Label cell = getCellByRowColumn(position.y() + 1, position.x() + 1);
+            Label cell = getCellByRowColumn(position);
             if (cell != null) {
                 cell.setText("");
                 cell.setStyle(computeStyle(simulation.getAnimalsOnPosition(position).size(), false));
@@ -324,10 +344,10 @@ public class SimulationPresenter implements SimulationStepListener {
     @Override
     public void removeAnimal(Vector2D position) {
         Platform.runLater(() -> {
-            Label cell = getCellByRowColumn(position.y() + 1, position.x() + 1);
+            Label cell = getCellByRowColumn(position);
             if (cell != null) {
                 cell.setStyle(computeStyle(simulation.getAnimalsOnPosition(position).size(),
-                                           simulation.isPlantOnPosition(position)));
+                        simulation.isPlantOnPosition(position)));
             }
         });
     }
