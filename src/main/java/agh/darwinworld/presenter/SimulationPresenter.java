@@ -110,7 +110,7 @@ public class SimulationPresenter implements SimulationStepListener {
             stage.setOnCloseRequest(event -> {
                 if (simulation != null)
                     simulation.stop();
-                if (simulationThread != null) {
+                if (simulationThread != null && simulationThread.isAlive()) {
                     try {
                         simulationThread.interrupt();
                     } catch (SecurityException e) {
