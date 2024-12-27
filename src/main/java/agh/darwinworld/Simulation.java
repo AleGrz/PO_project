@@ -96,7 +96,7 @@ public class Simulation implements Runnable {
             animals.computeIfAbsent(v, k -> new ArrayList<>());
             animals.get(v).add(animal);
         }
-        growPlants(true);
+        growPlants(startingPlantAmount);
     }
 
     public int getWidth() {
@@ -167,13 +167,17 @@ public class Simulation implements Runnable {
             moveAnimals();
             feedAnimals();
             breedAnimals();
-            growPlants(false);
+            growPlants(plantGrowingAmount);
             propagateFire();
             if (step % fireFrequency == 0) {
                 Vector2D randomPos = plants.toArray(new Vector2D[0])[random.nextInt(0,plants.size())];
                 fire.put(randomPos, fireLength);
             }
-            listeners.forEach(SimulationStepListener::drawMap);
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             step++;
         }
     }
@@ -181,7 +185,10 @@ public class Simulation implements Runnable {
     private void removeDeadAnimals() {
         for (Vector2D position : animals.keySet()) {
             for (Animal animal : animals.get(position)) {
-                if (animal.isDead()) animals.remove(position);
+                if (animal.isDead()) {
+                    animals.remove(position);
+                    listeners.forEach(listener -> listener.removeAnimal(position));
+                }
             }
             if (animals.get(position).isEmpty())
                 animals.remove(position);
@@ -199,11 +206,10 @@ public class Simulation implements Runnable {
 
             for (Animal animal : animalList) {
                 Vector2D newPosition = animal.move(position, width, height);
-                if (!fire.containsKey(animal)) {
-                    updatedAnimals
-                            .computeIfAbsent(newPosition, k -> new ArrayList<>())
-                            .add(animal);
-                }
+                updatedAnimals
+                        .computeIfAbsent(newPosition, k -> new ArrayList<>())
+                        .add(animal);
+                listeners.forEach(listener -> listener.moveAnimal(position, newPosition));
             }
         }
         animals = updatedAnimals;
@@ -216,6 +222,7 @@ public class Simulation implements Runnable {
                     .orElseThrow(() -> new IllegalArgumentException("List must not be empty"));
             topAnimal.eat(plantEnergyAmount);
             plants.remove(position);
+            listeners.forEach(listener -> listener.removePlant(position));
         }
     }
 
@@ -239,7 +246,7 @@ public class Simulation implements Runnable {
     }
 
 
-    private void growPlants(boolean init) {
+    private void growPlants(int amount) {
         int equatorHeight = Math.round(height*0.2f);
         int barHeight = Math.round((height - equatorHeight)/2f);
         List<Vector2D> plantCandidates = new ArrayList<>();
@@ -255,7 +262,7 @@ public class Simulation implements Runnable {
                 }
             }
         }
-        plants.addAll(selectRandom(plantCandidates, Math.round((init ? startingPlantAmount : plantGrowingAmount) * 0.2f)));
+        plants.addAll(selectRandom(plantCandidates, Math.round(amount * 0.2f)));
         plantCandidates = new ArrayList<>();
         for (int i = 0; i < width; i++) {
             for (int j = barHeight; j < barHeight+equatorHeight; j++) {
@@ -264,7 +271,10 @@ public class Simulation implements Runnable {
                 }
             }
         }
-        plants.addAll(selectRandom(plantCandidates, Math.round((init ? startingPlantAmount : plantGrowingAmount) * 0.8f)));
+        plants.addAll(selectRandom(plantCandidates, Math.round((amount) * 0.8f)));
+        for (Vector2D position : plants) {
+            listeners.forEach(listener -> listener.addPlant(position));
+        }
 
     }
 

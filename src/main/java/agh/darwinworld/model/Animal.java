@@ -51,9 +51,9 @@ public class Animal {
             this.genome = Stream.concat(Arrays.stream(secondGenomes), Arrays.stream(firstGenomes))
                     .toArray(MoveDirection[]::new);
         }
+        this.energy = breedingEnergyCost * 2;
         mutate(minMutations, maxMutations);
         MapDirection[] directions = MapDirection.values();
-        this.energy = breedingEnergyCost * 2;
         this.direction = directions[random.nextInt(0, directions.length)];
         this.currentGene = random.nextInt(0, mommyGenomeAmount + daddyGenomeAmount);
         mommy.childrenAmount += 1;
