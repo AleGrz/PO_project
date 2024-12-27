@@ -1,6 +1,7 @@
 package agh.darwinworld.presenter;
 
 import agh.darwinworld.Simulation;
+import agh.darwinworld.helper.AlertHelper;
 import agh.darwinworld.model.Animal;
 import agh.darwinworld.model.MoveDirection;
 import agh.darwinworld.model.SimulationStepListener;
@@ -264,8 +265,15 @@ public class SimulationPresenter implements SimulationStepListener {
         //Number x = series.getData().getLast().getXValue();
         //Random random = new Random();
         //series.getData().add(new XYChart.Data<>(x.intValue() + 1, random.nextInt(0, 50)));
+        Stage currentStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         if (simulationThread == null) {
             simulationThread = new Thread(simulation);
+            simulationThread.setUncaughtExceptionHandler((thread, throwable) -> {
+                Platform.runLater(() -> {
+                    AlertHelper.ShowExceptionAlert(currentStage, throwable);
+                    startStopButton.setDisable(true);
+                });
+            });
             simulationThread.start();
         }
         if (simulation.isRunning()) {
