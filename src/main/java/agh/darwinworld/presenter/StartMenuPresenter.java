@@ -14,21 +14,36 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 public class StartMenuPresenter {
-    @FXML private IntField heightIntField;
-    @FXML private IntField widthIntField;
-    @FXML private IntField startingPlantAmountIntField;
-    @FXML private IntField plantGrowingAmountIntField;
-    @FXML private IntField plantEnergyAmountIntField;
-    @FXML private IntField startingAnimalAmountIntField;
-    @FXML private IntField startingEnergyAmountIntField;
-    @FXML private IntField minimumBreedingEnergyIntField;
-    @FXML private IntField breedingEnergyCostIntField;
-    @FXML private IntField minimumMutationAmountIntField;
-    @FXML private IntField maximumMutationAmountIntField;
-    @FXML private IntField animalGenomeLengthIntField;
-    @FXML private IntField fireFrequencyIntField;
-    @FXML private IntField fireLengthIntField;
-    @FXML private IntField seedIntField;
+    @FXML
+    private IntField heightIntField;
+    @FXML
+    private IntField widthIntField;
+    @FXML
+    private IntField startingPlantAmountIntField;
+    @FXML
+    private IntField plantGrowingAmountIntField;
+    @FXML
+    private IntField plantEnergyAmountIntField;
+    @FXML
+    private IntField startingAnimalAmountIntField;
+    @FXML
+    private IntField startingEnergyAmountIntField;
+    @FXML
+    private IntField minimumBreedingEnergyIntField;
+    @FXML
+    private IntField breedingEnergyCostIntField;
+    @FXML
+    private IntField minimumMutationAmountIntField;
+    @FXML
+    private IntField maximumMutationAmountIntField;
+    @FXML
+    private IntField animalGenomeLengthIntField;
+    @FXML
+    private IntField fireFrequencyIntField;
+    @FXML
+    private IntField fireLengthIntField;
+    @FXML
+    private IntField seedIntField;
 
     @FXML
     public void initialize() {
