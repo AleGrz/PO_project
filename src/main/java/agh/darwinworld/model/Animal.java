@@ -51,7 +51,6 @@ public class Animal {
         MoveDirection[] firstGenomes = mommy.extractGenomes(mommyLeft, mommyGenomeAmount);
         MoveDirection[] secondGenomes = daddy.extractGenomes(!mommyLeft, daddyGenomeAmount);
 
-
         this.genome = Stream.concat(Arrays.stream(firstGenomes), Arrays.stream(secondGenomes))
                 .toArray(MoveDirection[]::new);
         this.energy = breedingEnergyCost * 2;
@@ -91,21 +90,19 @@ public class Animal {
     }
 
     public boolean isDead() {
-        return energy <= 0;
+        return energy < 0;
     }
 
     public Vector2D move(Vector2D position, int mapWidth, int mapHeight) {
-        if (this.energy <= 0)
+        if (isDead())
             throw new IllegalStateException("Cannot move animal that is dead!");
         if (this.genome.length == 0)
             throw new IllegalStateException("Cannot move animal with empty genome!");
-        if (this.currentGene >= this.genome.length) return position;
-            //throw new IllegalStateException("Current gene index " + this.currentGene + " is out of bounds");
 
         this.direction = this.direction.rotate(this.genome[this.currentGene]);
         this.currentGene = (this.currentGene + 1) % this.genome.length;
-        this.energy -= 1;
-        this.age += 1;
+        this.energy--;
+        this.age--;
         Vector2D newPos = position.add(this.direction.getValue()).normalize(mapWidth, null);
         if (newPos.y() < 0 || newPos.y() >= mapHeight){
             this.direction = this.direction.rotate(MoveDirection.BACKWARD);
@@ -130,8 +127,6 @@ public class Animal {
     }
 
     public void eat(int energy) {
-        if (isDead())
-            throw new IllegalArgumentException("Animal cannot eat when is dead!");
         if (energy < 0)
             throw new IllegalArgumentException("Energy added must be greater than or equal to 0!");
         this.energy += energy;

@@ -185,15 +185,28 @@ public class Simulation implements Runnable {
     }
 
     private void removeDeadAnimals() {
+        Map<Vector2D, ArrayList<Animal>> animalsToRemove = new HashMap<>();
+        List<Vector2D> emptyPositions = new ArrayList<>();
+
         for (Vector2D position : animals.keySet()) {
+            ArrayList<Animal> toRemove = new ArrayList<>();
             for (Animal animal : animals.get(position)) {
                 if (animal.isDead()) {
-                    animals.get(position).remove(animal);
+                    toRemove.add(animal);
                     listeners.forEach(listener -> listener.removeAnimal(position));
                 }
             }
-            if (animals.get(position).isEmpty())
-                animals.remove(position);
+
+            if (!toRemove.isEmpty()) {
+                animalsToRemove.put(position, toRemove);
+            }
+
+            if (animals.get(position).isEmpty()) {
+                emptyPositions.add(position);
+            }
+        }
+        for (Map.Entry<Vector2D, ArrayList<Animal>> entry : animalsToRemove.entrySet()) {
+            animals.get(entry.getKey()).removeAll(entry.getValue());
         }
 
     }
@@ -218,14 +231,15 @@ public class Simulation implements Runnable {
     }
 
     private void feedAnimals() {
-        for (Vector2D position : animals.keySet()) {
-            Animal topAnimal = animals.get(position).stream()
-                    .max(Comparator.comparingInt(Animal::getEnergy))
-                    .orElseThrow(() -> new IllegalArgumentException("List must not be empty"));
+        List<Vector2D> toRemove = new ArrayList<>();
+        for (Vector2D position : plants) {
+            if (!animals.containsKey(position)) continue;
+            Animal topAnimal = animals.get(position).stream().max(Comparator.comparingInt(Animal::getEnergy)).orElseThrow();
             topAnimal.eat(plantEnergyAmount);
-            plants.remove(position);
+            toRemove.add(position);
             listeners.forEach(listener -> listener.removePlant(position));
         }
+        toRemove.forEach(plants::remove);
     }
 
     private void breedAnimals() {
