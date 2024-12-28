@@ -5,7 +5,7 @@ import java.util.*;
 public abstract class AbstractMap {
     private final int width;
     private final int height;
-    private HashMap<Vector2D, ArrayList<Animal>> animals = new HashMap<>();
+    private final HashMap<Vector2D, ArrayList<Animal>> animals = new HashMap<>();
     private final HashSet<Vector2D> plants = new HashSet<>();
     public AbstractMap(int width, int height) {
         this.width = width;
@@ -18,6 +18,10 @@ public abstract class AbstractMap {
 
     public int getHeight() {
         return this.height;
+    }
+
+    public int getMaxAnimalAmount() {
+        return animals.values().stream().map(ArrayList::size).max(Integer::compareTo).orElse(0);
     }
 
     public List<Animal> getAnimalsOnPosition(Vector2D position) {

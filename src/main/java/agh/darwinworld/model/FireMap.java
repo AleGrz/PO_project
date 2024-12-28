@@ -8,4 +8,8 @@ public class FireMap extends AbstractMap {
     public FireMap(int width, int height) {
         super(width, height);
     }
+
+    public boolean isFireOnPosition(Vector2D position) {
+        return fire.containsKey(position);
+    }
 }
