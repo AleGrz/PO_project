@@ -14,26 +14,23 @@ public interface SimulationStepListener {
     void moveAnimal(Vector2D oldPosition, Vector2D newPosition);
 
     /**
-     * Called whenever a new plant is added to the simulation.
-     * @param position the position where the plant is added.
+     * Called whenever a plant is added to the simulation.
+     * @param position the position where the plant is added to.
      */
     void addPlant(Vector2D position);
 
     /**
-     * Called whenever a new animal is added to the simulation.
-     * @param position the position where the animal is added.
-     */
-    void addAnimal(Vector2D position);
-
-    /**
      * Called whenever a plant is removed from the simulation.
-     * @param position the position of the plant that is removed.
+     * @param position the position where the plant is removed from.
      */
     void removePlant(Vector2D position);
 
     /**
-     * Called whenever an animal is removed from the simulation.
-     * @param position the position of the animal that is removed.
+     * Called whenever an animal is updated in the simulation.
+     * @param position the position of the animal that is updated.
      */
-    void removeAnimal(Vector2D position);
+    void updateAnimal(Vector2D position);
+
+    void addFire(Vector2D position);
+    void removeFire(Vector2D position);
 }

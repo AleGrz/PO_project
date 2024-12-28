@@ -176,7 +176,7 @@ public class Simulation implements Runnable {
 
     @Override
     public void run() {
-        while (!animals.isEmpty()) {
+        while (true) {
             if (isRunning) {
                 removeDeadAnimals();
                 moveAnimals();
@@ -209,7 +209,6 @@ public class Simulation implements Runnable {
             for (Animal animal : animals.get(position)) {
                 if (animal.isDead()) {
                     toRemove.add(animal);
-                    listeners.forEach(listener -> listener.removeAnimal(position));
                 }
             }
 
@@ -223,6 +222,7 @@ public class Simulation implements Runnable {
         }
         for (Map.Entry<Vector2D, ArrayList<Animal>> entry : animalsToRemove.entrySet()) {
             animals.get(entry.getKey()).removeAll(entry.getValue());
+            listeners.forEach(listener -> listener.updateAnimal(entry.getKey()));
         }
         for (Vector2D position : emptyPositions) {
             animals.remove(position);
@@ -276,7 +276,7 @@ public class Simulation implements Runnable {
                 Animal baby = new Animal(topAnimals.getFirst(), topAnimals.getLast(), breedingEnergyCost,
                         minimumBreedingEnergy, minimumMutationAmount, maximumMutationAmount);
                 animals.get(position).add(baby);
-                listeners.forEach(listener -> listener.addAnimal(position));
+                listeners.forEach(listener -> listener.updateAnimal(position));
             }
         }
     }
@@ -316,7 +316,9 @@ public class Simulation implements Runnable {
 
     public void propagateFire() {
         HashMap<Vector2D, Integer> newFire = new HashMap<>();
-        for (Map.Entry<Vector2D, Integer> fireData : fire.entrySet()) {
+        Iterator<Map.Entry<Vector2D, Integer>> iterator = fire.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Vector2D, Integer> fireData = iterator.next();
             Vector2D position = fireData.getKey();
             Vector2D[] directions = new Vector2D[]{
                     position.add(new Vector2D(0, 1)),
@@ -325,10 +327,22 @@ public class Simulation implements Runnable {
                     position.add(new Vector2D(-1, 0)),
             };
             for (Vector2D direction : directions) {
-                newFire.put(direction, fireLength);
+                if (fire.containsKey(direction)) continue;
+                if (plants.contains(position)) {
+                    newFire.put(direction, fireLength);
+                }
             }
+            listeners.forEach(listener -> listener.addFire(position));
+            if (animals.containsKey(position)) {
+                animals.get(position).removeAll(animals.get(position));
+                animals.remove(position);
+            }
+
+            plants.remove(position);
+
             if (fireData.getValue() <= 0) {
-                fire.remove(position);
+                listeners.forEach(listener -> listener.removeFire(position));
+                iterator.remove();
             } else {
                 fireData.setValue(fireData.getValue() - 1);
             }

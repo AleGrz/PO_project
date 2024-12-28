@@ -102,7 +102,7 @@ public class Animal {
         this.direction = this.direction.rotate(this.genome[this.currentGene]);
         this.currentGene = (this.currentGene + 1) % this.genome.length;
         this.energy--;
-        this.age--;
+        this.age++;
         Vector2D newPos = position.add(this.direction.getValue()).normalize(mapWidth, null);
         if (newPos.y() < 0 || newPos.y() >= mapHeight){
             this.direction = this.direction.rotate(MoveDirection.BACKWARD);

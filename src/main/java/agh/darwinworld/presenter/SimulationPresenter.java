@@ -415,21 +415,41 @@ public class SimulationPresenter implements SimulationStepListener {
     }
 
     @Override
-    public void addPlant(Vector2D position) {
+    public void updateAnimal(Vector2D position) {
         Platform.runLater(() -> {
-            Region cell = getCellByRowColumn(position, true);
+            Region cell = getCellByRowColumn(position, false);
             if (cell != null) {
-                cell.setStyle("-fx-background-color: green;");
+                cell.setStyle(computeStyle(simulation.getAnimalsOnPosition(position).size()));
             }
         });
     }
 
     @Override
-    public void addAnimal(Vector2D position) {
+    public void addFire(Vector2D position) {
         Platform.runLater(() -> {
-            Region cell = getCellByRowColumn(position, false);
+            Region cell = getCellByRowColumn(position, true);
             if (cell != null) {
-                cell.setStyle(computeStyle(simulation.getAnimalsOnPosition(position).size()));
+                cell.setStyle("-fx-background-color: orange;");
+            }
+        });
+    }
+
+    @Override
+    public void removeFire(Vector2D position) {
+        Platform.runLater(() -> {
+            Region cell = getCellByRowColumn(position, true);
+            if (cell != null) {
+                cell.setStyle("-fx-background-color: lightgreen;");
+            }
+        });
+    }
+
+    @Override
+    public void addPlant(Vector2D position) {
+        Platform.runLater(() -> {
+            Region cell = getCellByRowColumn(position, true);
+            if (cell != null) {
+                cell.setStyle("-fx-background-color: green;");
             }
         });
     }
@@ -444,13 +464,5 @@ public class SimulationPresenter implements SimulationStepListener {
         });
     }
 
-    @Override
-    public void removeAnimal(Vector2D position) {
-        Platform.runLater(() -> {
-            Region cell = getCellByRowColumn(position, false);
-            if (cell != null) {
-                cell.setStyle(computeStyle(simulation.getAnimalsOnPosition(position).size()));
-            }
-        });
-    }
+
 }
