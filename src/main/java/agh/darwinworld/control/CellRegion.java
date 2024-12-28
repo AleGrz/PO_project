@@ -5,20 +5,19 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 public class CellRegion extends Region {
-    public static final Color NORMAL_BACKGROUND = Color.YELLOWGREEN;
-    public static final Color PLANT_BACKGROUND = Color.DARKGREEN;
-    public static final Color FIRE_BACKGROUND_LEAST = Color.RED;
-    public static final Color FIRE_BACKGROUND_MOST = Color.BLUE;
-    public static final Color ANIMAL_COLOR_LEAST = Color.LIGHTBLUE;
-    public static final Color ANIMAL_COLOR_MOST = Color.BLUE;
+    public static final Color NORMAL_BACKGROUND = Color.web("0xa6da95");
+    public static final Color PLANT_BACKGROUND = Color.web("0x40a02b");
+    public static final Color FIRE_BACKGROUND_LEAST = Color.BLACK;
+    public static final Color FIRE_BACKGROUND_MOST = Color.ORANGE;
+    public static final Color ANIMAL_COLOR_LEAST = Color.web("0xc6d0f5");
+    public static final Color ANIMAL_COLOR_MOST = Color.web("0x303446");
 
     private final Region content;
     private boolean hasPlant = false;
     private int fireStageAmount;
-    private Integer currentFireStage;
-    private int currentAnimalAmount;
+    private int currentFireStage;
 
-    public CellRegion(boolean hasPlant, int currentAnimalAmount, Integer currentFireStage, int fireStageAmount) {
+    public CellRegion(boolean hasPlant, int currentAnimalAmount, int maxAnimalAmount, int currentFireStage, int fireStageAmount) {
         super();
         this.getStyleClass().add("cell");
         setMaxWidth(Double.MAX_VALUE);
@@ -32,8 +31,7 @@ public class CellRegion extends Region {
         this.hasPlant = hasPlant;
         this.currentFireStage = currentFireStage;
         this.fireStageAmount = fireStageAmount;
-        this.currentAnimalAmount = currentAnimalAmount;
-        updateContent();
+        updateContent(currentAnimalAmount, maxAnimalAmount);
         updateBackground();
     }
 
@@ -45,9 +43,8 @@ public class CellRegion extends Region {
         }
     }
 
-    public void setCurrentAnimalAmount(int currentAnimalAmount) {
-        this.currentAnimalAmount = currentAnimalAmount;
-        updateContent();
+    public void setAnimalAmount(int currentAnimalAmount, int maxAnimalAmount) {
+        updateContent(currentAnimalAmount, maxAnimalAmount);
     }
 
     public void setHasPlant(boolean hasPlant) {
@@ -60,14 +57,15 @@ public class CellRegion extends Region {
         updateBackground();
     }
 
-    public void setCurrentFireStage(Integer fireStage) {
+    public void setCurrentFireStage(int fireStage) {
+        if (fireStage > 0) this.hasPlant = false;
         this.currentFireStage = fireStage;
         updateBackground();
     }
 
-    private void updateContent() {
+    private void updateContent(int currentAnimalAmount, int maxAnimalAmount) {
         if (currentAnimalAmount != 0) {
-            final Color animalColor = ANIMAL_COLOR_LEAST.interpolate(ANIMAL_COLOR_MOST, (double) currentAnimalAmount / 10);
+            final Color animalColor = ANIMAL_COLOR_LEAST.interpolate(ANIMAL_COLOR_MOST, (double) currentAnimalAmount / Math.max(maxAnimalAmount, 5));
             content.setBackground(new Background(new BackgroundFill(animalColor, null, null)));
         } else {
             content.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, null, null)));
@@ -75,8 +73,8 @@ public class CellRegion extends Region {
     }
 
     private void updateBackground() {
-        if (this.currentFireStage != null) {
-            final Color fireColor = FIRE_BACKGROUND_LEAST.interpolate(FIRE_BACKGROUND_MOST, (double) this.currentFireStage / this.fireStageAmount);
+        if (this.currentFireStage > 0) {
+            final Color fireColor = FIRE_BACKGROUND_LEAST.interpolate(FIRE_BACKGROUND_MOST, (double) (this.currentFireStage - 1) / this.fireStageAmount);
             setBackground(new Background(new BackgroundFill(fireColor, null, null)));
         } else {
             setBackground(new Background(new BackgroundFill(this.hasPlant ? PLANT_BACKGROUND : NORMAL_BACKGROUND, null, null)));

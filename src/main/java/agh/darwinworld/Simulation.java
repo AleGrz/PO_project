@@ -220,14 +220,19 @@ public class Simulation implements Runnable {
                 emptyPositions.add(position);
             }
         }
+        final int max = getMaxAnimalAmount();
         for (Map.Entry<Vector2D, ArrayList<Animal>> entry : animalsToRemove.entrySet()) {
             animals.get(entry.getKey()).removeAll(entry.getValue());
-            listeners.forEach(listener -> listener.updateAnimal(entry.getKey(), animals.get(entry.getKey()).size()));
+            listeners.forEach(listener -> listener.updateAnimal(entry.getKey(), animals.get(entry.getKey()).size(), max));
         }
         for (Vector2D position : emptyPositions) {
             animals.remove(position);
         }
 
+    }
+
+    public int getMaxAnimalAmount() {
+        return animals.values().stream().map(ArrayList::size).max(Integer::compareTo).orElse(0);
     }
 
     private void moveAnimals() {
@@ -237,7 +242,6 @@ public class Simulation implements Runnable {
             List<Animal> animalList = entry.getValue();
 
             if (animalList.isEmpty()) continue;
-
             for (Animal animal : animalList) {
                 Vector2D newPosition = animal.move(position, width, height);
                 updatedAnimals
@@ -247,11 +251,12 @@ public class Simulation implements Runnable {
         }
         Set<Vector2D> oldPositions = animals.keySet();
         oldPositions.removeAll(updatedAnimals.keySet());
+        final int max = getMaxAnimalAmount();
         for (Vector2D position : oldPositions) {
-            listeners.forEach(listener -> listener.updateAnimal(position, 0));
+            listeners.forEach(listener -> listener.updateAnimal(position, 0, max));
         }
         for (Vector2D position : updatedAnimals.keySet()) {
-            listeners.forEach(listener -> listener.updateAnimal(position, updatedAnimals.get(position).size()));
+            listeners.forEach(listener -> listener.updateAnimal(position, updatedAnimals.get(position).size(), max));
         }
         animals = updatedAnimals;
     }
@@ -283,7 +288,8 @@ public class Simulation implements Runnable {
                 Animal baby = new Animal(topAnimals.getFirst(), topAnimals.getLast(), breedingEnergyCost,
                         minimumBreedingEnergy, minimumMutationAmount, maximumMutationAmount);
                 animals.get(position).add(baby);
-                listeners.forEach(listener -> listener.updateAnimal(position, animals.get(position).size()));
+                final int max = getMaxAnimalAmount();
+                listeners.forEach(listener -> listener.updateAnimal(position, animals.get(position).size(), max));
             }
         }
     }
@@ -336,11 +342,12 @@ public class Simulation implements Runnable {
             for (Vector2D direction : directions) {
                 if (fire.containsKey(direction)) continue;
                 if (plants.contains(position)) {
-                    newFire.put(direction, fireLength);
+                    newFire.put(direction, this.fireLength);
                 }
             }
-            listeners.forEach(listener -> listener.addFire(position));
-            listeners.forEach(listener -> listener.updateAnimal(position, 0));
+            listeners.forEach(listener -> listener.updateFire(position, fire.get(position)));
+            final int max = getMaxAnimalAmount();
+            listeners.forEach(listener -> listener.updateAnimal(position, 0, max));
             if (animals.containsKey(position)) {
                 animals.get(position).removeAll(animals.get(position));
                 animals.remove(position);
@@ -349,7 +356,7 @@ public class Simulation implements Runnable {
             plants.remove(position);
 
             if (fireData.getValue() <= 0) {
-                listeners.forEach(listener -> listener.removeFire(position));
+                listeners.forEach(listener -> listener.updateFire(position, 0));
                 iterator.remove();
             } else {
                 fireData.setValue(fireData.getValue() - 1);

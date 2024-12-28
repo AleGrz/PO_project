@@ -259,12 +259,14 @@ public class SimulationPresenter implements SimulationStepListener {
                 mapGrid.getRowConstraints().add(new RowConstraints(cellSize, cellSize, cellSize));
                 createLabelCell(Integer.toString(simulation.getHeight() - j - 1), 0, j + 1);
             }
+            int maxAnimalAmount = simulation.getMaxAnimalAmount();
+            int maxFireLength = simulation.getFireLength();
             for (int i = 0; i < simulation.getWidth(); i++) {
                 for (int j = 0; j < simulation.getHeight(); j++) {
                     Vector2D pos = new Vector2D(i, simulation.getHeight() - j - 1);
                     int animalAmount = simulation.getAnimalsOnPosition(pos).size();
                     boolean isPlant = simulation.isPlantOnPosition(pos);
-                    CellRegion cell = new CellRegion(isPlant, animalAmount, null, simulation.getFireLength() - 1);
+                    CellRegion cell = new CellRegion(isPlant, animalAmount, maxAnimalAmount, 0, maxFireLength);
                     GridPane.setHgrow(cell, Priority.ALWAYS);
                     GridPane.setVgrow(cell, Priority.ALWAYS);
                     mapGrid.add(cell, i + 1, j + 1);
@@ -372,31 +374,21 @@ public class SimulationPresenter implements SimulationStepListener {
     }
 
     @Override
-    public void updateAnimal(Vector2D position, int animalCount) {
+    public void updateAnimal(Vector2D position, int animalCount, int maxAnimalCount) {
         Platform.runLater(() -> {
             CellRegion cell = getCellByRowColumn(position);
             if (cell != null) {
-                cell.setCurrentAnimalAmount(animalCount);
+                cell.setAnimalAmount(animalCount, maxAnimalCount);
             }
         });
     }
 
     @Override
-    public void addFire(Vector2D position) {
+    public void updateFire(Vector2D position, int length) {
         Platform.runLater(() -> {
             CellRegion cell = getCellByRowColumn(position);
             if (cell != null) {
-                cell.setCurrentFireStage(3);
-            }
-        });
-    }
-
-    @Override
-    public void removeFire(Vector2D position) {
-        Platform.runLater(() -> {
-            CellRegion cell = getCellByRowColumn(position);
-            if (cell != null) {
-                cell.setCurrentFireStage(null);
+                cell.setCurrentFireStage(length);
             }
         });
     }
