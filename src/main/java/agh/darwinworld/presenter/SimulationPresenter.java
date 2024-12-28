@@ -17,6 +17,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -119,6 +120,15 @@ public class SimulationPresenter implements SimulationStepListener {
             Stage stage = (Stage) rootBorderPane.getScene().getWindow();
             stage.setOnCloseRequest(windowEvent -> stopSimulationThread());
         });
+        dataLineChart.setCreateSymbols(false);
+        String[] seriesNames = new String[]{"Animal count", "Plant count", "Empty field count",
+                "Most popular genotype", "Average lifetime",
+                "Average descendants amount"};
+        for (String seriesName : seriesNames) {
+            XYChart.Series<Number, Number> series = new XYChart.Series<>();
+            series.setName(seriesName);
+            dataLineChart.getData().add(series);
+        }
     }
 
     public void updateSelectedAnimalData(Pair<Vector2D, Animal> oldValue, Pair<Vector2D, Animal> newValue) {
@@ -288,16 +298,6 @@ public class SimulationPresenter implements SimulationStepListener {
     }
 
     public void onStartStopClicked(ActionEvent actionEvent) {
-        //if (dataLineChart.getData().isEmpty()) {
-        //    XYChart.Series<Number, Number> series = new XYChart.Series<>();
-        //    series.setName("Random name");
-        //    series.getData().add(new XYChart.Data<>(0, 15));
-        //    dataLineChart.getData().add(series);2
-        //}
-        //XYChart.Series<Number, Number> series = dataLineChart.getData().getFirst();
-        //Number x = series.getData().getLast().getXValue();
-        //Random random = new Random();
-        //series.getData().add(new XYChart.Data<>(x.intValue() + 1, random.nextInt(0, 50)));
         Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         try {
             if (simulationThread == null) {
@@ -415,6 +415,17 @@ public class SimulationPresenter implements SimulationStepListener {
             this.popularGenotype.setText(popularGenotype);
             this.averageLifetime.setText(Integer.toString(averageLifetime));
             this.averageDescendantsAmount.setText(Integer.toString(averageDescendantsAmount));
+            XYChart.Series<Number, Number> animalCountSeries = dataLineChart.getData().get(0);
+            XYChart.Series<Number, Number> plantCountSeries = dataLineChart.getData().get(1);
+            XYChart.Series<Number, Number> emptyFieldCountSeries = dataLineChart.getData().get(2);
+            XYChart.Series<Number, Number> popularGenotypeSeries = dataLineChart.getData().get(3);
+            XYChart.Series<Number, Number> averageLifetimeSeries = dataLineChart.getData().get(4);
+            XYChart.Series<Number, Number> averageDescendantsAmountSeries = dataLineChart.getData().get(5);
+            animalCountSeries.getData().add(new XYChart.Data<>(step, animalCount));
+            plantCountSeries.getData().add(new XYChart.Data<>(step, plantCount));
+            emptyFieldCountSeries.getData().add(new XYChart.Data<>(step, emptyFieldCount));
+            averageLifetimeSeries.getData().add(new XYChart.Data<>(step, averageLifetime));
+            averageDescendantsAmountSeries.getData().add(new XYChart.Data<>(step, averageDescendantsAmount));
         });
     }
 

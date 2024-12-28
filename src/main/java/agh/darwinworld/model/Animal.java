@@ -90,7 +90,7 @@ public class Animal {
     }
 
     public int getDescendantsAmount() {
-        return 123124;
+        return 12;
     }
 
     public boolean isDead() {
