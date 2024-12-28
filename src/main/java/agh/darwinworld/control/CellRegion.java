@@ -106,6 +106,7 @@ public class CellRegion extends Region {
     }
 
     /**
+     * 
      * @param amount
      */
     public void setFireStageAmount(int amount) {

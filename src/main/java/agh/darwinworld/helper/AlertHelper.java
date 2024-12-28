@@ -11,7 +11,15 @@ import javafx.stage.Window;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+/**
+ * A utility class for displaying alert dialogs to the user.
+ */
 public class AlertHelper {
+    /**
+     * Shows an alert dialog for an exception, displaying the error message and the stack trace.
+     * @param owner The owner window for the alert, can be {@code null} if no owner window is needed.
+     * @param e The exception to be displayed in the alert.
+     */
     public static void ShowExceptionAlert(Window owner, Throwable e) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.initOwner(owner);
@@ -35,6 +43,12 @@ public class AlertHelper {
         alert.showAndWait();
     }
 
+    /**
+     * Shows a user-friendly alert dialog for a custom exception.
+     * This type of alert is generally used for warnings that can be presented to the user in a more friendly manner.
+     * @param owner The owner window for the alert, can be {@code null} if no owner window is needed.
+     * @param e The user-friendly exception to be displayed in the alert.
+     */
     public static void ShowUserFriendlyExceptionAlert(Window owner, UserFriendlyException e) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.initOwner(owner);

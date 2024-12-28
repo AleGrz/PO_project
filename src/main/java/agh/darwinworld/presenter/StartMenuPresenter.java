@@ -87,10 +87,10 @@ public class StartMenuPresenter {
             simulationStage.setScene(new Scene(root));
             simulationStage.setOnShown(e -> {
                 Insets windowInsets = getWindowInsets(simulationStage);
-                simulationStage.setMinWidth(root.getMinWidth() + windowInsets.getLeft() + windowInsets.getRight());
-                simulationStage.setMinHeight(root.getMinHeight() + windowInsets.getTop() + windowInsets.getBottom());
-                simulationStage.setWidth(root.getMinWidth() + windowInsets.getLeft() + windowInsets.getRight());
-                simulationStage.setHeight(root.getMinHeight() + windowInsets.getTop() + windowInsets.getBottom());
+                simulationStage.minWidthProperty().bind(root.minWidthProperty().add(windowInsets.getLeft() + windowInsets.getRight()));
+                simulationStage.minHeightProperty().bind(root.minHeightProperty().add(windowInsets.getTop() + windowInsets.getBottom()));
+                simulationStage.setWidth(simulationStage.getMinWidth());
+                simulationStage.setHeight(simulationStage.getMinHeight());
             });
             simulationStage.show();
         } catch (UserFriendlyException e) {
