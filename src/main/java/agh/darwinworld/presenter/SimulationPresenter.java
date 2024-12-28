@@ -42,7 +42,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
     @FXML
     private Label averageLifetime;
     @FXML
-    private Label averageDescendantsAmount;
+    private Label averageChildrenAmount;
     @FXML
     private Label heightLabel;
     @FXML
@@ -123,7 +123,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
         dataLineChart.setCreateSymbols(false);
         String[] seriesNames = new String[]{"Animal count", "Plant count", "Empty field count",
                 "Most popular genotype", "Average lifetime",
-                "Average descendants amount"};
+                "Average children amount"};
         for (String seriesName : seriesNames) {
             XYChart.Series<Number, Number> series = new XYChart.Series<>();
             series.setName(seriesName);
@@ -172,7 +172,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
         }
         selectedAnimalGenomeLabel.setText(genomeString.toString());
         selectedAnimalPlantsEatenAmountLabel.setText(Integer.toString(selectedAnimal.getTotalEatenPlants()));
-        selectedAnimalDiedAtLabel.setText("MISSING DATA");
+        selectedAnimalDiedAtLabel.setText("Missing");
     }
 
     public void setSimulation(Simulation simulation) {
@@ -403,26 +403,26 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
     }
 
     @Override
-    public void updateStatistics(int step, int animalCount, int plantCount, int emptyFieldCount, String popularGenotype, int averageLifetime, int averageDescendantsAmount) {
+    public void updateStatistics(int step, int animalCount, int plantCount, int emptyFieldCount, String popularGenotype, float averageLifetime, float averageChildrenAmount) {
         Platform.runLater(() -> {
             this.step.setText(Integer.toString(step));
             this.animalCount.setText(Integer.toString(animalCount));
             this.plantCount.setText(Integer.toString(plantCount));
             this.emptyFieldCount.setText(Integer.toString(emptyFieldCount));
             this.popularGenotype.setText(popularGenotype);
-            this.averageLifetime.setText(Integer.toString(averageLifetime));
-            this.averageDescendantsAmount.setText(Integer.toString(averageDescendantsAmount));
+            this.averageLifetime.setText(Float.toString(averageLifetime));
+            this.averageChildrenAmount.setText(Float.toString(averageChildrenAmount));
             XYChart.Series<Number, Number> animalCountSeries = dataLineChart.getData().get(0);
             XYChart.Series<Number, Number> plantCountSeries = dataLineChart.getData().get(1);
             XYChart.Series<Number, Number> emptyFieldCountSeries = dataLineChart.getData().get(2);
             XYChart.Series<Number, Number> popularGenotypeSeries = dataLineChart.getData().get(3);
             XYChart.Series<Number, Number> averageLifetimeSeries = dataLineChart.getData().get(4);
-            XYChart.Series<Number, Number> averageDescendantsAmountSeries = dataLineChart.getData().get(5);
+            XYChart.Series<Number, Number> averageChildrenAmountSeries = dataLineChart.getData().get(5);
             animalCountSeries.getData().add(new XYChart.Data<>(step, animalCount));
             plantCountSeries.getData().add(new XYChart.Data<>(step, plantCount));
             emptyFieldCountSeries.getData().add(new XYChart.Data<>(step, emptyFieldCount));
             averageLifetimeSeries.getData().add(new XYChart.Data<>(step, averageLifetime));
-            averageDescendantsAmountSeries.getData().add(new XYChart.Data<>(step, averageDescendantsAmount));
+            averageChildrenAmountSeries.getData().add(new XYChart.Data<>(step, averageChildrenAmount));
         });
     }
 

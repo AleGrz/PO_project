@@ -10,7 +10,7 @@ public class Animal {
     private int energy;
     private int currentGene;
     private int age = 0;
-    private int childrenAmount = 0;
+    private List<Animal> children = new ArrayList<>();
     private int totalEatenPlants = 0;
     private final ArrayList<AnimalListener> listeners = new ArrayList<>();
 
@@ -62,8 +62,8 @@ public class Animal {
         this.direction = directions[random.nextInt(directions.length)];
         this.currentGene = random.nextInt(this.genome.length);
 
-        mommy.childrenAmount++;
-        daddy.childrenAmount++;
+        mommy.children.add(this);
+        daddy.children.add(this);
     }
 
     public MapDirection getDirection() {
@@ -87,11 +87,15 @@ public class Animal {
     }
 
     public int getChildrenAmount() {
-        return this.childrenAmount;
+        return this.children.size();
     }
 
     public int getDescendantsAmount() {
-        return 12;
+        int sum = 0;
+        for (Animal child : this.children) {
+            sum += 1 + child.getDescendantsAmount();
+        }
+        return sum;
     }
 
     public boolean isDead() {

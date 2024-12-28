@@ -197,7 +197,7 @@ public class Simulation implements Runnable {
                         emptyFieldCount(),
                         popularGenotype(),
                         averageLifetime(),
-                        averageDescendantsAmount()
+                        averageChildrenAmount()
                 ));
                 step++;
             }
@@ -405,7 +405,7 @@ public class Simulation implements Runnable {
                 emptyFieldCount(),
                 popularGenotype(),
                 averageLifetime(),
-                averageDescendantsAmount()
+                averageChildrenAmount()
         ));
     }
 
@@ -451,17 +451,17 @@ public class Simulation implements Runnable {
                 .orElse("Missing");
     }
 
-    public int averageLifetime() {
+    public float averageLifetime() {
         if (deadCount == 0) return 0;
-        return totalLifetime/deadCount;
+        return (float) totalLifetime/deadCount;
     }
 
-    public int averageDescendantsAmount() {
+    public float averageChildrenAmount() {
         if (animalCount() == 0) return 0;
-        int childrenAmount = 0;
+        float childrenAmount = 0;
         for (List<Animal> animalList : animals.values()) {
             for (Animal animal : animalList) {
-                childrenAmount += animal.getDescendantsAmount();
+                childrenAmount += animal.getChildrenAmount();
             }
         }
         return childrenAmount/animalCount();

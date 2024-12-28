@@ -24,7 +24,7 @@ public class CsvPrinter implements SimulationStepListener, SimulationPauseListen
     public void updateFire(Vector2D position, int length) {}
 
     @Override
-    public void updateStatistics(int step, int animalCount, int plantCount, int emptyFieldCount, String popularGenotype, int averageLifetime, int averageDescendantsAmount) {
+    public void updateStatistics(int step, int animalCount, int plantCount, int emptyFieldCount, String popularGenotype, float averageLifetime, float averageDescendantsAmount) {
         content += step + "," + animalCount + "," + plantCount + "," + emptyFieldCount + "," + popularGenotype + ","
                 + averageLifetime + "," + averageDescendantsAmount + "\n";
     }

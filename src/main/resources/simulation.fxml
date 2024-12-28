@@ -104,7 +104,7 @@
                 </Label>
                 <Label contentDisplay="RIGHT" text="Average children amount: " GridPane.rowIndex="7">
                     <graphic>
-                        <Label fx:id="averageDescendantsAmount" text="PLACEHOLDER">
+                        <Label fx:id="averageChildrenAmount" text="PLACEHOLDER">
                             <font>
                                 <Font size="10.0" />
                             </font>
