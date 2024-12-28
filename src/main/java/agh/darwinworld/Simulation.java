@@ -29,6 +29,8 @@ public class Simulation implements Runnable {
     private final HashMap<Vector2D, Integer> fire = new HashMap<>();
     private boolean isRunning = false;
     private final List<SimulationStepListener> listeners = new ArrayList<>();
+    private int deadCount = 0;
+    private int totalLifetime = 0;
 
     public static void InputValidator(int width, int height, int startingPlantAmount,
                                       int plantGrowingAmount, int plantEnergyAmount,
@@ -188,6 +190,15 @@ public class Simulation implements Runnable {
                     Vector2D randomPos = plants.toArray(new Vector2D[0])[random.nextInt(plants.size())];
                     fire.put(randomPos, fireLength);
                 }
+                listeners.forEach(listener -> listener.updateStatistics(
+                        step,
+                        animalCount(),
+                        plantCount(),
+                        emptyFieldCount(),
+                        popularGenotype(),
+                        averageLifetime(),
+                        averageDescendantsAmount()
+                ));
                 step++;
             }
             try {
@@ -208,6 +219,8 @@ public class Simulation implements Runnable {
             ArrayList<Animal> toRemove = new ArrayList<>();
             for (Animal animal : animals.get(position)) {
                 if (animal.isDead()) {
+                    totalLifetime += animal.getAge();
+                    deadCount++;
                     toRemove.add(animal);
                 }
             }
@@ -350,6 +363,10 @@ public class Simulation implements Runnable {
             final int max = getMaxAnimalAmount();
             listeners.forEach(listener -> listener.updateAnimal(position, 0, max));
             if (animals.containsKey(position)) {
+                for(Animal animal : animals.get(position)) {
+                    totalLifetime += animal.getAge();
+                    deadCount++;
+                }
                 animals.get(position).removeAll(animals.get(position));
                 animals.remove(position);
             }
@@ -381,6 +398,15 @@ public class Simulation implements Runnable {
 
     public void addStepListener(SimulationStepListener listener) {
         listeners.add(listener);
+        listeners.forEach(l -> l.updateStatistics(
+            0,
+                animalCount(),
+                plantCount(),
+                emptyFieldCount(),
+                popularGenotype(),
+                averageLifetime(),
+                averageDescendantsAmount()
+        ));
     }
 
     public void removeStepListener(SimulationStepListener listener) {
@@ -397,5 +423,47 @@ public class Simulation implements Runnable {
 
     public boolean isRunning() {
         return isRunning;
+    }
+
+    public int animalCount() {
+        return animals.values().stream().mapToInt(List::size).sum();
+    }
+
+    public int plantCount() {
+        return plants.size();
+    }
+
+    public int emptyFieldCount() {
+        HashSet<Vector2D> allFields = new HashSet<>(plants);
+        allFields.addAll(animals.keySet());
+        return width * height - allFields.size();
+    }
+
+    public String popularGenotype() {
+        HashMap<String, Integer> genotypeCount = new HashMap<>();
+        for (List<Animal> animalList : animals.values()) {
+            for (Animal animal : animalList) {
+                String genotype = Arrays.toString(animal.getGenome());
+                genotypeCount.put(genotype, genotypeCount.getOrDefault(genotype, 0) + 1);
+            }
+        }
+        return genotypeCount.entrySet().stream().max(Map.Entry.comparingByValue()).map(Map.Entry::getKey)
+                .orElse("Missing");
+    }
+
+    public int averageLifetime() {
+        if (deadCount == 0) return 0;
+        return totalLifetime/deadCount;
+    }
+
+    public int averageDescendantsAmount() {
+        if (animalCount() == 0) return 0;
+        int childrenAmount = 0;
+        for (List<Animal> animalList : animals.values()) {
+            for (Animal animal : animalList) {
+                childrenAmount += animal.getDescendantsAmount();
+            }
+        }
+        return childrenAmount/animalCount();
     }
 }

@@ -25,6 +25,8 @@ public interface SimulationStepListener {
      * @param maxAnimalCount maximum amount of animals on one tile.
      */
     void updateAnimal(Vector2D position, int animalCount, int maxAnimalCount);
+    void updateStatistics(int step, int animalCount, int plantCount, int emptyFieldCount, String popularGenotype,
+                          int averageLifetime, int averageDescendantsAmount);
 
     /**
      * Called whenever a fire is updated in the simulation.
