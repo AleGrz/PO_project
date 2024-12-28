@@ -1,9 +1,6 @@
 package agh.darwinworld.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public abstract class AbstractMap {
     private final int width;
@@ -29,5 +26,31 @@ public abstract class AbstractMap {
 
     public boolean isPlantOnPosition(Vector2D position) {
         return plants.contains(position);
+    }
+
+    public int animalCount() {
+        return animals.values().stream().mapToInt(List::size).sum();
+    }
+
+    public int plantCount() {
+        return plants.size();
+    }
+
+    public int emptyFieldCount() {
+        HashSet<Vector2D> allFields = new HashSet<>(plants);
+        allFields.addAll(animals.keySet());
+        return width * height - allFields.size();
+    }
+
+    public String popularGenotype() {
+        HashMap<String, Integer> genotypeCount = new HashMap<>();
+        for (List<Animal> animalList : animals.values()) {
+            for (Animal animal : animalList) {
+                String genotype = Arrays.stream(animal.getGenome()).map(Enum::ordinal).map(String::valueOf).reduce("", String::concat);
+                genotypeCount.put(genotype, genotypeCount.getOrDefault(genotype, 0) + 1);
+            }
+        }
+        return genotypeCount.entrySet().stream().max(Map.Entry.comparingByValue()).map(Map.Entry::getKey)
+                .orElse("Missing");
     }
 }
