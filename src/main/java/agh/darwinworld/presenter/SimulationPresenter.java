@@ -133,6 +133,10 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
             selectedAnimal.removeListener(this);
         selectedAnimal = animal;
         selectedAnimal.addListener(this);
+        if (selectedAnimalPos != null) {
+            CellRegion cell = getCellByRowColumn(selectedAnimalPos);
+            if (cell != null) cell.setIsSelected(false);
+        }
         selectedAnimalPos = vector2D;
         CellRegion cell = getCellByRowColumn(vector2D);
         if (cell != null)
@@ -157,7 +161,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
         selectedAnimalAgeLabel.setText(Integer.toString(selectedAnimal.getAge()));
         selectedAnimalEnergyLabel.setText(Integer.toString(selectedAnimal.getEnergy()));
         selectedAnimalChildrenAmountLabel.setText(Integer.toString(selectedAnimal.getChildrenAmount()));
-        selectedAnimalDescendantsAmountLabel.setText("MISSING DATA");
+        selectedAnimalDescendantsAmountLabel.setText(Integer.toString(selectedAnimal.getDescendantsAmount()));
         MoveDirection[] genome = selectedAnimal.getGenome();
         StringBuilder genomeString = new StringBuilder();
         for (MoveDirection gene : genome) {

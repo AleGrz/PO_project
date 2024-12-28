@@ -6,22 +6,23 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane fx:id="rootBorderPane" minHeight="560.0" minWidth="850.0" stylesheets="styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.darwinworld.presenter.SimulationPresenter">
+<BorderPane fx:id="rootBorderPane" minHeight="575.0" minWidth="850.0" stylesheets="styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.darwinworld.presenter.SimulationPresenter">
     <left>
-        <VBox minWidth="300.0" prefWidth="300.0" spacing="10" fx:id="leftVBox">
+        <VBox fx:id="leftVBox" minWidth="350.0" prefWidth="350.0" spacing="10">
             <GridPane alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
                 <columnConstraints>
-                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
+               <ColumnConstraints />
                 </columnConstraints>
                 <rowConstraints>
                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
-                    <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
-                    <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
-                    <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
-                    <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
-                    <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
-                    <RowConstraints minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
                     <RowConstraints minHeight="10.0" vgrow="ALWAYS" />
                 </rowConstraints>
                 <Label text="Simulation statistics">
@@ -115,10 +116,10 @@
                 </Label>
                 <LineChart fx:id="dataLineChart" GridPane.columnSpan="2" GridPane.rowIndex="8">
                     <xAxis>
-                        <NumberAxis side="BOTTOM" />
+                        <NumberAxis animated="false" side="BOTTOM" />
                     </xAxis>
                     <yAxis>
-                        <NumberAxis side="LEFT" />
+                        <NumberAxis animated="false" prefWidth="18.0" side="LEFT" />
                     </yAxis>
                 </LineChart>
             </GridPane>
@@ -128,49 +129,93 @@
                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 </columnConstraints>
                 <rowConstraints>
-                    <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="-Infinity" minHeight="20.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="-Infinity" minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="-Infinity" minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="-Infinity" minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="-Infinity" minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
                 </rowConstraints>
-                <Label text="Selected animal" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER">Wybrane zwierze
-                </Label>
+                <Label text="Selected animal" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.valignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Label>
                 <Label contentDisplay="RIGHT" text="Age:" GridPane.rowIndex="1">
                     <graphic>
-                        <Label fx:id="selectedAnimalAgeLabel" text="10" />
+                        <Label fx:id="selectedAnimalAgeLabel" text="10">
+                     <font>
+                        <Font size="10.0" />
+                     </font></Label>
                     </graphic>
+               <font>
+                  <Font size="10.0" />
+               </font>
                 </Label>
                 <Label contentDisplay="RIGHT" layoutX="10.0" layoutY="47.0" text="Energy:" GridPane.columnIndex="1" GridPane.rowIndex="1">
                     <graphic>
-                        <Label fx:id="selectedAnimalEnergyLabel" text="10" />
+                        <Label fx:id="selectedAnimalEnergyLabel" text="10">
+                     <font>
+                        <Font size="10.0" />
+                     </font></Label>
                     </graphic>
+               <font>
+                  <Font size="10.0" />
+               </font>
                 </Label>
                 <Label contentDisplay="RIGHT" layoutX="125.0" layoutY="47.0" text="Children amount:" GridPane.rowIndex="2">
                     <graphic>
-                        <Label fx:id="selectedAnimalChildrenAmountLabel" text="10" />
+                        <Label fx:id="selectedAnimalChildrenAmountLabel" text="10">
+                     <font>
+                        <Font size="10.0" />
+                     </font></Label>
                     </graphic>
+               <font>
+                  <Font size="10.0" />
+               </font>
                 </Label>
                 <Label contentDisplay="RIGHT" layoutX="10.0" layoutY="77.0" text="Descendants amount:" GridPane.columnIndex="1" GridPane.rowIndex="2">
                     <graphic>
-                        <Label fx:id="selectedAnimalDescendantsAmountLabel" text="10" />
+                        <Label fx:id="selectedAnimalDescendantsAmountLabel" text="10">
+                     <font>
+                        <Font size="10.0" />
+                     </font></Label>
                     </graphic>
+               <font>
+                  <Font size="10.0" />
+               </font>
                 </Label>
-                <Label alignment="TOP_CENTER" contentDisplay="RIGHT" layoutX="125.0" layoutY="77.0" text="Genome:" GridPane.columnSpan="2" GridPane.rowIndex="4">
+                <Label alignment="TOP_CENTER" contentDisplay="RIGHT" layoutX="125.0" layoutY="77.0" text="Genome:" GridPane.columnIndex="1" GridPane.rowIndex="3">
                     <graphic>
-                        <Label fx:id="selectedAnimalGenomeLabel" contentDisplay="RIGHT" text="0011232421423" />
+                        <Label fx:id="selectedAnimalGenomeLabel" contentDisplay="RIGHT" text="0011232421423">
+                     <font>
+                        <Font size="10.0" />
+                     </font></Label>
                     </graphic>
+               <font>
+                  <Font size="10.0" />
+               </font>
                 </Label>
                 <Label contentDisplay="RIGHT" layoutX="125.0" layoutY="137.0" text="Total eaten plants:" GridPane.columnSpan="2" GridPane.rowIndex="3">
                     <graphic>
-                        <Label fx:id="selectedAnimalPlantsEatenAmountLabel" text="10" />
+                        <Label fx:id="selectedAnimalPlantsEatenAmountLabel" text="10">
+                     <font>
+                        <Font size="10.0" />
+                     </font></Label>
                     </graphic>
+               <font>
+                  <Font size="10.0" />
+               </font>
                 </Label>
-                <Label contentDisplay="RIGHT" layoutX="125.0" layoutY="167.0" text="Died at day:" GridPane.rowIndex="5">
+                <Label contentDisplay="RIGHT" layoutX="125.0" layoutY="167.0" text="Died at day:" GridPane.rowIndex="4">
                     <graphic>
-                        <Label fx:id="selectedAnimalDiedAtLabel" text="10" />
+                        <Label fx:id="selectedAnimalDiedAtLabel" text="10">
+                     <font>
+                        <Font size="10.0" />
+                     </font></Label>
                     </graphic>
+               <font>
+                  <Font size="10.0" />
+               </font>
                 </Label>
             </GridPane>
             <HBox alignment="CENTER">
@@ -186,7 +231,7 @@
         </VBox>
     </left>
     <top>
-        <VBox BorderPane.alignment="CENTER" fx:id="topVBox">
+        <VBox fx:id="topVBox" BorderPane.alignment="CENTER">
             <BorderPane.margin>
                 <Insets />
             </BorderPane.margin>
@@ -202,7 +247,7 @@
                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
                     <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
-                    <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
                 </rowConstraints>
                 <opaqueInsets>
                     <Insets />
