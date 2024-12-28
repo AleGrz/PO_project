@@ -26,6 +26,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Pair;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SimulationPresenter implements SimulationStepListener, AnimalListener {
@@ -107,6 +108,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
     private double lastCalculatedCellSize;
     private Simulation simulation;
     private Thread simulationThread;
+    private final List<SimulationPauseListener> listeners = new ArrayList<>();
 
     @FXML
     public void initialize() {
@@ -301,6 +303,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
             if (simulation.isRunning()) {
                 simulation.stop();
                 startStopButton.setText("Start");
+                listeners.forEach(SimulationPauseListener::onSimulationPaused);
             } else {
                 simulation.start();
                 startStopButton.setText("Stop");
@@ -457,5 +460,9 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
     @Override
     public void statsUpdate() {
         Platform.runLater(this::updateSelectedAnimalStats);
+    }
+
+    public void addPauseListener(SimulationPauseListener listener) {
+        this.listeners.add(listener);
     }
 }

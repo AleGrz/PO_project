@@ -1,5 +1,7 @@
 package agh.darwinworld.model;
 
+import java.io.IOException;
+
 /**
  * Interface for listening to simulation step events in a simulation.
  * Provides methods for tracking movements and updates to the world elements

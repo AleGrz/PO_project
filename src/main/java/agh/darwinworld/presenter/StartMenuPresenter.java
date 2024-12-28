@@ -3,6 +3,7 @@ package agh.darwinworld.presenter;
 import agh.darwinworld.Simulation;
 import agh.darwinworld.control.IntField;
 import agh.darwinworld.helper.AlertHelper;
+import agh.darwinworld.model.CsvPrinter;
 import agh.darwinworld.model.UserFriendlyException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,10 +11,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.stage.FileChooser;
+
+import java.io.File;
 
 public class StartMenuPresenter {
+    @FXML
+    private Button csvButton;
     @FXML
     private IntField heightIntField;
     @FXML
@@ -46,6 +53,8 @@ public class StartMenuPresenter {
     private IntField refreshTimeIntField;
     @FXML
     private IntField seedIntField;
+
+    CsvPrinter csvListener;
 
     @FXML
     public void initialize() {
@@ -80,6 +89,10 @@ public class StartMenuPresenter {
                     breedingEnergyCost, minimumMutationAmount, maximumMutationAmount, animalGenomeLength,
                     fireFrequency, fireLength, refreshTime, seedInt);
             presenter.setSimulation(simulation);
+            if (csvListener != null) {
+                simulation.addStepListener(csvListener);
+                presenter.addPauseListener(csvListener);
+            }
             Stage simulationStage = new Stage();
             simulationStage.initOwner(currentStage);
             simulationStage.getIcons().addAll(currentStage.getIcons());
@@ -128,5 +141,16 @@ public class StartMenuPresenter {
         double horizontalInsets = (stageWidth - contentWidth) / 2;
         double verticalInsets = stageHeight - contentHeight - horizontalInsets;
         return new Insets(verticalInsets, horizontalInsets, verticalInsets, horizontalInsets);
+    }
+
+    public void onSaveToCSV(ActionEvent actionEvent) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV files", "*.csv"));
+        fileChooser.setInitialFileName("simulation.csv");
+        File file = fileChooser.showSaveDialog(((Node) actionEvent.getSource()).getScene().getWindow());
+        csvButton.setText(file != null ? file.getName() : "Choose");
+        if (file != null) {
+            csvListener = new CsvPrinter(file.getAbsolutePath());
+        }
     }
 }

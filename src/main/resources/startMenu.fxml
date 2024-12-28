@@ -63,7 +63,10 @@
     <IntField fx:id="seedIntField" text="1" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="16" />
     <Button onAction="#onSeedGenerate" text="🎲" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="16" />
 
-    <Button onAction="#onSimulationStart" text="Start new simulation" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="17" />
+    <Label text="Save to CSV:" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="17" />
+    <Button onAction="#onSaveToCSV" text="Choose" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="17" fx:id="csvButton" />
+
+    <Button onAction="#onSimulationStart" text="Start new simulation" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="18" />
     <ImageView preserveRatio="true" fitWidth="300" GridPane.columnIndex="2" GridPane.rowSpan="18">
         <Image url="sowoniedzwiedz.jpg"/>
     </ImageView>

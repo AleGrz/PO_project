@@ -43,8 +43,8 @@ public class Simulation implements Runnable {
             throw new IllegalArgumentException("Map size must be greater than 0!");
         if (startingPlantAmount < 0)
             throw new IllegalArgumentException("Plant amount must be greater than or equal to 0!");
-        if (plantGrowingAmount < 0)
-            throw new IllegalArgumentException("Amount of growing plants per turn must be greater than or equal to 0!");
+        if (plantGrowingAmount < 3)
+            throw new IllegalArgumentException("Amount of growing plants per turn must be greater than or equal to 3!");
         if (plantEnergyAmount < 0)
             throw new IllegalArgumentException("Amount of energy given to animal, when plant has been eaten must be greater than or equal to 0!");
         if (startingAnimalAmount < 0)
@@ -443,7 +443,7 @@ public class Simulation implements Runnable {
         HashMap<String, Integer> genotypeCount = new HashMap<>();
         for (List<Animal> animalList : animals.values()) {
             for (Animal animal : animalList) {
-                String genotype = Arrays.toString(animal.getGenome());
+                String genotype = Arrays.stream(animal.getGenome()).map(Enum::ordinal).map(String::valueOf).reduce("", String::concat);
                 genotypeCount.put(genotype, genotypeCount.getOrDefault(genotype, 0) + 1);
             }
         }
