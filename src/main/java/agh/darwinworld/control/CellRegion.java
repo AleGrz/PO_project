@@ -58,7 +58,6 @@ public class CellRegion extends Region {
     }
 
     public void setCurrentFireStage(int fireStage) {
-        if (fireStage > 0) this.hasPlant = false;
         this.currentFireStage = fireStage;
         updateBackground();
     }

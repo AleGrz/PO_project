@@ -356,6 +356,7 @@ public class Simulation implements Runnable {
                 if (fire.containsKey(direction)) continue;
                 if (plants.contains(position)) {
                     newFire.put(direction, this.fireLength);
+                    listeners.forEach(listener -> listener.removePlant(position));
                 }
             }
             listeners.forEach(listener -> listener.updateFire(position, fire.get(position)));

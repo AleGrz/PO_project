@@ -5,13 +5,14 @@ import java.util.stream.Stream;
 
 public class Animal {
     private final Random random;
-
     private final MoveDirection[] genome;
     private MapDirection direction;
     private int energy;
     private int currentGene;
     private int age = 0;
     private int childrenAmount = 0;
+    private int totalEatenPlants = 0;
+    private final ArrayList<AnimalListener> listeners = new ArrayList<>();
 
     public Animal(Random random, int genomeLength, int energy) {
         if (genomeLength < 0)
@@ -97,6 +98,18 @@ public class Animal {
         return energy < 0;
     }
 
+    public int getTotalEatenPlants() {
+        return this.totalEatenPlants;
+    }
+
+    public void addListener(AnimalListener listener) {
+        this.listeners.add(listener);
+    }
+
+    public void removeListener(AnimalListener listener) {
+        this.listeners.remove(listener);
+    }
+
     public Vector2D move(Vector2D position, int mapWidth, int mapHeight) {
         if (isDead())
             throw new IllegalStateException("Cannot move animal that is dead!");
@@ -113,8 +126,12 @@ public class Animal {
         Vector2D newPos = position.add(this.direction.getValue()).normalize(mapWidth, null);
         if (newPos.y() < 0 || newPos.y() >= mapHeight){
             this.direction = this.direction.rotate(MoveDirection.BACKWARD);
+            listeners.forEach(AnimalListener::statsUpdate);
+            listeners.forEach(listener -> listener.move(position, newPos));
             return position;
         }
+        listeners.forEach(AnimalListener::statsUpdate);
+        listeners.forEach(listener -> listener.move(position, newPos));
         return newPos;
     }
 
@@ -126,17 +143,20 @@ public class Animal {
         int mutateAmount = random.nextInt(max - min) + min;
         ArrayList<Integer> indexes = new ArrayList<>();
         for (int i = 0; i < genome.length; i++) indexes.add(i);
-        Collections.shuffle(indexes);
+        Collections.shuffle(indexes, random);
         MoveDirection[] directions = MoveDirection.values();
         for (int i = 0; i < mutateAmount; i++) {
             genome[indexes.get(i)] = directions[random.nextInt(directions.length)];
         }
+        listeners.forEach(AnimalListener::statsUpdate);
     }
 
     public void eat(int energy) {
         if (energy < 0)
             throw new IllegalArgumentException("Energy added must be greater than or equal to 0!");
+        totalEatenPlants++;
         this.energy += energy;
+        listeners.forEach(AnimalListener::statsUpdate);
     }
 
 
