@@ -102,7 +102,7 @@ public class Animal {
         this.direction = this.direction.rotate(this.genome[this.currentGene]);
         this.currentGene = (this.currentGene + 1) % this.genome.length;
         this.energy--;
-        this.age++;
+        this.age--;
         Vector2D newPos = position.add(this.direction.getValue()).normalize(mapWidth, null);
         if (newPos.y() < 0 || newPos.y() >= mapHeight){
             this.direction = this.direction.rotate(MoveDirection.BACKWARD);
@@ -119,7 +119,7 @@ public class Animal {
         int mutateAmount = random.nextInt(max - min) + min;
         ArrayList<Integer> indexes = new ArrayList<>();
         for (int i = 0; i < genome.length; i++) indexes.add(i);
-        Collections.shuffle(indexes, this.random);
+        Collections.shuffle(indexes);
         MoveDirection[] directions = MoveDirection.values();
         for (int i = 0; i < mutateAmount; i++) {
             genome[indexes.get(i)] = directions[random.nextInt(directions.length)];
@@ -140,6 +140,6 @@ public class Animal {
         int start = leftPart ? 0 : genome.length-amount;
         int end = leftPart ? amount : genome.length;
 
-        return Arrays.copyOfRange(genome, start, end);
+        return  Arrays.copyOfRange(genome, start, end);
     }
 }
