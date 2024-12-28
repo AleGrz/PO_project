@@ -24,7 +24,6 @@ import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Pair;
 
 import java.util.List;
 
@@ -73,6 +72,8 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
     private Label fireLengthLabel;
     @FXML
     private Label seedLabel;
+    @FXML
+    private Label refreshTimeLabel;
     @FXML
     private LineChart<Number, Number> dataLineChart;
     @FXML
@@ -195,6 +196,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
             animalGenomeLengthLabel.setText(Integer.toString(simulation.getAnimalGenomeLength()));
             fireFrequencyLabel.setText(Integer.toString(simulation.getFireFrequency()));
             fireLengthLabel.setText(Integer.toString(simulation.getFireLength()));
+            refreshTimeLabel.setText(Integer.toString(simulation.getRefreshTime()));
             seedLabel.setText(Integer.toString(simulation.getSeed()));
             drawMap();
         });
