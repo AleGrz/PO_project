@@ -394,32 +394,11 @@ public class SimulationPresenter implements SimulationStepListener {
     }
 
     @Override
-    public void moveAnimal(Vector2D oldPosition, Vector2D newPosition) {
-        Platform.runLater(() -> {
-            int oldAnimalAmount = simulation.getAnimalsOnPosition(oldPosition).size();
-            List<Animal> newAnimals = simulation.getAnimalsOnPosition(newPosition);
-            int newAnimalAmount = newAnimals.size();
-            Region oldCell = getCellByRowColumn(oldPosition, false);
-            Region newCell = getCellByRowColumn(newPosition, false);
-            if (oldCell != null) {
-                oldCell.setStyle(computeStyle(oldAnimalAmount));
-            }
-            if (newCell != null) {
-                newCell.setStyle(computeStyle(newAnimalAmount));
-            }
-            Pair<Vector2D, Animal> animal = selectedAnimal.get();
-            if (animal != null && oldPosition.equals(animal.getKey()) && newAnimals.contains(animal.getValue())) {
-                selectedAnimal.set(new Pair<>(newPosition, animal.getValue()));
-            }
-        });
-    }
-
-    @Override
-    public void updateAnimal(Vector2D position) {
+    public void updateAnimal(Vector2D position, int animalCount) {
         Platform.runLater(() -> {
             Region cell = getCellByRowColumn(position, false);
             if (cell != null) {
-                cell.setStyle(computeStyle(simulation.getAnimalsOnPosition(position).size()));
+                cell.setStyle(computeStyle(animalCount));
             }
         });
     }
