@@ -9,7 +9,7 @@
 <BorderPane fx:id="rootBorderPane" minHeight="560.0" minWidth="850.0" stylesheets="styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.darwinworld.presenter.SimulationPresenter">
     <left>
         <VBox minWidth="300.0" prefWidth="300.0" spacing="10" fx:id="leftVBox">
-            <GridPane alignment="TOP_CENTER">
+            <GridPane alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
                 <columnConstraints>
                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -84,7 +84,7 @@
                     </yAxis>
                 </LineChart>
             </GridPane>
-            <GridPane fx:id="selectedAnimalGridPane" alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
+            <GridPane fx:id="selectedAnimalGridPane" alignment="TOP_CENTER">
                 <columnConstraints>
                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

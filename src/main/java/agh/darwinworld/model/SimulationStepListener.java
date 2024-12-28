@@ -21,8 +21,16 @@ public interface SimulationStepListener {
     /**
      * Called whenever an animal is updated in the simulation.
      * @param position the position of the animal that is updated.
+     * @param animalCount amount of animals on provided position.
+     * @param maxAnimalCount maximum amount of animals on one tile.
      */
     void updateAnimal(Vector2D position, int animalCount, int maxAnimalCount);
 
+    /**
+     * Called whenever a fire is updated in the simulation.
+     * @param position the position of the fire that is updated.
+     * @param length remaining length of the fire. If length is equal
+     *               to or less than 0, it is extinguished.
+     */
     void updateFire(Vector2D position, int length);
 }
