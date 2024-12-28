@@ -4,7 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class CsvPrinter implements SimulationStepListener, SimulationPauseListener {
-    private String content;
+    private String content = "";
     private final String filename;
 
     public CsvPrinter(String filename) {
