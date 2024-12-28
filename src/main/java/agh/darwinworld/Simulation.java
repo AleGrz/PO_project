@@ -66,7 +66,7 @@ public class Simulation implements Runnable {
         if (fireLength < 1)
             throw new IllegalArgumentException("Fire length must be greater than or equal to 1!");
         if (refreshTime < 10)
-            throw new IllegalArgumentException("Refresh time must be greater than or equalt to 10!");
+            throw new IllegalArgumentException("Refresh time must be greater than or equal to 10!");
     }
 
     public Simulation(int width, int height, int startingPlantAmount,
