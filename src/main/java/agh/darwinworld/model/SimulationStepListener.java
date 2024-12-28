@@ -7,13 +7,6 @@ package agh.darwinworld.model;
  */
 public interface SimulationStepListener {
     /**
-     * Called whenever an animal moves from one position to another.
-     * @param oldPosition the previous position of the animal.
-     * @param newPosition the new position of the animal.
-     */
-    void moveAnimal(Vector2D oldPosition, Vector2D newPosition);
-
-    /**
      * Called whenever a plant is added to the simulation.
      * @param position the position where the plant is added to.
      */
@@ -29,7 +22,7 @@ public interface SimulationStepListener {
      * Called whenever an animal is updated in the simulation.
      * @param position the position of the animal that is updated.
      */
-    void updateAnimal(Vector2D position);
+    void updateAnimal(Vector2D position, int animalCount);
 
     void addFire(Vector2D position);
     void removeFire(Vector2D position);

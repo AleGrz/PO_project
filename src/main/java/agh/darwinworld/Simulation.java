@@ -222,7 +222,7 @@ public class Simulation implements Runnable {
         }
         for (Map.Entry<Vector2D, ArrayList<Animal>> entry : animalsToRemove.entrySet()) {
             animals.get(entry.getKey()).removeAll(entry.getValue());
-            listeners.forEach(listener -> listener.updateAnimal(entry.getKey()));
+            listeners.forEach(listener -> listener.updateAnimal(entry.getKey(), animals.get(entry.getKey()).size()));
         }
         for (Vector2D position : emptyPositions) {
             animals.remove(position);
@@ -243,8 +243,15 @@ public class Simulation implements Runnable {
                 updatedAnimals
                         .computeIfAbsent(newPosition, k -> new ArrayList<>())
                         .add(animal);
-                listeners.forEach(listener -> listener.moveAnimal(position, newPosition));
             }
+        }
+        Set<Vector2D> oldPositions = animals.keySet();
+        oldPositions.removeAll(updatedAnimals.keySet());
+        for (Vector2D position : oldPositions) {
+            listeners.forEach(listener -> listener.updateAnimal(position, 0));
+        }
+        for (Vector2D position : updatedAnimals.keySet()) {
+            listeners.forEach(listener -> listener.updateAnimal(position, updatedAnimals.get(position).size()));
         }
         animals = updatedAnimals;
     }
@@ -276,7 +283,7 @@ public class Simulation implements Runnable {
                 Animal baby = new Animal(topAnimals.getFirst(), topAnimals.getLast(), breedingEnergyCost,
                         minimumBreedingEnergy, minimumMutationAmount, maximumMutationAmount);
                 animals.get(position).add(baby);
-                listeners.forEach(listener -> listener.updateAnimal(position));
+                listeners.forEach(listener -> listener.updateAnimal(position, animals.get(position).size()));
             }
         }
     }
@@ -333,6 +340,7 @@ public class Simulation implements Runnable {
                 }
             }
             listeners.forEach(listener -> listener.addFire(position));
+            listeners.forEach(listener -> listener.updateAnimal(position, 0));
             if (animals.containsKey(position)) {
                 animals.get(position).removeAll(animals.get(position));
                 animals.remove(position);

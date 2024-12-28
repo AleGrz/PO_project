@@ -1,14 +1,14 @@
-.cell:hover {
+.animal:hover {
     -fx-border-color: red;
     -fx-border-width: 1px;
 }
 
-.cell:pressed {
+.animal:pressed {
     -fx-border-color: red;
     -fx-border-width: 2px;
 }
 
-.cell.selected {
+.animal.selected {
     -fx-border-color: blue;
     -fx-border-width: 2px;
 }
