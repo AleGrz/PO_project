@@ -18,12 +18,10 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.Button;
-import javafx.scene.control.Cell;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -33,6 +31,20 @@ import javafx.util.Pair;
 import java.util.List;
 
 public class SimulationPresenter implements SimulationStepListener {
+    @FXML
+    private Label step;
+    @FXML
+    private Label animalCount;
+    @FXML
+    private Label plantCount;
+    @FXML
+    private Label emptyFieldCount;
+    @FXML
+    private Label popularGenotype;
+    @FXML
+    private Label averageLifetime;
+    @FXML
+    private Label averageDescendantsAmount;
     @FXML
     private Label heightLabel;
     @FXML
@@ -394,6 +406,19 @@ public class SimulationPresenter implements SimulationStepListener {
     }
 
     @Override
+    public void updateStatistics(int step, int animalCount, int plantCount, int emptyFieldCount, String popularGenotype, int averageLifetime, int averageDescendantsAmount) {
+        Platform.runLater(() -> {
+            this.step.setText(Integer.toString(step));
+            this.animalCount.setText(Integer.toString(animalCount));
+            this.plantCount.setText(Integer.toString(plantCount));
+            this.emptyFieldCount.setText(Integer.toString(emptyFieldCount));
+            this.popularGenotype.setText(popularGenotype);
+            this.averageLifetime.setText(Integer.toString(averageLifetime));
+            this.averageDescendantsAmount.setText(Integer.toString(averageDescendantsAmount));
+        });
+    }
+
+    @Override
     public void addPlant(Vector2D position) {
         Platform.runLater(() -> {
             CellRegion cell = getCellByRowColumn(position);
@@ -412,4 +437,6 @@ public class SimulationPresenter implements SimulationStepListener {
             }
         });
     }
+
+
 }

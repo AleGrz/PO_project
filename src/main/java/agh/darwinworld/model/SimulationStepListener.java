@@ -23,6 +23,8 @@ public interface SimulationStepListener {
      * @param position the position of the animal that is updated.
      */
     void updateAnimal(Vector2D position, int animalCount, int maxAnimalCount);
+    void updateStatistics(int step, int animalCount, int plantCount, int emptyFieldCount, String popularGenotype,
+                          int averageLifetime, int averageDescendantsAmount);
 
     void updateFire(Vector2D position, int length);
 }

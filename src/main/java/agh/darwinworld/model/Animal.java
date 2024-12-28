@@ -55,7 +55,7 @@ public class Animal {
                 .toArray(MoveDirection[]::new);
         this.energy = breedingEnergyCost * 2;
 
-        // mutate(minMutations, maxMutations);
+        mutate(minMutations, maxMutations);
 
         MapDirection[] directions = MapDirection.values();
         this.direction = directions[random.nextInt(directions.length)];
@@ -89,6 +89,10 @@ public class Animal {
         return this.childrenAmount;
     }
 
+    public int getDescendantsAmount() {
+        return 123124;
+    }
+
     public boolean isDead() {
         return energy < 0;
     }
@@ -103,6 +107,9 @@ public class Animal {
         this.currentGene = (this.currentGene + 1) % this.genome.length;
         this.energy--;
         this.age++;
+        if (random.nextInt(100)<Math.min(age, 80)) {
+            return position;
+        }
         Vector2D newPos = position.add(this.direction.getValue()).normalize(mapWidth, null);
         if (newPos.y() < 0 || newPos.y() >= mapHeight){
             this.direction = this.direction.rotate(MoveDirection.BACKWARD);
