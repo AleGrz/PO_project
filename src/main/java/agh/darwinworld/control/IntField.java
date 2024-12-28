@@ -31,9 +31,8 @@ public class IntField extends TextField {
     /**
      * Returns the current value as an integer. Defaults to 0 if the field is empty.
      */
-    public Integer getValue() {
-        if (getText().isEmpty())
-            return null;
+    public Integer getValue() throws NumberFormatException {
+        if (getText().isEmpty()) return null;
         return Integer.parseInt(getText());
     }
 

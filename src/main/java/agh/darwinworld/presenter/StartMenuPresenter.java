@@ -55,10 +55,6 @@ public class StartMenuPresenter {
     public void onSimulationStart(ActionEvent actionEvent) {
         Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
-            BorderPane root = loader.load();
-            SimulationPresenter presenter = loader.getController();
             int width = getValidatedIntFieldValue(widthIntField, "Width", 1, 100);
             int height = getValidatedIntFieldValue(heightIntField, "Height", 1, 100);
             int startingPlantAmount = getValidatedIntFieldValue(startingPlantAmountIntField, "Amount of plants spawning at the start", 0, null);
@@ -75,6 +71,10 @@ public class StartMenuPresenter {
             int fireLength = getValidatedIntFieldValue(fireLengthIntField, "Fire length", 1, null);
             int refreshTime = getValidatedIntFieldValue(refreshTimeIntField, "RefreshTime", 10, null);
             int seedInt = getValidatedIntFieldValue(seedIntField, "Seed", null, null);
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
+            BorderPane root = loader.load();
+            SimulationPresenter presenter = loader.getController();
             Simulation simulation = new Simulation(width, height, startingPlantAmount, plantGrowingAmount,
                     plantEnergyAmount, startingAnimalAmount, startingEnergyAmount, minimumBreedingEnergy,
                     breedingEnergyCost, minimumMutationAmount, maximumMutationAmount, animalGenomeLength,
@@ -108,9 +108,16 @@ public class StartMenuPresenter {
         seedIntField.setValue((int) (Math.random() * Integer.MAX_VALUE));
     }
 
-    private int getValidatedIntFieldValue(IntField intField, String propertyName, Integer min, Integer max) throws Exception {
-        Integer value = intField.getValue();
+    private int getValidatedIntFieldValue(IntField intField, String propertyName, Integer min, Integer max) throws UserFriendlyException {
         String recapitalizedPropertyName = propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1).toLowerCase();
+        Integer value;
+        try {
+            value = intField.getValue();
+        } catch (NumberFormatException e) {
+            int minBounds = min == null ? Integer.MIN_VALUE : min;
+            int maxBounds = max == null ? Integer.MAX_VALUE : max;
+            throw new UserFriendlyException("Value too large!", recapitalizedPropertyName + " must be between " + minBounds + " and " + maxBounds + ".");
+        }
         if (value == null)
             throw new UserFriendlyException("Missing value!", recapitalizedPropertyName + " has to be provided.");
         if (min != null && value < min)
