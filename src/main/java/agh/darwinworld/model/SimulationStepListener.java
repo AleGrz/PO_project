@@ -22,8 +22,7 @@ public interface SimulationStepListener {
      * Called whenever an animal is updated in the simulation.
      * @param position the position of the animal that is updated.
      */
-    void updateAnimal(Vector2D position, int animalCount);
+    void updateAnimal(Vector2D position, int animalCount, int maxAnimalCount);
 
-    void addFire(Vector2D position);
-    void removeFire(Vector2D position);
+    void updateFire(Vector2D position, int length);
 }

@@ -1,6 +1,7 @@
 package agh.darwinworld.presenter;
 
 import agh.darwinworld.Simulation;
+import agh.darwinworld.control.CellRegion;
 import agh.darwinworld.helper.AlertHelper;
 import agh.darwinworld.model.Animal;
 import agh.darwinworld.model.MoveDirection;
@@ -17,6 +18,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.Button;
+import javafx.scene.control.Cell;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
@@ -115,12 +117,12 @@ public class SimulationPresenter implements SimulationStepListener {
             if ((newPosition != null && !newPosition.equals(oldPosition)) ||
                     (oldPosition != null && !oldPosition.equals(newPosition))) {
                 if (oldPosition != null) {
-                    Region oldCell = getCellByRowColumn(oldPosition, false);
-                    if (oldCell != null) oldCell.getStyleClass().remove("selected");
+                    CellRegion oldCell = getCellByRowColumn(oldPosition);
+                    if (oldCell != null) oldCell.setIsSelected(false);
                 }
                 if (newPosition != null) {
-                    Region newCell = getCellByRowColumn(newPosition, false);
-                    if (newCell != null) newCell.getStyleClass().add("selected");
+                    CellRegion newCell = getCellByRowColumn(newPosition);
+                    if (newCell != null) newCell.setIsSelected(true);
                 }
             }
             selectedAnimalGridPane.setVisible(newValue != null);
@@ -225,37 +227,19 @@ public class SimulationPresenter implements SimulationStepListener {
         return cell;
     }
 
-    public Region createCell(int x, int y, String styleClass) {
-        Region cell = new Region();
-        GridPane.setHgrow(cell, Priority.ALWAYS);
-        GridPane.setVgrow(cell, Priority.ALWAYS);
-        cell.setMaxWidth(Double.MAX_VALUE);
-        cell.setMaxHeight(Double.MAX_VALUE);
-        for (String style : styleClass.split(" ")) {
-            cell.getStyleClass().add(style);
-        }
-        mapGrid.add(cell, x, y);
-        GridPane.setHalignment(cell, HPos.CENTER);
-        return cell;
-    }
-
-    private static String computeStyle(int animalAmount) {
-        String style;
-        if (animalAmount > 15) {
-            style = "-fx-background-color: saddlebrown;";
-        } else if (animalAmount > 10) {
-            style = "-fx-background-color: sienna;";
-        } else if (animalAmount > 5) {
-            style = "-fx-background-color: chocolate;";
-        } else if (animalAmount > 3) {
-            style = "-fx-background-color: burlywood;";
-        } else if (animalAmount > 0) {
-            style = "-fx-background-color: wheat;";
-        } else {
-            style = "-fx-background-color: transparent;";
-        }
-        return style;
-    }
+//    public Region createCell(int x, int y, String styleClass) {
+//        Region cell = new Region();
+//        GridPane.setHgrow(cell, Priority.ALWAYS);
+//        GridPane.setVgrow(cell, Priority.ALWAYS);
+//        cell.setMaxWidth(Double.MAX_VALUE);
+//        cell.setMaxHeight(Double.MAX_VALUE);
+//        for (String style : styleClass.split(" ")) {
+//            cell.getStyleClass().add(style);
+//        }
+//        mapGrid.add(cell, x, y);
+//        GridPane.setHalignment(cell, HPos.CENTER);
+//        return cell;
+//    }
 
     public void drawMap() {
         Platform.runLater(() -> {
@@ -275,20 +259,17 @@ public class SimulationPresenter implements SimulationStepListener {
                 mapGrid.getRowConstraints().add(new RowConstraints(cellSize, cellSize, cellSize));
                 createLabelCell(Integer.toString(simulation.getHeight() - j - 1), 0, j + 1);
             }
+            int maxAnimalAmount = simulation.getMaxAnimalAmount();
+            int maxFireLength = simulation.getFireLength();
             for (int i = 0; i < simulation.getWidth(); i++) {
                 for (int j = 0; j < simulation.getHeight(); j++) {
                     Vector2D pos = new Vector2D(i, simulation.getHeight() - j - 1);
                     int animalAmount = simulation.getAnimalsOnPosition(pos).size();
                     boolean isPlant = simulation.isPlantOnPosition(pos);
-                    Region cell = createCell(i + 1, j + 1, "");
-                    if (isPlant) {
-                        cell.setStyle("-fx-background-color: green;");
-                    } else {
-                        cell.setStyle("-fx-background-color: lightgreen;");
-                    }
-                    Region animal = createCell(i + 1, j + 1, "cell animal");
-                    animal.setShape(new Circle(1));
-                    animal.setStyle(computeStyle(animalAmount));
+                    CellRegion cell = new CellRegion(isPlant, animalAmount, maxAnimalAmount, 0, maxFireLength);
+                    GridPane.setHgrow(cell, Priority.ALWAYS);
+                    GridPane.setVgrow(cell, Priority.ALWAYS);
+                    mapGrid.add(cell, i + 1, j + 1);
                 }
             }
         });
@@ -379,46 +360,35 @@ public class SimulationPresenter implements SimulationStepListener {
     }
 
 
-    private Region getCellByRowColumn(Vector2D pos, boolean isBackground) {
+    private CellRegion getCellByRowColumn(Vector2D pos) {
         for (Node node : mapGrid.getChildren()) {
             if (node instanceof Label) continue;
-            if (node.getStyleClass().stream().noneMatch("animal"::equals) && !isBackground) continue;
-            if (node.getStyleClass().stream().anyMatch("animal"::equals) && isBackground) continue;
+            if (!(node instanceof CellRegion cell)) continue;
             int rowIndex = GridPane.getRowIndex(node);
             int colIndex = GridPane.getColumnIndex(node);
             if (pos.equals(new Vector2D(colIndex - 1, simulation.getHeight() - rowIndex))) {
-                return (Region) node;
+                return cell;
             }
         }
         return null;
     }
 
     @Override
-    public void updateAnimal(Vector2D position, int animalCount) {
+    public void updateAnimal(Vector2D position, int animalCount, int maxAnimalCount) {
         Platform.runLater(() -> {
-            Region cell = getCellByRowColumn(position, false);
+            CellRegion cell = getCellByRowColumn(position);
             if (cell != null) {
-                cell.setStyle(computeStyle(animalCount));
+                cell.setAnimalAmount(animalCount, maxAnimalCount);
             }
         });
     }
 
     @Override
-    public void addFire(Vector2D position) {
+    public void updateFire(Vector2D position, int length) {
         Platform.runLater(() -> {
-            Region cell = getCellByRowColumn(position, true);
+            CellRegion cell = getCellByRowColumn(position);
             if (cell != null) {
-                cell.setStyle("-fx-background-color: orange;");
-            }
-        });
-    }
-
-    @Override
-    public void removeFire(Vector2D position) {
-        Platform.runLater(() -> {
-            Region cell = getCellByRowColumn(position, true);
-            if (cell != null) {
-                cell.setStyle("-fx-background-color: lightgreen;");
+                cell.setCurrentFireStage(length);
             }
         });
     }
@@ -426,9 +396,9 @@ public class SimulationPresenter implements SimulationStepListener {
     @Override
     public void addPlant(Vector2D position) {
         Platform.runLater(() -> {
-            Region cell = getCellByRowColumn(position, true);
+            CellRegion cell = getCellByRowColumn(position);
             if (cell != null) {
-                cell.setStyle("-fx-background-color: green;");
+                cell.setHasPlant(true);
             }
         });
     }
@@ -436,12 +406,10 @@ public class SimulationPresenter implements SimulationStepListener {
     @Override
     public void removePlant(Vector2D position) {
         Platform.runLater(() -> {
-            Region cell = getCellByRowColumn(position, true);
+            CellRegion cell = getCellByRowColumn(position);
             if (cell != null) {
-                cell.setStyle("-fx-background-color: lightgreen;");
+                cell.setHasPlant(false);
             }
         });
     }
-
-
 }
