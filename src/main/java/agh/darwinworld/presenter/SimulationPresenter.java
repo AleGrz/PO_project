@@ -180,12 +180,12 @@ public class SimulationPresenter implements SimulationStepListener {
     }
 
     public double calculateCellSize() {
-        double gridWidth = rootBorderPane.getWidth() - leftVBox.getWidth();
-        double gridHeight = rootBorderPane.getHeight() - topVBox.getHeight();
+        double gridWidth = rootBorderPane.getWidth() - leftVBox.getWidth() - 20; // 20 - padding
+        double gridHeight = rootBorderPane.getHeight() - topVBox.getHeight() - 20; // 20 - padding
         int rowCount = simulation.getWidth() + 1;
         int colCount = simulation.getHeight() + 1;
-        double width = (int) ((gridWidth - rowCount) / rowCount);
-        double height = (int) ((gridHeight - colCount) / colCount);
+        double width = gridWidth / rowCount;
+        double height = gridHeight / colCount;
         return Math.min(height, width);
     }
 
