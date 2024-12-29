@@ -3,10 +3,7 @@ package agh.darwinworld.presenter;
 import agh.darwinworld.Simulation;
 import agh.darwinworld.control.IntField;
 import agh.darwinworld.helper.AlertHelper;
-import agh.darwinworld.model.CsvPrinter;
-import agh.darwinworld.model.SimulationParameters;
-import agh.darwinworld.model.UserFriendlyException;
-import agh.darwinworld.model.WorldMap;
+import agh.darwinworld.model.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -88,7 +85,7 @@ public class StartMenuPresenter {
                     fireLengthIntField,
                     refreshTimeIntField,
                     new Random(seedIntField.getValue()),
-                    new WorldMap()
+                    new FireMap()
             );
             Simulation simulation = new Simulation(params);
             presenter.setSimulation(simulation);

@@ -2,7 +2,7 @@ package agh.darwinworld.model;
 
 import java.util.*;
 
-public abstract class AbstractMap {
+public abstract class AbstractMap implements MovementHandler {
     protected int deadCount = 0;
     protected int totalLifetime = 0;
     protected HashMap<Vector2D, ArrayList<Animal>> animals = new HashMap<>();
@@ -189,7 +189,7 @@ public abstract class AbstractMap {
 
             if (animalList.isEmpty()) continue;
             for (Animal animal : animalList) {
-                Vector2D newPosition = animal.move(position, params.width(), params.height());
+                Vector2D newPosition = animal.move(this, position);
                 updatedAnimals
                         .computeIfAbsent(newPosition, k -> new ArrayList<>())
                         .add(animal);
@@ -237,9 +237,9 @@ public abstract class AbstractMap {
         listeners.remove(listener);
     }
 
-    protected void updateStatistics() {
+    protected void updateStatistics(int step) {
         listeners.forEach(l -> l.updateStatistics(
-                0,
+                step,
                 animalCount(),
                 plantCount(),
                 emptyFieldCount(),

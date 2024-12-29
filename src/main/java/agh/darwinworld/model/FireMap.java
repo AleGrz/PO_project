@@ -1,10 +1,12 @@
 package agh.darwinworld.model;
 
+import javafx.util.Pair;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class FireMap extends AbstractMap {
+public class FireMap extends AbstractMap implements MovementHandler {
     private final HashMap<Vector2D, Integer> fire = new HashMap<>();
 
     public boolean isFireOnPosition(Vector2D position) {
@@ -14,7 +16,11 @@ public class FireMap extends AbstractMap {
     public void step(int count) {
         super.step(count);
         propagateFire();
-        updateStatistics();
+        if (count % this.params.fireFrequency() == 0) {
+            Vector2D randomPos = plants.toArray(new Vector2D[0])[this.params.random().nextInt(plants.size())];
+            fire.put(randomPos, this.params.fireLength());
+        }
+        updateStatistics(count);
 
     }
 
@@ -59,5 +65,13 @@ public class FireMap extends AbstractMap {
             }
         }
         fire.putAll(newFire);
+    }
+
+    @Override
+    public Pair<Vector2D, MapDirection> move(Vector2D position, MapDirection direction) {
+        Vector2D newPos = position.add(direction.getValue())
+                .lowerLeft(new Vector2D(this.params.width()-1, this.params.height()-1))
+                .upperRight(new Vector2D(0, 0));
+        return new Pair<>(newPos, direction);
     }
 }

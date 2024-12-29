@@ -1,6 +1,5 @@
 package agh.darwinworld.presenter;
 
-import agh.darwinworld.OldSimulation;
 import agh.darwinworld.Simulation;
 import agh.darwinworld.control.CellRegion;
 import agh.darwinworld.helper.AlertHelper;

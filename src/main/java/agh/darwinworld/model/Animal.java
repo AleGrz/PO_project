@@ -1,5 +1,7 @@
 package agh.darwinworld.model;
 
+import javafx.util.Pair;
+
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -110,7 +112,7 @@ public class Animal {
         this.listeners.remove(listener);
     }
 
-    public Vector2D move(Vector2D position, int mapWidth, int mapHeight) {
+    public Vector2D move(MovementHandler handler, Vector2D position) {
         if (isDead())
             throw new IllegalStateException("Cannot move animal that is dead!");
         if (this.genome.length == 0)
@@ -123,13 +125,10 @@ public class Animal {
         if (random.nextInt(100)<Math.min(age, 80)) {
             return position;
         }
-        Vector2D newPos = position.add(this.direction.getValue()).normalize(mapWidth, null);
-        if (newPos.y() < 0 || newPos.y() >= mapHeight){
-            this.direction = this.direction.rotate(MoveDirection.BACKWARD);
-            listeners.forEach(AnimalListener::statsUpdate);
-            listeners.forEach(listener -> listener.move(position, newPos));
-            return position;
-        }
+        Pair<Vector2D, MapDirection> movePair = handler.move(position, this.direction);
+        Vector2D newPos = movePair.getKey();
+        this.direction = movePair.getValue();
+
         listeners.forEach(AnimalListener::statsUpdate);
         listeners.forEach(listener -> listener.move(position, newPos));
         return newPos;
