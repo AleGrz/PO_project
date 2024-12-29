@@ -43,23 +43,23 @@ public record SimulationParameters(
             AbstractMap map
     ) throws UserFriendlyException {
         return new SimulationParameters(
-        getValidatedIntField(width, "Width", 1, 100),
-        getValidatedIntField(height, "Height", 1, 100),
-        getValidatedIntField(startingPlantAmount, "Amount of plants spawning at the start", 0, null),
-        getValidatedIntField(plantGrowingAmount, "Amount of plants growing each day", 0, null),
-        getValidatedIntField(plantEnergyAmount, "Plant energy profit", 0, null),
-        getValidatedIntField(startingAnimalAmount, "Amount of animal spawning at the start", 1, null),
-        getValidatedIntField(startingEnergyAmount, "Animal start energy", 1, null),
-        getValidatedIntField(minimumBreedingEnergy, "Minimum breeding energy", 1, null),
-        getValidatedIntField(breedingEnergyCost, "Breeding energy cost", 1, null),
-        getValidatedIntField(minimumMutationAmount, "Minimum mutation amount", 0, null),
-        getValidatedIntField(maximumMutationAmount, "Maximum mutation amount", 1, null),
-        getValidatedIntField(animalGenomeLength, "Animal genome length", 1, null),
-        getValidatedIntField(fireFrequency, "Fire frequency", 1, null),
-        getValidatedIntField(fireLength, "Fire length", 1, null),
-        getValidatedIntField(refreshTime, "Refresh time", 10, null),
-        random,
-        map
+                getValidatedIntField(width, "Width", 1, 100),
+                getValidatedIntField(height, "Height", 1, 100),
+                getValidatedIntField(startingPlantAmount, "Amount of plants spawning at the start", 0, null),
+                getValidatedIntField(plantGrowingAmount, "Amount of plants growing each day", 0, null),
+                getValidatedIntField(plantEnergyAmount, "Plant energy profit", 0, null),
+                getValidatedIntField(startingAnimalAmount, "Amount of animal spawning at the start", 1, null),
+                getValidatedIntField(startingEnergyAmount, "Animal start energy", 1, null),
+                getValidatedIntField(minimumBreedingEnergy, "Minimum breeding energy", 1, null),
+                getValidatedIntField(breedingEnergyCost, "Breeding energy cost", 1, null),
+                getValidatedIntField(minimumMutationAmount, "Minimum mutation amount", 0, null),
+                getValidatedIntField(maximumMutationAmount, "Maximum mutation amount", 1, null),
+                getValidatedIntField(animalGenomeLength, "Animal genome length", 1, null),
+                getValidatedIntField(fireFrequency, "Fire frequency", 1, null),
+                getValidatedIntField(fireLength, "Fire length", 1, null),
+                getValidatedIntField(refreshTime, "Refresh time", 10, null),
+                random,
+                map
         );
     }
 

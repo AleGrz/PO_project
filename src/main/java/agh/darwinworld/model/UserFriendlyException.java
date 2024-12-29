@@ -4,7 +4,7 @@ package agh.darwinworld.model;
  * Represents an exception with a user-friendly message and header.
  * Should be used only for displaying error messages for the user.
  */
-public class UserFriendlyException extends Exception {
+public class UserFriendlyException extends RuntimeException {
     private final String header;
 
     /**

@@ -31,7 +31,11 @@ public class IntField extends TextField {
 
     public Integer getValue() {
         if (getText().isEmpty()) return null;
-        return Integer.parseInt(getText());
+        try {
+            return Integer.parseInt(getText());
+        } catch (NumberFormatException e) {
+            throw new UserFriendlyException("Invalid value!", "Value must be an integer.");
+        }
     }
 
     public void setValue(int value) {
