@@ -1,10 +1,12 @@
 package agh.darwinworld.presenter;
 
-import agh.darwinworld.OldSimulation;
+import agh.darwinworld.Simulation;
 import agh.darwinworld.control.IntField;
 import agh.darwinworld.helper.AlertHelper;
 import agh.darwinworld.model.CsvPrinter;
+import agh.darwinworld.model.SimulationParameters;
 import agh.darwinworld.model.UserFriendlyException;
+import agh.darwinworld.model.WorldMap;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,6 +19,7 @@ import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 
 import java.io.File;
+import java.util.Random;
 
 public class StartMenuPresenter {
     @FXML
@@ -64,30 +67,30 @@ public class StartMenuPresenter {
     public void onSimulationStart(ActionEvent actionEvent) {
         Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         try {
-            int width = getValidatedIntFieldValue(widthIntField, "Width", 1, 100);
-            int height = getValidatedIntFieldValue(heightIntField, "Height", 1, 100);
-            int startingPlantAmount = getValidatedIntFieldValue(startingPlantAmountIntField, "Amount of plants spawning at the start", 0, null);
-            int plantGrowingAmount = getValidatedIntFieldValue(plantGrowingAmountIntField, "Amount of plants growing each day", 0, null);
-            int plantEnergyAmount = getValidatedIntFieldValue(plantEnergyAmountIntField, "Plant energy profit", 0, null);
-            int startingAnimalAmount = getValidatedIntFieldValue(startingAnimalAmountIntField, "Amount of animal spawning at the start ", 1, null);
-            int startingEnergyAmount = getValidatedIntFieldValue(startingEnergyAmountIntField, "Animal start energy", 1, null);
-            int minimumBreedingEnergy = getValidatedIntFieldValue(minimumBreedingEnergyIntField, "Minimum breeding energy", 1, null);
-            int breedingEnergyCost = getValidatedIntFieldValue(breedingEnergyCostIntField, "Breeding energy cost", 1, null);
-            int minimumMutationAmount = getValidatedIntFieldValue(minimumMutationAmountIntField, "Minimum mutation amount", 0, null);
-            int maximumMutationAmount = getValidatedIntFieldValue(maximumMutationAmountIntField, "Maximum mutation amount", 1, null);
-            int animalGenomeLength = getValidatedIntFieldValue(animalGenomeLengthIntField, "Animal genome length", 1, null);
-            int fireFrequency = getValidatedIntFieldValue(fireFrequencyIntField, "Fire frequency", 1, null);
-            int fireLength = getValidatedIntFieldValue(fireLengthIntField, "Fire length", 1, null);
-            int refreshTime = getValidatedIntFieldValue(refreshTimeIntField, "RefreshTime", 10, null);
-            int seedInt = getValidatedIntFieldValue(seedIntField, "Seed", null, null);
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
             BorderPane root = loader.load();
             SimulationPresenter presenter = loader.getController();
-            OldSimulation simulation = new OldSimulation(width, height, startingPlantAmount, plantGrowingAmount,
-                    plantEnergyAmount, startingAnimalAmount, startingEnergyAmount, minimumBreedingEnergy,
-                    breedingEnergyCost, minimumMutationAmount, maximumMutationAmount, animalGenomeLength,
-                    fireFrequency, fireLength, refreshTime, seedInt);
+            SimulationParameters params = SimulationParameters.createFromIntField(
+                    widthIntField,
+                    heightIntField,
+                    startingPlantAmountIntField,
+                    plantGrowingAmountIntField,
+                    plantEnergyAmountIntField,
+                    startingAnimalAmountIntField,
+                    startingEnergyAmountIntField,
+                    minimumBreedingEnergyIntField,
+                    breedingEnergyCostIntField,
+                    minimumMutationAmountIntField,
+                    maximumMutationAmountIntField,
+                    animalGenomeLengthIntField,
+                    fireFrequencyIntField,
+                    fireLengthIntField,
+                    refreshTimeIntField,
+                    new Random(seedIntField.getValue()),
+                    new WorldMap()
+            );
+            Simulation simulation = new Simulation(params);
             presenter.setSimulation(simulation);
             if (csvListener != null) {
                 simulation.addStepListener(csvListener);
@@ -119,25 +122,6 @@ public class StartMenuPresenter {
 
     private void generateSeed() {
         seedIntField.setValue((int) (Math.random() * Integer.MAX_VALUE));
-    }
-
-    private int getValidatedIntFieldValue(IntField intField, String propertyName, Integer min, Integer max) throws UserFriendlyException {
-        String recapitalizedPropertyName = propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1).toLowerCase();
-        Integer value;
-        try {
-            value = intField.getValue();
-        } catch (NumberFormatException e) {
-            int minBounds = min == null ? Integer.MIN_VALUE : min;
-            int maxBounds = max == null ? Integer.MAX_VALUE : max;
-            throw new UserFriendlyException("Value too large!", recapitalizedPropertyName + " must be between " + minBounds + " and " + maxBounds + ".");
-        }
-        if (value == null)
-            throw new UserFriendlyException("Missing value!", recapitalizedPropertyName + " has to be provided.");
-        if (min != null && value < min)
-            throw new UserFriendlyException("Value outside of boundaries!", recapitalizedPropertyName + " must be greater than or equal to " + min + ".");
-        if (max != null && value > max)
-            throw new UserFriendlyException("Value outside of boundaries!", recapitalizedPropertyName + " must be less than or equal to " + max + ".");
-        return value;
     }
 
     private Insets getWindowInsets(Stage stage) {

@@ -1,6 +1,7 @@
 package agh.darwinworld.presenter;
 
 import agh.darwinworld.OldSimulation;
+import agh.darwinworld.Simulation;
 import agh.darwinworld.control.CellRegion;
 import agh.darwinworld.helper.AlertHelper;
 import agh.darwinworld.model.*;
@@ -107,7 +108,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
     private Animal selectedAnimal;
     private Vector2D selectedAnimalPos;
     private double lastCalculatedCellSize;
-    private OldSimulation simulation;
+    private Simulation simulation;
     private Thread simulationThread;
     private final List<SimulationPauseListener> listeners = new ArrayList<>();
 
@@ -175,7 +176,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
         selectedAnimalDiedAtLabel.setText("MISSING DATA");
     }
 
-    public void setSimulation(OldSimulation simulation) {
+    public void setSimulation(Simulation simulation) {
         if (this.simulation != null) {
             this.simulation.removeStepListener(this);
             stopSimulationThread();
@@ -199,7 +200,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
             fireFrequencyLabel.setText(Integer.toString(simulation.getFireFrequency()));
             fireLengthLabel.setText(Integer.toString(simulation.getFireLength()));
             refreshTimeLabel.setText(Integer.toString(simulation.getRefreshTime()));
-            seedLabel.setText(Integer.toString(simulation.getSeed()));
+            seedLabel.setText("NIE DZIALA TBD");
             drawMap();
         });
     }
@@ -277,13 +278,13 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
                 mapGrid.getRowConstraints().add(new RowConstraints(cellSize, cellSize, cellSize));
                 createLabelCell(Integer.toString(simulation.getHeight() - j - 1), 0, j + 1);
             }
-            int maxAnimalAmount = simulation.getMaxAnimalAmount();
+            int maxAnimalAmount = simulation.getMap().getMaxAnimalAmount();
             int maxFireLength = simulation.getFireLength();
             for (int i = 0; i < simulation.getWidth(); i++) {
                 for (int j = 0; j < simulation.getHeight(); j++) {
                     Vector2D pos = new Vector2D(i, simulation.getHeight() - j - 1);
-                    int animalAmount = simulation.getAnimalsOnPosition(pos).size();
-                    boolean isPlant = simulation.isPlantOnPosition(pos);
+                    int animalAmount = simulation.getMap().getAnimalsOnPosition(pos).size();
+                    boolean isPlant = simulation.getMap().isPlantOnPosition(pos);
                     CellRegion cell = new CellRegion(isPlant, animalAmount, maxAnimalAmount, 0, maxFireLength);
                     GridPane.setHgrow(cell, Priority.ALWAYS);
                     GridPane.setVgrow(cell, Priority.ALWAYS);
@@ -329,7 +330,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
         int colIndex = (int) ((x - gapH) / cellSize) - 1;
         int rowIndex = simulation.getHeight() - (int) ((y - gapV) / cellSize);
         Vector2D mouseOverPosition = new Vector2D(colIndex, rowIndex);
-        List<Animal> animals = simulation.getAnimalsOnPosition(mouseOverPosition);
+        List<Animal> animals = simulation.getMap().getAnimalsOnPosition(mouseOverPosition);
         if (animals.size() == 1) {
             selectAnimal(animals.getFirst(), mouseOverPosition);
         } else if (animals.size() > 1) {
