@@ -205,7 +205,7 @@ public class OldSimulation implements Runnable {
                 //noinspection BusyWait
                 Thread.sleep(this.refreshTime);
             } catch (InterruptedException e) {
-                System.out.println("Stopping simulation loop's sleep!");
+                System.out.println("Stopping simulation loop!");
                 return;
             }
         }

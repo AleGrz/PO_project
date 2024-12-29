@@ -1,5 +1,6 @@
 package agh.darwinworld.control;
 
+import agh.darwinworld.model.UserFriendlyException;
 import javafx.scene.control.TextField;
 
 public class IntField extends TextField {
@@ -28,17 +29,15 @@ public class IntField extends TextField {
         return text.matches("-?\\d*");
     }
 
-    /**
-     * Returns the current value as an integer. Defaults to 0 if the field is empty.
-     */
-    public Integer getValue() throws NumberFormatException {
+    public Integer getValue() {
         if (getText().isEmpty()) return null;
-        return Integer.parseInt(getText());
+        try {
+            return Integer.parseInt(getText());
+        } catch (NumberFormatException e) {
+            throw new UserFriendlyException("Invalid value!", "Value must be an integer.");
+        }
     }
 
-    /**
-     * Sets the value of the field as an integer.
-     */
     public void setValue(int value) {
         setText(String.valueOf(value));
     }
