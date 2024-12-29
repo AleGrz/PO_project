@@ -1,6 +1,6 @@
 package agh.darwinworld.presenter;
 
-import agh.darwinworld.Simulation;
+import agh.darwinworld.OldSimulation;
 import agh.darwinworld.control.IntField;
 import agh.darwinworld.helper.AlertHelper;
 import agh.darwinworld.model.CsvPrinter;
@@ -84,7 +84,7 @@ public class StartMenuPresenter {
             loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
             BorderPane root = loader.load();
             SimulationPresenter presenter = loader.getController();
-            Simulation simulation = new Simulation(width, height, startingPlantAmount, plantGrowingAmount,
+            OldSimulation simulation = new OldSimulation(width, height, startingPlantAmount, plantGrowingAmount,
                     plantEnergyAmount, startingAnimalAmount, startingEnergyAmount, minimumBreedingEnergy,
                     breedingEnergyCost, minimumMutationAmount, maximumMutationAmount, animalGenomeLength,
                     fireFrequency, fireLength, refreshTime, seedInt);

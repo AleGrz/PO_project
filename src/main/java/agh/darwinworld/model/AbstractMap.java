@@ -28,6 +28,10 @@ public abstract class AbstractMap {
         return animals.containsKey(position) ? animals.get(position) : new ArrayList<>();
     }
 
+    public List<Animal> getAllAnimals(Vector2D position) {
+        return animals.containsKey(position) ? animals.get(position) : new ArrayList<>();
+    }
+
     public boolean isPlantOnPosition(Vector2D position) {
         return plants.contains(position);
     }
@@ -56,5 +60,24 @@ public abstract class AbstractMap {
         }
         return genotypeCount.entrySet().stream().max(Map.Entry.comparingByValue()).map(Map.Entry::getKey)
                 .orElse("Missing");
+    }
+
+    public void placeAnimal(Vector2D position, Animal animal) {
+
+    }
+
+    public void placePlant(Vector2D position) {
+        plants.add(position);
+    }
+
+    public void moveAnimal(Animal animal) {
+    }
+
+    public void breedAnimals(Animal mother, Animal father) {
+
+    }
+
+    public void moveAnimal(Animal animal) {
+
     }
 }

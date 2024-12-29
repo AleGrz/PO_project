@@ -1,6 +1,6 @@
 package agh.darwinworld.presenter;
 
-import agh.darwinworld.Simulation;
+import agh.darwinworld.OldSimulation;
 import agh.darwinworld.control.CellRegion;
 import agh.darwinworld.helper.AlertHelper;
 import agh.darwinworld.model.*;
@@ -107,7 +107,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
     private Animal selectedAnimal;
     private Vector2D selectedAnimalPos;
     private double lastCalculatedCellSize;
-    private Simulation simulation;
+    private OldSimulation simulation;
     private Thread simulationThread;
     private final List<SimulationPauseListener> listeners = new ArrayList<>();
 
@@ -175,7 +175,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
         selectedAnimalDiedAtLabel.setText("MISSING DATA");
     }
 
-    public void setSimulation(Simulation simulation) {
+    public void setSimulation(OldSimulation simulation) {
         if (this.simulation != null) {
             this.simulation.removeStepListener(this);
             stopSimulationThread();

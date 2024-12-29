@@ -1,15 +1,14 @@
 package agh.darwinworld;
 
-import agh.darwinworld.model.AbstractMap;
 import agh.darwinworld.model.Animal;
 import agh.darwinworld.model.SimulationStepListener;
 import agh.darwinworld.model.Vector2D;
-
 import java.util.*;
 
-public class Simulation implements Runnable {
+public class OldSimulation implements Runnable {
     private final Random random;
-    private final AbstractMap map;
+    private final int width;
+    private final int height;
     private final int startingPlantAmount;
     private final int plantGrowingAmount;
     private final int plantEnergyAmount;
@@ -25,6 +24,9 @@ public class Simulation implements Runnable {
     private final int refreshTime;
     private final int seed;
 
+    private HashMap<Vector2D, ArrayList<Animal>> animals = new HashMap<>();
+    private final HashSet<Vector2D> plants = new HashSet<>();
+    private final HashMap<Vector2D, Integer> fire = new HashMap<>();
     private boolean isRunning = false;
     private final List<SimulationStepListener> listeners = new ArrayList<>();
     private int deadCount = 0;
@@ -69,18 +71,19 @@ public class Simulation implements Runnable {
             throw new IllegalArgumentException("Refresh time must be greater than or equal to 10!");
     }
 
-    public Simulation(AbstractMap map. int startingPlantAmount,
-                      int plantGrowingAmount, int plantEnergyAmount,
-                      int startingAnimalAmount, int startingEnergyAmount,
-                      int minimumBreedingEnergy, int breedingEnergyCost,
-                      int minimumMutationAmount, int maximumMutationAmount,
-                      int animalGenomeLength, int fireFrequency, int fireLength,
-                      int refreshTime, int seed) {
-        InputValidator(startingPlantAmount, plantGrowingAmount, plantEnergyAmount,
+    public OldSimulation(int width, int height, int startingPlantAmount,
+                         int plantGrowingAmount, int plantEnergyAmount,
+                         int startingAnimalAmount, int startingEnergyAmount,
+                         int minimumBreedingEnergy, int breedingEnergyCost,
+                         int minimumMutationAmount, int maximumMutationAmount,
+                         int animalGenomeLength, int fireFrequency, int fireLength,
+                         int refreshTime, int seed) {
+        InputValidator(width, height, startingPlantAmount, plantGrowingAmount, plantEnergyAmount,
                 startingAnimalAmount, startingEnergyAmount, minimumBreedingEnergy, breedingEnergyCost,
                 minimumMutationAmount, maximumMutationAmount, animalGenomeLength, fireFrequency,
                 fireLength, refreshTime, seed);
-        this.map = map;
+        this.width = width;
+        this.height = height;
         this.startingPlantAmount = startingPlantAmount;
         this.plantGrowingAmount = plantGrowingAmount;
         this.plantEnergyAmount = plantEnergyAmount;
@@ -105,6 +108,14 @@ public class Simulation implements Runnable {
             animals.get(v).add(animal);
         }
         growPlants(startingPlantAmount);
+    }
+
+    public int getWidth() {
+        return this.width;
+    }
+
+    public int getHeight() {
+        return this.height;
     }
 
     public int getStartingPlantAmount() {
@@ -231,6 +242,10 @@ public class Simulation implements Runnable {
             animals.remove(position);
         }
 
+    }
+
+    public int getMaxAnimalAmount() {
+        return animals.values().stream().map(ArrayList::size).max(Integer::compareTo).orElse(0);
     }
 
     private void moveAnimals() {
@@ -373,6 +388,13 @@ public class Simulation implements Runnable {
         return positions.subList(0, Math.min(amount, positions.size()));
     }
 
+    public synchronized List<Animal> getAnimalsOnPosition(Vector2D position) {
+        return animals.containsKey(position) ? animals.get(position) : new ArrayList<>();
+    }
+
+    public synchronized boolean isPlantOnPosition(Vector2D position) {
+        return plants.contains(position);
+    }
 
     public void addStepListener(SimulationStepListener listener) {
         listeners.add(listener);
@@ -401,6 +423,32 @@ public class Simulation implements Runnable {
 
     public boolean isRunning() {
         return isRunning;
+    }
+
+    public int animalCount() {
+        return animals.values().stream().mapToInt(List::size).sum();
+    }
+
+    public int plantCount() {
+        return plants.size();
+    }
+
+    public int emptyFieldCount() {
+        HashSet<Vector2D> allFields = new HashSet<>(plants);
+        allFields.addAll(animals.keySet());
+        return width * height - allFields.size();
+    }
+
+    public String popularGenotype() {
+        HashMap<String, Integer> genotypeCount = new HashMap<>();
+        for (List<Animal> animalList : animals.values()) {
+            for (Animal animal : animalList) {
+                String genotype = Arrays.stream(animal.getGenome()).map(Enum::ordinal).map(String::valueOf).reduce("", String::concat);
+                genotypeCount.put(genotype, genotypeCount.getOrDefault(genotype, 0) + 1);
+            }
+        }
+        return genotypeCount.entrySet().stream().max(Map.Entry.comparingByValue()).map(Map.Entry::getKey)
+                .orElse("Missing");
     }
 
     public int averageLifetime() {
