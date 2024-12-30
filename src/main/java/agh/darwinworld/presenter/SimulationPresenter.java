@@ -26,6 +26,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class SimulationPresenter implements SimulationStepListener, AnimalListener {
@@ -110,6 +111,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
     private Simulation simulation;
     private Thread simulationThread;
     private final List<SimulationPauseListener> listeners = new ArrayList<>();
+    private HashMap<Vector2D, CellRegion> cells = new HashMap<>();
 
     @FXML
     public void initialize() {
@@ -137,11 +139,11 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
         selectedAnimal = animal;
         selectedAnimal.addListener(this);
         if (selectedAnimalPos != null) {
-            CellRegion cell = getCellByRowColumn(selectedAnimalPos);
+            CellRegion cell = cells.get(selectedAnimalPos);
             if (cell != null) cell.setIsSelected(false);
         }
         selectedAnimalPos = vector2D;
-        CellRegion cell = getCellByRowColumn(vector2D);
+        CellRegion cell = cells.get(vector2D);
         if (cell != null)
             cell.setIsSelected(true);
         selectedAnimalGridPane.setVisible(true);
@@ -153,7 +155,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
             selectedAnimal.removeListener(this);
         selectedAnimal = null;
         if (selectedAnimalPos != null) {
-            CellRegion cell = getCellByRowColumn(selectedAnimalPos);
+            CellRegion cell = cells.get(selectedAnimalPos);
             if (cell != null) cell.setIsSelected(false);
         }
         selectedAnimalPos = null;
@@ -263,6 +265,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
 
     public void drawMap() {
         SimulationParameters p = simulation.getParameters();
+        cells = new HashMap<>();
         Platform.runLater(() -> {
             if (!mapGrid.getChildren().isEmpty())
                 mapGrid.getChildren().retainAll(mapGrid.getChildren().getFirst());
@@ -291,6 +294,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
                     GridPane.setHgrow(cell, Priority.ALWAYS);
                     GridPane.setVgrow(cell, Priority.ALWAYS);
                     mapGrid.add(cell, i + 1, j + 1);
+                    cells.put(pos, cell);
                 }
             }
         });
@@ -372,25 +376,10 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
         }
     }
 
-
-    private CellRegion getCellByRowColumn(Vector2D pos) {
-        SimulationParameters p = simulation.getParameters();
-        for (Node node : mapGrid.getChildren()) {
-            if (node instanceof Label) continue;
-            if (!(node instanceof CellRegion cell)) continue;
-            int rowIndex = GridPane.getRowIndex(node);
-            int colIndex = GridPane.getColumnIndex(node);
-            if (pos.equals(new Vector2D(colIndex - 1, p.height() - rowIndex))) {
-                return cell;
-            }
-        }
-        return null;
-    }
-
     @Override
     public void updateAnimal(Vector2D position, int animalCount, int maxAnimalCount) {
         Platform.runLater(() -> {
-            CellRegion cell = getCellByRowColumn(position);
+            CellRegion cell = cells.get(position);
             if (cell != null) {
                 cell.setAnimalAmount(animalCount, maxAnimalCount);
             }
@@ -400,7 +389,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
     @Override
     public void updateFire(Vector2D position, int length) {
         Platform.runLater(() -> {
-            CellRegion cell = getCellByRowColumn(position);
+            CellRegion cell = cells.get(position);
             if (cell != null) {
                 cell.setCurrentFireStage(length);
             }
@@ -434,7 +423,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
     @Override
     public void addPlant(Vector2D position) {
         Platform.runLater(() -> {
-            CellRegion cell = getCellByRowColumn(position);
+            CellRegion cell = cells.get(position);
             if (cell != null) {
                 cell.setHasPlant(true);
             }
@@ -444,7 +433,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
     @Override
     public void removePlant(Vector2D position) {
         Platform.runLater(() -> {
-            CellRegion cell = getCellByRowColumn(position);
+            CellRegion cell = cells.get(position);
             if (cell != null) {
                 cell.setHasPlant(false);
             }
@@ -456,12 +445,12 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
         Platform.runLater(() -> {
             selectedAnimalPos = newPosition;
             if (oldPosition != null) {
-                CellRegion cell = getCellByRowColumn(oldPosition);
+                CellRegion cell = cells.get(oldPosition);
                 if (cell != null)
                     cell.setIsSelected(false);
             }
             if (newPosition != null) {
-                CellRegion cell = getCellByRowColumn(newPosition);
+                CellRegion cell = cells.get(newPosition);
                 if (cell != null)
                     cell.setIsSelected(true);
             }
