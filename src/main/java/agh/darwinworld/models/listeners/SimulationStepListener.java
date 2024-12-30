@@ -1,6 +1,6 @@
-package agh.darwinworld.model;
+package agh.darwinworld.models.listeners;
 
-import java.io.IOException;
+import agh.darwinworld.models.Vector2D;
 
 /**
  * Interface for listening to simulation step events in a simulation.
@@ -27,7 +27,18 @@ public interface SimulationStepListener {
      * @param maxAnimalCount maximum amount of animals on one tile.
      */
     void updateAnimal(Vector2D position, int animalCount, int maxAnimalCount);
-    void updateStatistics(int step, int animalCount, int plantCount, int emptyFieldCount, String popularGenotype,
+
+    /**
+     * Called whenever simulation statistic have been updated.
+     * @param step current simulation step.
+     * @param animalCount amount of animals on the map.
+     * @param plantCount amount of plants on the map.
+     * @param emptyFieldCount amount of empty fields on the map.
+     * @param popularGenome the most popular genome of the animals.
+     * @param averageLifetime average lifetime of the animals.
+     * @param averageDescendantsAmount average descendants amount of the animals.
+     */
+    void updateStatistics(int step, int animalCount, int plantCount, int emptyFieldCount, String popularGenome,
                           int averageLifetime, int averageDescendantsAmount);
 
     /**

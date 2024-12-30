@@ -1,4 +1,4 @@
-package agh.darwinworld.model;
+package agh.darwinworld.models.listeners;
 
 public interface SimulationPauseListener {
     void onSimulationPaused();

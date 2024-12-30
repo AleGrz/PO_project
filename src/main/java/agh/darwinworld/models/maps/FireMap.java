@@ -1,5 +1,9 @@
-package agh.darwinworld.model;
+package agh.darwinworld.models.maps;
 
+import agh.darwinworld.models.Animal;
+import agh.darwinworld.models.MapDirection;
+import agh.darwinworld.models.listeners.MovementHandler;
+import agh.darwinworld.models.Vector2D;
 import javafx.util.Pair;
 
 import java.util.HashMap;
@@ -13,10 +17,11 @@ public class FireMap extends AbstractMap implements MovementHandler {
         return fire.containsKey(position);
     }
 
+    @Override
     public void step(int count) {
         super.step(count);
-        propagateFire();
-        if (count % this.params.fireFrequency() == 0) {
+        propagateFire(count);
+        if (count % this.params.fireFrequency() == 0 && !plants.isEmpty()) {
             Vector2D randomPos = plants.toArray(new Vector2D[0])[this.params.random().nextInt(plants.size())];
             fire.put(randomPos, this.params.fireLength());
         }
@@ -24,7 +29,7 @@ public class FireMap extends AbstractMap implements MovementHandler {
 
     }
 
-    public void propagateFire() {
+    public void propagateFire(int step) {
         HashMap<Vector2D, Integer> newFire = new HashMap<>();
         Iterator<Map.Entry<Vector2D, Integer>> iterator = fire.entrySet().iterator();
         while (iterator.hasNext()) {
@@ -48,6 +53,7 @@ public class FireMap extends AbstractMap implements MovementHandler {
             listeners.forEach(listener -> listener.updateAnimal(position, 0, max));
             if (animals.containsKey(position)) {
                 for(Animal animal : animals.get(position)) {
+                    animal.forceKill(step);
                     totalLifetime += animal.getAge();
                     deadCount++;
                 }

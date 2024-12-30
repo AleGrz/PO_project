@@ -1,4 +1,4 @@
-package agh.darwinworld.model;
+package agh.darwinworld.models;
 
 /**
  * Represents the possible movement directions

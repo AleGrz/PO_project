@@ -1,4 +1,4 @@
-package agh.darwinworld.control;
+package agh.darwinworld.controls;
 
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -48,17 +48,33 @@ public class CellRegion extends Region {
      */
     public static final Color ANIMAL_COLOR_MOST = Color.web("0x303446");
 
+    /**
+     * Cached transparent background for better performance.
+     */
+    private static final Background transparentBackground = new Background(new BackgroundFill(Color.TRANSPARENT, null, null));
+
+    /**
+     * Cached plant background for better performance.
+     */
+    private static final Background plantBackground = new Background(new BackgroundFill(PLANT_BACKGROUND, null, null));
+
+    /**
+     * Cached normal background for better performance.
+     */
+    private static final Background normalBackground = new Background(new BackgroundFill(NORMAL_BACKGROUND, null, null));
+
     private final Region content;
-    private boolean hasPlant = false;
+    private boolean hasPlant;
     private int fireStageAmount;
     private int currentFireStage;
 
     /**
-     * @param hasPlant
-     * @param currentAnimalAmount
-     * @param maxAnimalAmount
-     * @param currentFireStage
-     * @param fireStageAmount
+     * Constructs a CellRegion with the given parameters.
+     * @param hasPlant whether the cell has a plant.
+     * @param currentAnimalAmount current number of animals in the cell.
+     * @param maxAnimalAmount maximum number of animals in the cell.
+     * @param currentFireStage current stage of fire in the cell.
+     * @param fireStageAmount total number of fire stages in the cell.
      */
     public CellRegion(boolean hasPlant, int currentAnimalAmount, int maxAnimalAmount, int currentFireStage, int fireStageAmount) {
         super();
@@ -79,7 +95,8 @@ public class CellRegion extends Region {
     }
 
     /**
-     * @param isSelected
+     * Sets whether the cell is selected.
+     * @param isSelected true if the cell is selected, false otherwise.
      */
     public void setIsSelected(boolean isSelected) {
         if (isSelected && !content.getStyleClass().contains("selected")) {
@@ -90,15 +107,17 @@ public class CellRegion extends Region {
     }
 
     /**
-     * @param currentAnimalAmount
-     * @param maxAnimalAmount
+     * Updates the number of animals in the cell.
+     * @param currentAnimalAmount current number of animals in the cell.
+     * @param maxAnimalAmount maximum number of animals in the cell.
      */
     public void setAnimalAmount(int currentAnimalAmount, int maxAnimalAmount) {
         updateContent(currentAnimalAmount, maxAnimalAmount);
     }
 
     /**
-     * @param hasPlant
+     * Sets whether the cell has a plant.
+     * @param hasPlant true if the cell has a plant, false otherwise.
      */
     public void setHasPlant(boolean hasPlant) {
         this.hasPlant = hasPlant;
@@ -106,8 +125,8 @@ public class CellRegion extends Region {
     }
 
     /**
-     * 
-     * @param amount
+     * Sets the total number of fire stages for the cell.
+     * @param amount total number of fire stages.
      */
     public void setFireStageAmount(int amount) {
         this.fireStageAmount = amount;
@@ -115,7 +134,8 @@ public class CellRegion extends Region {
     }
 
     /**
-     * @param fireStage
+     * Sets the current fire stage of the cell.
+     * @param fireStage current fire stage.
      */
     public void setCurrentFireStage(int fireStage) {
         this.currentFireStage = fireStage;
@@ -127,7 +147,7 @@ public class CellRegion extends Region {
             final Color animalColor = ANIMAL_COLOR_LEAST.interpolate(ANIMAL_COLOR_MOST, (double) currentAnimalAmount / Math.max(maxAnimalAmount, 5));
             content.setBackground(new Background(new BackgroundFill(animalColor, null, null)));
         } else {
-            content.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, null, null)));
+            content.setBackground(transparentBackground);
         }
     }
 
@@ -136,7 +156,7 @@ public class CellRegion extends Region {
             final Color fireColor = FIRE_BACKGROUND_LEAST.interpolate(FIRE_BACKGROUND_MOST, (double) (this.currentFireStage - 1) / this.fireStageAmount);
             setBackground(new Background(new BackgroundFill(fireColor, null, null)));
         } else {
-            setBackground(new Background(new BackgroundFill(this.hasPlant ? PLANT_BACKGROUND : NORMAL_BACKGROUND, null, null)));
+            setBackground(this.hasPlant ? plantBackground : normalBackground);
         }
     }
 }

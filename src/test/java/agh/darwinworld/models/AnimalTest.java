@@ -1,14 +1,57 @@
-package agh.darwinworld.model;
+package agh.darwinworld.models;
 
 import org.junit.jupiter.api.*;
 
-import java.util.Arrays;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AnimalTest {
     private final Random random = new Random();
+    @Test
+    public void testChildrenAmount() {
+        final int genomeLength = 10;
+        Animal mom = new Animal(random, genomeLength, 0);
+        Animal dad = new Animal(random, genomeLength, 0);
+        assertEquals(mom.getChildrenAmount(), 0);
+        assertEquals(dad.getChildrenAmount(), 0);
+        Animal child = new Animal(mom, dad, 0, 0, 0, 1, 0);
+        assertEquals(mom.getChildrenAmount(), 1);
+        assertEquals(dad.getChildrenAmount(), 1);
+        assertEquals(child.getChildrenAmount(), 0);
+    }
+
+    @Test
+    public void testDescendantsChildrenAmount() {
+        final int genomeLength = 10;
+        Animal mom = new Animal(random, genomeLength, 0);
+        Animal dad = new Animal(random, genomeLength, 0);
+        assertEquals(mom.getDescendantsAmount(), 0);
+        assertEquals(dad.getDescendantsAmount(), 0);
+        Animal childA = new Animal(mom, dad, 0, 0, 0, 1, 0);
+        assertEquals(mom.getDescendantsAmount(), 1);
+        assertEquals(dad.getDescendantsAmount(), 1);
+        assertEquals(childA.getDescendantsAmount(), 0);
+        Animal childB = new Animal(mom, dad, 0, 0, 0, 1, 0);
+        assertEquals(mom.getDescendantsAmount(), 2);
+        assertEquals(dad.getDescendantsAmount(), 2);
+        assertEquals(childB.getDescendantsAmount(), 0);
+        Animal childAB = new Animal(childA, childB, 0, 0, 0, 1, 0);
+        assertEquals(mom.getDescendantsAmount(), 3);
+        assertEquals(dad.getDescendantsAmount(), 3);
+        assertEquals(childA.getDescendantsAmount(), 1);
+        assertEquals(childB.getDescendantsAmount(), 1);
+        assertEquals(childAB.getDescendantsAmount(), 0);
+        Animal otherChild = new Animal(random, genomeLength, 0);
+        Animal childABOther = new Animal(childAB, otherChild, 0, 0, 0, 1, 0);
+        assertEquals(mom.getDescendantsAmount(), 4);
+        assertEquals(dad.getDescendantsAmount(), 4);
+        assertEquals(childA.getDescendantsAmount(), 2);
+        assertEquals(childB.getDescendantsAmount(), 2);
+        assertEquals(childAB.getDescendantsAmount(), 1);
+        assertEquals(otherChild.getDescendantsAmount(), 1);
+        assertEquals(childABOther.getDescendantsAmount(), 0);
+    }
     /*
     @Test
     public void testConstructorA() {

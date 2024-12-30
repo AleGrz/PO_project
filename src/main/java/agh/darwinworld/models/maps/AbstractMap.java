@@ -1,4 +1,8 @@
-package agh.darwinworld.model;
+package agh.darwinworld.models.maps;
+
+import agh.darwinworld.models.*;
+import agh.darwinworld.models.listeners.MovementHandler;
+import agh.darwinworld.models.listeners.SimulationStepListener;
 
 import java.util.*;
 
@@ -44,7 +48,7 @@ public abstract class AbstractMap implements MovementHandler {
         return params.width() * params.height() - allFields.size();
     }
 
-    public String popularGenotype() {
+    public String popularGenome() {
         HashMap<String, Integer> genotypeCount = new HashMap<>();
         for (List<Animal> animalList : animals.values()) {
             for (Animal animal : animalList) {
@@ -84,7 +88,7 @@ public abstract class AbstractMap implements MovementHandler {
         }
     }
 
-    protected void breedAnimals() {
+    protected void breedAnimals(int step) {
         for (Vector2D position : animals.keySet()) {
             List<Animal> topAnimals = animals.get(position).stream()
                     .sorted(Comparator
@@ -97,7 +101,7 @@ public abstract class AbstractMap implements MovementHandler {
 
             if (topAnimals.size() == 2 && topAnimals.getLast().getEnergy() >= params.minimumBreedingEnergy()) {
                 Animal baby = new Animal(topAnimals.getFirst(), topAnimals.getLast(), params.breedingEnergyCost(),
-                        params.minimumBreedingEnergy(), params.minimumMutationAmount(), params.maximumMutationAmount());
+                        params.minimumBreedingEnergy(), params.minimumMutationAmount(), params.maximumMutationAmount(), step);
                 animals.get(position).add(baby);
                 final int max = getMaxAnimalAmount();
                 listeners.forEach(listener -> listener.updateAnimal(position, animals.get(position).size(), max));
@@ -105,12 +109,12 @@ public abstract class AbstractMap implements MovementHandler {
         }
     }
 
-    protected void feedAnimals() {
+    protected void feedAnimals(int step) {
         List<Vector2D> toRemove = new ArrayList<>();
         for (Vector2D position : plants) {
             if (!animals.containsKey(position)) continue;
             Animal topAnimal = animals.get(position).stream().max(Comparator.comparingInt(Animal::getEnergy)).orElseThrow();
-            topAnimal.eat(params.plantEnergyAmount());
+            topAnimal.eat(params.plantEnergyAmount(), step);
             toRemove.add(position);
             listeners.forEach(listener -> listener.removePlant(position));
         }
@@ -181,7 +185,7 @@ public abstract class AbstractMap implements MovementHandler {
         }
     }
 
-    private void moveAnimals() {
+    private void moveAnimals(int step) {
         HashMap<Vector2D, ArrayList<Animal>> updatedAnimals = new HashMap<>();
         for (Map.Entry<Vector2D, ArrayList<Animal>> entry : animals.entrySet()) {
             Vector2D position = entry.getKey();
@@ -189,7 +193,7 @@ public abstract class AbstractMap implements MovementHandler {
 
             if (animalList.isEmpty()) continue;
             for (Animal animal : animalList) {
-                Vector2D newPosition = animal.move(this, position);
+                Vector2D newPosition = animal.move(this, position, step);
                 updatedAnimals
                         .computeIfAbsent(newPosition, k -> new ArrayList<>())
                         .add(animal);
@@ -207,11 +211,11 @@ public abstract class AbstractMap implements MovementHandler {
         animals = updatedAnimals;
     }
 
-    public void step(int count) {
+    public void step(int stepNumber) {
         removeDeadAnimals();
-        moveAnimals();
-        feedAnimals();
-        breedAnimals();
+        moveAnimals(stepNumber);
+        feedAnimals(stepNumber);
+        breedAnimals(stepNumber);
         growPlants(this.params.plantGrowingAmount());
     }
 
@@ -227,7 +231,7 @@ public abstract class AbstractMap implements MovementHandler {
                 animalCount(),
                 plantCount(),
                 emptyFieldCount(),
-                popularGenotype(),
+                popularGenome(),
                 averageLifetime(),
                 averageDescendantsAmount()
         ));
@@ -243,7 +247,7 @@ public abstract class AbstractMap implements MovementHandler {
                 animalCount(),
                 plantCount(),
                 emptyFieldCount(),
-                popularGenotype(),
+                popularGenome(),
                 averageLifetime(),
                 averageDescendantsAmount()
         ));

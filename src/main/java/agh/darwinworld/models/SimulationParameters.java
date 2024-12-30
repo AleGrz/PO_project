@@ -1,6 +1,8 @@
-package agh.darwinworld.model;
+package agh.darwinworld.models;
 
-import agh.darwinworld.control.IntField;
+import agh.darwinworld.controls.IntField;
+import agh.darwinworld.models.exceptions.UserFriendlyException;
+import agh.darwinworld.models.maps.AbstractMap;
 
 import java.util.Random;
 

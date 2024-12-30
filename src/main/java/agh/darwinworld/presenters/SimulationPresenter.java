@@ -1,9 +1,12 @@
-package agh.darwinworld.presenter;
+package agh.darwinworld.presenters;
 
 import agh.darwinworld.Simulation;
-import agh.darwinworld.control.CellRegion;
-import agh.darwinworld.helper.AlertHelper;
-import agh.darwinworld.model.*;
+import agh.darwinworld.controls.CellRegion;
+import agh.darwinworld.helpers.AlertHelper;
+import agh.darwinworld.models.*;
+import agh.darwinworld.models.listeners.AnimalListener;
+import agh.darwinworld.models.listeners.SimulationPauseListener;
+import agh.darwinworld.models.listeners.SimulationStepListener;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.event.ActionEvent;
@@ -25,9 +28,11 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.FutureTask;
 
 public class SimulationPresenter implements SimulationStepListener, AnimalListener {
     @FXML
@@ -174,7 +179,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
         }
         selectedAnimalGenomeLabel.setText(genomeString.toString());
         selectedAnimalPlantsEatenAmountLabel.setText(Integer.toString(selectedAnimal.getTotalEatenPlants()));
-        selectedAnimalDiedAtLabel.setText("MISSING DATA");
+        selectedAnimalDiedAtLabel.setText(Integer.toString(selectedAnimal.diedAt()));
     }
 
     public void setSimulation(Simulation simulation) {
@@ -458,8 +463,18 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
     }
 
     @Override
-    public void statsUpdate() {
-        Platform.runLater(this::updateSelectedAnimalStats);
+    public void propertyChange(PropertyChangeEvent evt) {
+        FutureTask<?> task = switch (evt.getPropertyName()) {
+            case "energy" -> new FutureTask<>(() -> selectedAnimalEnergyLabel.setText(evt.getNewValue().toString()), null);
+            case "age" -> new FutureTask<>(() -> selectedAnimalAgeLabel.setText(evt.getNewValue().toString()), null);
+            case "childrenAmount" -> new FutureTask<>(() -> selectedAnimalChildrenAmountLabel.setText(evt.getNewValue().toString()), null);
+            case "descendantsAmount" -> new FutureTask<>(() -> selectedAnimalDescendantsAmountLabel.setText(evt.getNewValue().toString()), null);
+            case "totalEatenPlants" -> new FutureTask<>(() -> selectedAnimalPlantsEatenAmountLabel.setText(evt.getNewValue().toString()), null);
+            case "diedAt" -> new FutureTask<>(() -> selectedAnimalDiedAtLabel.setText(evt.getNewValue().toString()), null);
+            default -> null;
+        };
+        if (task != null)
+            Platform.runLater(task);
     }
 
     public void addPauseListener(SimulationPauseListener listener) {

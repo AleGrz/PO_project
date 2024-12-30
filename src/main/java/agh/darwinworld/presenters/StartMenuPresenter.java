@@ -1,9 +1,11 @@
-package agh.darwinworld.presenter;
+package agh.darwinworld.presenters;
 
 import agh.darwinworld.Simulation;
-import agh.darwinworld.control.IntField;
-import agh.darwinworld.helper.AlertHelper;
-import agh.darwinworld.model.*;
+import agh.darwinworld.controls.IntField;
+import agh.darwinworld.helpers.AlertHelper;
+import agh.darwinworld.models.*;
+import agh.darwinworld.models.exceptions.UserFriendlyException;
+import agh.darwinworld.models.maps.FireMap;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

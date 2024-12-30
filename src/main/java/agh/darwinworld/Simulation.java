@@ -1,15 +1,14 @@
 package agh.darwinworld;
 
-import agh.darwinworld.model.*;
-import agh.darwinworld.model.AbstractMap;
-import agh.darwinworld.presenter.SimulationPresenter;
-
-import java.util.*;
+import agh.darwinworld.models.*;
+import agh.darwinworld.models.listeners.SimulationStepListener;
+import agh.darwinworld.models.maps.AbstractMap;
+import agh.darwinworld.presenters.SimulationPresenter;
 
 public class Simulation implements Runnable {
     private final SimulationParameters params;
     private final AbstractMap map;
-    private int step;
+    private int step = 1;
 
     private boolean isRunning = false;
 
@@ -21,7 +20,9 @@ public class Simulation implements Runnable {
         map.growPlants(params.startingPlantAmount());
     }
 
-    public SimulationParameters getParameters() { return this.params; }
+    public SimulationParameters getParameters() {
+        return this.params;
+    }
 
     @Override
     public void run() {
@@ -31,6 +32,7 @@ public class Simulation implements Runnable {
                 step++;
             }
             try {
+                //noinspection BusyWait
                 Thread.sleep(this.params.refreshTime());
             } catch (InterruptedException e) {
                 System.out.println("Stopping simulation loop's sleep!");

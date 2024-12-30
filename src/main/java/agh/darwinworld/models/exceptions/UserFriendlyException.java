@@ -1,4 +1,4 @@
-package agh.darwinworld.model;
+package agh.darwinworld.models.exceptions;
 
 /**
  * Represents an exception with a user-friendly message and header.

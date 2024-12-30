@@ -1,5 +1,9 @@
-package agh.darwinworld.model;
+package agh.darwinworld.models.maps;
 
+import agh.darwinworld.models.MapDirection;
+import agh.darwinworld.models.MoveDirection;
+import agh.darwinworld.models.listeners.MovementHandler;
+import agh.darwinworld.models.Vector2D;
 import javafx.util.Pair;
 
 public class WorldMap extends AbstractMap implements MovementHandler {
