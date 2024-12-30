@@ -74,7 +74,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
     @FXML
     private Label animalGenomeLengthLabel;
     @FXML
-    private Label fireFrequencyLabel;
+    private Label fireIntervalLabel;
     @FXML
     private Label fireLengthLabel;
     @FXML
@@ -204,7 +204,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
             minimumMutationAmountLabel.setText(Integer.toString(p.minimumMutationAmount()));
             maximumMutationAmountLabel.setText(Integer.toString(p.maximumMutationAmount()));
             animalGenomeLengthLabel.setText(Integer.toString(p.animalGenomeLength()));
-            fireFrequencyLabel.setText(Integer.toString(p.fireFrequency()));
+            fireIntervalLabel.setText(Integer.toString(p.fireInterval()));
             fireLengthLabel.setText(Integer.toString(p.fireLength()));
             refreshTimeLabel.setText(Integer.toString(p.refreshTime()));
             seedLabel.setText("NIE DZIALA TBD");
@@ -272,6 +272,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
         SimulationParameters p = simulation.getParameters();
         cells = new HashMap<>();
         Platform.runLater(() -> {
+            mapGrid.setDisable(true);
             if (!mapGrid.getChildren().isEmpty())
                 mapGrid.getChildren().retainAll(mapGrid.getChildren().getFirst());
             mapGrid.getColumnConstraints().clear();
@@ -302,6 +303,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
                     cells.put(pos, cell);
                 }
             }
+            mapGrid.setDisable(false);
         });
     }
 

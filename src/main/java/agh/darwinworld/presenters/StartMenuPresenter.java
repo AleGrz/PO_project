@@ -6,6 +6,8 @@ import agh.darwinworld.helpers.AlertHelper;
 import agh.darwinworld.models.*;
 import agh.darwinworld.models.exceptions.UserFriendlyException;
 import agh.darwinworld.models.maps.FireMap;
+import agh.darwinworld.models.maps.WorldMap;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,7 +15,10 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 
@@ -48,19 +53,30 @@ public class StartMenuPresenter {
     @FXML
     private IntField animalGenomeLengthIntField;
     @FXML
-    private IntField fireFrequencyIntField;
+    private IntField fireIntervalIntField;
     @FXML
     private IntField fireLengthIntField;
     @FXML
     private IntField refreshTimeIntField;
     @FXML
     private IntField seedIntField;
+    @FXML
+    private ComboBox<String> mapTypeComboBox;
+    @FXML
+    private Label fireLengthLabel;
+    @FXML
+    private Label fireIntervalLabel;
 
-    CsvPrinter csvListener;
+    private CsvPrinter csvListener;
 
     @FXML
     public void initialize() {
         generateSeed();
+        Platform.runLater(this::updateLayout);
+    }
+
+    public void onMapTypeSelectionChanged(ActionEvent ignored) {
+        updateLayout();
     }
 
     public void onSimulationStart(ActionEvent actionEvent) {
@@ -70,6 +86,7 @@ public class StartMenuPresenter {
             loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
             BorderPane root = loader.load();
             SimulationPresenter presenter = loader.getController();
+            String mapType = mapTypeComboBox.getSelectionModel().getSelectedItem();
             SimulationParameters params = SimulationParameters.createFromIntField(
                     widthIntField,
                     heightIntField,
@@ -83,11 +100,11 @@ public class StartMenuPresenter {
                     minimumMutationAmountIntField,
                     maximumMutationAmountIntField,
                     animalGenomeLengthIntField,
-                    fireFrequencyIntField,
+                    fireIntervalIntField,
                     fireLengthIntField,
                     refreshTimeIntField,
                     new Random(seedIntField.getValue()),
-                    new FireMap()
+                    mapType.equals("Fire map") ? new FireMap() : new WorldMap()
             );
             Simulation simulation = new Simulation(params);
             presenter.setSimulation(simulation);
@@ -121,6 +138,19 @@ public class StartMenuPresenter {
 
     private void generateSeed() {
         seedIntField.setValue((int) (Math.random() * Integer.MAX_VALUE));
+    }
+
+    private void updateLayout() {
+        String mapType = mapTypeComboBox.getSelectionModel().getSelectedItem();
+        boolean v = mapType.equals("Fire map");
+        fireLengthIntField.setVisible(v);
+        fireLengthIntField.setManaged(v);
+        fireIntervalIntField.setVisible(v);
+        fireIntervalIntField.setManaged(v);
+        fireLengthLabel.setVisible(v);
+        fireLengthLabel.setManaged(v);
+        fireIntervalLabel.setVisible(v);
+        fireIntervalLabel.setManaged(v);
     }
 
     private Insets getWindowInsets(Stage stage) {

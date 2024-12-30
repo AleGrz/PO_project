@@ -385,12 +385,12 @@
                         </Label>
                     </graphic>
                 </Label>
-                <Label contentDisplay="RIGHT" text="Fire frequency:">
+                <Label contentDisplay="RIGHT" text="Fire interval:">
                     <font>
                         <Font size="10.0"/>
                     </font>
                     <graphic>
-                        <Label fx:id="fireFrequencyLabel" text="PLACEHOLDER">
+                        <Label fx:id="fireIntervalLabel" text="PLACEHOLDER">
                             <font>
                                 <Font size="10.0"/>
                             </font>
