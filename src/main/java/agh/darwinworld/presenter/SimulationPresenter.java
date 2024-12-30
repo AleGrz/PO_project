@@ -184,21 +184,22 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
         this.simulation.addStepListener(this);
         unselectAnimal();
         Platform.runLater(() -> {
-            heightLabel.setText(Integer.toString(simulation.getHeight()));
-            widthLabel.setText(Integer.toString(simulation.getWidth()));
-            startingPlantAmountLabel.setText(Integer.toString(simulation.getStartingPlantAmount()));
-            plantGrowingAmountLabel.setText(Integer.toString(simulation.getPlantGrowingAmount()));
-            plantEnergyAmountLabel.setText(Integer.toString(simulation.getPlantEnergyAmount()));
-            startingEnergyAmountLabel.setText(Integer.toString(simulation.getStartingEnergyAmount()));
-            startingAnimalAmountLabel.setText(Integer.toString(simulation.getStartingAnimalAmount()));
-            minimumBreedingEnergyLabel.setText(Integer.toString(simulation.getMinimumBreedingEnergy()));
-            breedingEnergyCostLabel.setText(Integer.toString(simulation.getBreedingEnergyCost()));
-            minimumMutationAmountLabel.setText(Integer.toString(simulation.getMinimumMutationAmount()));
-            maximumMutationAmountLabel.setText(Integer.toString(simulation.getMaximumMutationAmount()));
-            animalGenomeLengthLabel.setText(Integer.toString(simulation.getAnimalGenomeLength()));
-            fireFrequencyLabel.setText(Integer.toString(simulation.getFireFrequency()));
-            fireLengthLabel.setText(Integer.toString(simulation.getFireLength()));
-            refreshTimeLabel.setText(Integer.toString(simulation.getRefreshTime()));
+            SimulationParameters p = simulation.getParameters();
+            heightLabel.setText(Integer.toString(p.height()));
+            widthLabel.setText(Integer.toString(p.width()));
+            startingPlantAmountLabel.setText(Integer.toString(p.startingPlantAmount()));
+            plantGrowingAmountLabel.setText(Integer.toString(p.plantGrowingAmount()));
+            plantEnergyAmountLabel.setText(Integer.toString(p.plantEnergyAmount()));
+            startingEnergyAmountLabel.setText(Integer.toString(p.startingEnergyAmount()));
+            startingAnimalAmountLabel.setText(Integer.toString(p.startingAnimalAmount()));
+            minimumBreedingEnergyLabel.setText(Integer.toString(p.minimumBreedingEnergy()));
+            breedingEnergyCostLabel.setText(Integer.toString(p.breedingEnergyCost()));
+            minimumMutationAmountLabel.setText(Integer.toString(p.minimumMutationAmount()));
+            maximumMutationAmountLabel.setText(Integer.toString(p.maximumMutationAmount()));
+            animalGenomeLengthLabel.setText(Integer.toString(p.animalGenomeLength()));
+            fireFrequencyLabel.setText(Integer.toString(p.fireFrequency()));
+            fireLengthLabel.setText(Integer.toString(p.fireLength()));
+            refreshTimeLabel.setText(Integer.toString(p.refreshTime()));
             seedLabel.setText("NIE DZIALA TBD");
             drawMap();
         });
@@ -218,8 +219,9 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
     public double calculateCellSize() {
         double gridWidth = rootBorderPane.getWidth() - leftVBox.getWidth() - 20; // 20 - padding
         double gridHeight = rootBorderPane.getHeight() - topVBox.getHeight() - 20; // 20 - padding
-        int rowCount = simulation.getWidth() + 1;
-        int colCount = simulation.getHeight() + 1;
+        SimulationParameters p = simulation.getParameters();
+        int rowCount = p.width() + 1;
+        int colCount = p.height() + 1;
         double width = gridWidth / rowCount;
         double height = gridHeight / colCount;
         return Math.min(height, width);
@@ -260,6 +262,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
     }
 
     public void drawMap() {
+        SimulationParameters p = simulation.getParameters();
         Platform.runLater(() -> {
             if (!mapGrid.getChildren().isEmpty())
                 mapGrid.getChildren().retainAll(mapGrid.getChildren().getFirst());
@@ -269,21 +272,21 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
             mapGrid.getColumnConstraints().add(new ColumnConstraints(cellSize, cellSize, cellSize));
             mapGrid.getRowConstraints().add(new RowConstraints(cellSize, cellSize, cellSize));
             createLabelCell("y/x", 0, 0);
-            for (int i = 0; i < simulation.getWidth(); i++) {
+            for (int i = 0; i < p.width(); i++) {
                 mapGrid.getColumnConstraints().add(new ColumnConstraints(cellSize, cellSize, cellSize));
                 createLabelCell(Integer.toString(i), i + 1, 0);
             }
-            for (int j = 0; j < simulation.getHeight(); j++) {
+            for (int j = 0; j < p.height(); j++) {
                 mapGrid.getRowConstraints().add(new RowConstraints(cellSize, cellSize, cellSize));
-                createLabelCell(Integer.toString(simulation.getHeight() - j - 1), 0, j + 1);
+                createLabelCell(Integer.toString(p.height() - j - 1), 0, j + 1);
             }
-            int maxAnimalAmount = simulation.getMap().getMaxAnimalAmount();
-            int maxFireLength = simulation.getFireLength();
-            for (int i = 0; i < simulation.getWidth(); i++) {
-                for (int j = 0; j < simulation.getHeight(); j++) {
-                    Vector2D pos = new Vector2D(i, simulation.getHeight() - j - 1);
-                    int animalAmount = simulation.getMap().getAnimalsOnPosition(pos).size();
-                    boolean isPlant = simulation.getMap().isPlantOnPosition(pos);
+            int maxAnimalAmount = p.map().getMaxAnimalAmount();
+            int maxFireLength = p.fireLength();
+            for (int i = 0; i < p.width(); i++) {
+                for (int j = 0; j < p.height(); j++) {
+                    Vector2D pos = new Vector2D(i, p.height() - j - 1);
+                    int animalAmount = p.map().getAnimalsOnPosition(pos).size();
+                    boolean isPlant = p.map().isPlantOnPosition(pos);
                     CellRegion cell = new CellRegion(isPlant, animalAmount, maxAnimalAmount, 0, maxFireLength);
                     GridPane.setHgrow(cell, Priority.ALWAYS);
                     GridPane.setVgrow(cell, Priority.ALWAYS);
@@ -320,16 +323,17 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
     }
 
     public void onGridMouseClicked(MouseEvent mouseEvent) {
+        SimulationParameters p = simulation.getParameters();
         Stage currentStage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
         double x = mouseEvent.getX();
         double y = mouseEvent.getY();
         double cellSize = calculateCellSize();
-        double gapH = (mapGrid.getWidth() - cellSize * (simulation.getWidth() + 1)) / 2;
-        double gapV = (mapGrid.getHeight() - cellSize * (simulation.getHeight() + 1)) / 2;
+        double gapH = (mapGrid.getWidth() - cellSize * (p.width() + 1)) / 2;
+        double gapV = (mapGrid.getHeight() - cellSize * (p.height() + 1)) / 2;
         int colIndex = (int) ((x - gapH) / cellSize) - 1;
-        int rowIndex = simulation.getHeight() - (int) ((y - gapV) / cellSize);
+        int rowIndex = p.height() - (int) ((y - gapV) / cellSize);
         Vector2D mouseOverPosition = new Vector2D(colIndex, rowIndex);
-        List<Animal> animals = simulation.getMap().getAnimalsOnPosition(mouseOverPosition);
+        List<Animal> animals = p.map().getAnimalsOnPosition(mouseOverPosition);
         if (animals.size() == 1) {
             selectAnimal(animals.getFirst(), mouseOverPosition);
         } else if (animals.size() > 1) {
@@ -370,12 +374,13 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
 
 
     private CellRegion getCellByRowColumn(Vector2D pos) {
+        SimulationParameters p = simulation.getParameters();
         for (Node node : mapGrid.getChildren()) {
             if (node instanceof Label) continue;
             if (!(node instanceof CellRegion cell)) continue;
             int rowIndex = GridPane.getRowIndex(node);
             int colIndex = GridPane.getColumnIndex(node);
-            if (pos.equals(new Vector2D(colIndex - 1, simulation.getHeight() - rowIndex))) {
+            if (pos.equals(new Vector2D(colIndex - 1, p.height() - rowIndex))) {
                 return cell;
             }
         }

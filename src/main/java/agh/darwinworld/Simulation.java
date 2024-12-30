@@ -21,73 +21,7 @@ public class Simulation implements Runnable {
         map.growPlants(params.startingPlantAmount());
     }
 
-    public int getStartingPlantAmount() {
-        return this.params.startingPlantAmount();
-    }
-
-    public int getPlantGrowingAmount() {
-        return this.params.plantGrowingAmount();
-    }
-
-    public int getPlantEnergyAmount() {
-        return this.params.plantEnergyAmount();
-    }
-
-    public int getStartingEnergyAmount() {
-        return this.params.startingEnergyAmount();
-    }
-
-    public int getStartingAnimalAmount() {
-        return this.params.startingAnimalAmount();
-    }
-
-    public int getMinimumBreedingEnergy() {
-        return this.params.minimumBreedingEnergy();
-    }
-
-    public int getBreedingEnergyCost() {
-        return this.params.breedingEnergyCost();
-    }
-
-    public int getMinimumMutationAmount() {
-        return this.params.minimumMutationAmount();
-    }
-
-    public int getMaximumMutationAmount() {
-        return this.params.maximumMutationAmount();
-    }
-
-    public int getAnimalGenomeLength() {
-        return this.params.animalGenomeLength();
-    }
-
-    public int getFireFrequency() {
-        return this.params.fireFrequency();
-    }
-
-    public int getFireLength() {
-        return this.params.fireLength();
-    }
-
-    public int getRefreshTime() {
-        return this.params.refreshTime();
-    }
-
-    public int getHeight() {
-        return this.params.height();
-    }
-
-    public int getWidth() {
-        return this.params.width();
-    }
-
-    public Random getRandom() {
-        return this.params.random();
-    }
-
-    public AbstractMap getMap() {
-        return this.map;
-    }
+    public SimulationParameters getParameters() { return this.params; }
 
     @Override
     public void run() {
@@ -97,7 +31,7 @@ public class Simulation implements Runnable {
                 step++;
             }
             try {
-                Thread.sleep(getRefreshTime());
+                Thread.sleep(this.params.refreshTime());
             } catch (InterruptedException e) {
                 System.out.println("Stopping simulation loop's sleep!");
                 return;
