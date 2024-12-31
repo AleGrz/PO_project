@@ -3,6 +3,7 @@ package agh.darwinworld.models.maps;
 import agh.darwinworld.models.*;
 import agh.darwinworld.models.listeners.MovementHandler;
 import agh.darwinworld.models.listeners.SimulationStepListener;
+import javafx.util.Pair;
 
 import java.util.*;
 
@@ -54,16 +55,21 @@ public abstract class AbstractMap implements MovementHandler {
         return params.width() * params.height() - allFields.size();
     }
 
-    public String popularGenome() {
-        HashMap<String, Integer> genotypeCount = new HashMap<>();
+    public Pair<MoveDirection[], Integer> popularGenome() {
+        HashMap<List<MoveDirection>, Integer> genomeCount = new HashMap<>();
         for (List<Animal> animalList : animals.values()) {
             for (Animal animal : animalList) {
-                String genotype = Arrays.stream(animal.getGenome()).map(Enum::ordinal).map(String::valueOf).reduce("", String::concat);
-                genotypeCount.put(genotype, genotypeCount.getOrDefault(genotype, 0) + 1);
+                MoveDirection[] genome = animal.getGenome();
+                genomeCount.put(Arrays.asList(genome), genomeCount.getOrDefault(Arrays.asList(genome), 0) + 1);
             }
         }
-        return genotypeCount.entrySet().stream().max(Map.Entry.comparingByValue()).map(Map.Entry::getKey)
-                .orElse("Missing");
+        Map.Entry<List<MoveDirection>, Integer> maxEntry = genomeCount.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .orElse(null);
+
+        int count = (maxEntry != null) ? maxEntry.getValue() : 0;
+        MoveDirection[] genome = (maxEntry != null) ? maxEntry.getKey().toArray(new MoveDirection[0]) : null;
+        return new Pair<>(genome, count);
     }
 
     public int averageLifetime() {

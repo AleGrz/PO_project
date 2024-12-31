@@ -1,6 +1,8 @@
 package agh.darwinworld.models.listeners;
 
+import agh.darwinworld.models.MoveDirection;
 import agh.darwinworld.models.Vector2D;
+import javafx.util.Pair;
 
 /**
  * Interface for listening to simulation step events in a simulation.
@@ -38,7 +40,7 @@ public interface SimulationStepListener {
      * @param averageLifetime average lifetime of the animals.
      * @param averageDescendantsAmount average descendants amount of the animals.
      */
-    void updateStatistics(int step, int animalCount, int plantCount, int emptyFieldCount, String popularGenome,
+    void updateStatistics(int step, int animalCount, int plantCount, int emptyFieldCount, Pair<MoveDirection[], Integer> popularGenome,
                           int averageLifetime, int averageDescendantsAmount);
 
     /**

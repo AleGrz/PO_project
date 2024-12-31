@@ -28,28 +28,33 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Pair;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.FutureTask;
+import java.util.stream.Collectors;
 
 public class SimulationPresenter implements SimulationStepListener, AnimalListener {
     @FXML
-    private Label step;
+    private Label stepLabel;
     @FXML
-    private Label animalCount;
+    private Label animalCountLabel;
     @FXML
-    private Label plantCount;
+    private Label plantCountLabel;
     @FXML
-    private Label emptyFieldCount;
+    private Label emptyFieldCountLabel;
     @FXML
-    private Label popularGenotype;
+    private Label popularGenomeLabel;
     @FXML
-    private Label averageLifetime;
+    private Label popularGenomeAmountLabel;
     @FXML
-    private Label averageDescendantsAmount;
+    private Label averageLifetimeLabel;
+    @FXML
+    private Label averageDescendantsAmountLabel;
     @FXML
     private Label heightLabel;
     @FXML
@@ -169,12 +174,8 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
         }
         selectedAnimalChildrenAmountLabel.setText(Integer.toString(selectedAnimal.getChildrenAmount()));
         selectedAnimalDescendantsAmountLabel.setText(Integer.toString(selectedAnimal.getDescendantsAmount()));
-        MoveDirection[] genome = selectedAnimal.getGenome();
-        StringBuilder genomeString = new StringBuilder();
-        for (MoveDirection gene : genome) {
-            genomeString.append(gene.toString());
-        }
-        selectedAnimalGenomeLabel.setText(genomeString.toString());
+        selectedAnimalGenomeLabel.setText(Arrays.stream(selectedAnimal.getGenome()).map(x ->
+                Integer.toString(x.ordinal())).collect(Collectors.joining("")));
         selectedAnimalPlantsEatenAmountLabel.setText(Integer.toString(selectedAnimal.getTotalEatenPlants()));
         selectedAnimalUuidLabel.setText(selectedAnimal.getUuid().toString());
         selectedAnimalCurrentGeneLabel.setText(selectedAnimal.getCurrentGene().toString());
@@ -416,15 +417,20 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
     }
 
     @Override
-    public void updateStatistics(int step, int animalCount, int plantCount, int emptyFieldCount, String popularGenotype, int averageLifetime, int averageDescendantsAmount) {
+    public void updateStatistics(int step, int animalCount, int plantCount, int emptyFieldCount,
+                                 Pair<MoveDirection[], Integer> popularGenome, int averageLifetime, int averageDescendantsAmount) {
         Platform.runLater(() -> {
-            this.step.setText(Integer.toString(step));
-            this.animalCount.setText(Integer.toString(animalCount));
-            this.plantCount.setText(Integer.toString(plantCount));
-            this.emptyFieldCount.setText(Integer.toString(emptyFieldCount));
-            this.popularGenotype.setText(popularGenotype);
-            this.averageLifetime.setText(Integer.toString(averageLifetime));
-            this.averageDescendantsAmount.setText(Integer.toString(averageDescendantsAmount));
+            this.stepLabel.setText(Integer.toString(step));
+            this.animalCountLabel.setText(Integer.toString(animalCount));
+            this.plantCountLabel.setText(Integer.toString(plantCount));
+            this.emptyFieldCountLabel.setText(Integer.toString(emptyFieldCount));
+            this.popularGenomeLabel.setText(popularGenome.getKey() == null ? "MISSING" :
+                    Arrays.stream(popularGenome.getKey())
+                            .map(x -> Integer.toString(x.ordinal()))
+                            .collect(Collectors.joining("")));
+            this.popularGenomeAmountLabel.setText(Integer.toString(popularGenome.getValue()));
+            this.averageLifetimeLabel.setText(Integer.toString(averageLifetime));
+            this.averageDescendantsAmountLabel.setText(Integer.toString(averageDescendantsAmount));
             XYChart.Series<Number, Number> animalCountSeries = dataLineChart.getData().get(0);
             XYChart.Series<Number, Number> plantCountSeries = dataLineChart.getData().get(1);
             XYChart.Series<Number, Number> emptyFieldCountSeries = dataLineChart.getData().get(2);

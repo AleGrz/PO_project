@@ -21,6 +21,7 @@
                     <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
                     <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
                     <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+               <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
                     <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
                     <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
                     <RowConstraints minHeight="10.0" vgrow="ALWAYS" />
@@ -32,7 +33,7 @@
                 </Label>
                 <Label contentDisplay="RIGHT" text="Step: " GridPane.rowIndex="1">
                     <graphic>
-                        <Label fx:id="step" text="PLACEHOLDER">
+                        <Label fx:id="stepLabel" text="PLACEHOLDER">
                             <font>
                                 <Font size="10.0" />
                             </font>
@@ -44,7 +45,7 @@
                 </Label>
                 <Label contentDisplay="RIGHT" text="Animal count: " GridPane.rowIndex="2">
                     <graphic>
-                        <Label fx:id="animalCount" text="PLACEHOLDER">
+                        <Label fx:id="animalCountLabel" text="PLACEHOLDER">
                             <font>
                                 <Font size="10.0" />
                             </font>
@@ -56,7 +57,7 @@
                 </Label>
                 <Label contentDisplay="RIGHT" text="Plant count: " GridPane.rowIndex="3">
                     <graphic>
-                        <Label fx:id="plantCount" text="PLACEHOLDER">
+                        <Label fx:id="plantCountLabel" text="PLACEHOLDER">
                             <font>
                                 <Font size="10.0" />
                             </font>
@@ -68,7 +69,7 @@
                 </Label>
                 <Label contentDisplay="RIGHT" text="Empty field count: " GridPane.rowIndex="4">
                     <graphic>
-                        <Label fx:id="emptyFieldCount" text="PLACEHOLDER">
+                        <Label fx:id="emptyFieldCountLabel" text="PLACEHOLDER">
                             <font>
                                 <Font size="10.0" />
                             </font>
@@ -80,7 +81,7 @@
                 </Label>
                 <Label contentDisplay="RIGHT" text="Most popular genome: " GridPane.rowIndex="5">
                     <graphic>
-                        <Label fx:id="popularGenotype" text="PLACEHOLDER">
+                        <Label fx:id="popularGenomeLabel" text="PLACEHOLDER">
                             <font>
                                 <Font size="10.0" />
                             </font>
@@ -90,9 +91,9 @@
                         <Font size="10.0" />
                     </font>
                 </Label>
-                <Label contentDisplay="RIGHT" text="Average lifetime length: " GridPane.rowIndex="6">
+                <Label contentDisplay="RIGHT" text="Average lifetime length: " GridPane.rowIndex="7">
                     <graphic>
-                        <Label fx:id="averageLifetime" text="PLACEHOLDER">
+                        <Label fx:id="averageLifetimeLabel" text="PLACEHOLDER">
                             <font>
                                 <Font size="10.0" />
                             </font>
@@ -102,9 +103,9 @@
                         <Font size="10.0" />
                     </font>
                 </Label>
-                <Label contentDisplay="RIGHT" text="Average children amount: " GridPane.rowIndex="7">
+                <Label contentDisplay="RIGHT" text="Average children amount: " GridPane.rowIndex="8">
                     <graphic>
-                        <Label fx:id="averageDescendantsAmount" text="PLACEHOLDER">
+                        <Label fx:id="averageDescendantsAmountLabel" text="PLACEHOLDER">
                             <font>
                                 <Font size="10.0" />
                             </font>
@@ -114,7 +115,7 @@
                         <Font size="10.0" />
                     </font>
                 </Label>
-                <LineChart fx:id="dataLineChart" GridPane.columnSpan="2" GridPane.rowIndex="8">
+                <LineChart fx:id="dataLineChart" GridPane.columnSpan="2" GridPane.rowIndex="9">
                     <xAxis>
                         <NumberAxis animated="false" side="BOTTOM" />
                     </xAxis>
@@ -122,6 +123,18 @@
                         <NumberAxis animated="false" prefWidth="18.0" side="LEFT" />
                     </yAxis>
                 </LineChart>
+            <Label contentDisplay="RIGHT" layoutX="10.0" layoutY="123.0" text="Most popular genome amount:" GridPane.rowIndex="6">
+               <graphic>
+                  <Label fx:id="popularGenomeAmountLabel" text="PLACEHOLDER">
+                     <font>
+                        <Font size="10.0" />
+                     </font>
+                  </Label>
+               </graphic>
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Label>
             </GridPane>
             <GridPane fx:id="selectedAnimalGridPane" alignment="TOP_CENTER">
                 <columnConstraints>
