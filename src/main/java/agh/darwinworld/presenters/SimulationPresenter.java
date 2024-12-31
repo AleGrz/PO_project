@@ -140,8 +140,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
             stage.setOnCloseRequest(windowEvent -> stopSimulationThread());
         });
         dataLineChart.setCreateSymbols(false);
-        String[] seriesNames = new String[]{"Animal count", "Plant count", "Empty field count",
-                "Most popular genotype", "Average lifetime",
+        String[] seriesNames = new String[]{"Animal count", "Plant count", "Empty field count", "Average lifetime",
                 "Average descendants amount"};
         for (String seriesName : seriesNames) {
             XYChart.Series<Number, Number> series = new XYChart.Series<>();
@@ -434,8 +433,8 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
             XYChart.Series<Number, Number> animalCountSeries = dataLineChart.getData().get(0);
             XYChart.Series<Number, Number> plantCountSeries = dataLineChart.getData().get(1);
             XYChart.Series<Number, Number> emptyFieldCountSeries = dataLineChart.getData().get(2);
-            XYChart.Series<Number, Number> averageLifetimeSeries = dataLineChart.getData().get(4);
-            XYChart.Series<Number, Number> averageDescendantsAmountSeries = dataLineChart.getData().get(5);
+            XYChart.Series<Number, Number> averageLifetimeSeries = dataLineChart.getData().get(3);
+            XYChart.Series<Number, Number> averageDescendantsAmountSeries = dataLineChart.getData().get(4);
             animalCountSeries.getData().add(new XYChart.Data<>(step, animalCount));
             plantCountSeries.getData().add(new XYChart.Data<>(step, plantCount));
             emptyFieldCountSeries.getData().add(new XYChart.Data<>(step, emptyFieldCount));

@@ -27,7 +27,7 @@ public class Animal implements AnimalListener {
     protected int age = 0;
     protected int childrenAmount = 0;
     protected int totalEatenPlants = 0;
-    protected int diedAt = -1;
+    protected Integer diedAt = null;
 
     /**
      * @return the current direction of the animal.

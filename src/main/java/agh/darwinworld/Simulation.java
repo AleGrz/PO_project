@@ -5,6 +5,8 @@ import agh.darwinworld.models.listeners.SimulationStepListener;
 import agh.darwinworld.models.maps.AbstractMap;
 import agh.darwinworld.presenters.SimulationPresenter;
 
+import java.util.*;
+
 public class Simulation implements Runnable {
     private final SimulationParameters params;
     private final AbstractMap map;
@@ -28,11 +30,13 @@ public class Simulation implements Runnable {
     public void run() {
         while (true) {
             if (isRunning) {
+                long deltatime = System.currentTimeMillis();
                 map.step(step);
+                long elapsed = System.currentTimeMillis() - deltatime;
+                System.out.println("Step " + step + " took " + elapsed + "ms");
                 step++;
             }
             try {
-                //noinspection BusyWait
                 Thread.sleep(this.params.refreshTime());
             } catch (InterruptedException e) {
                 System.out.println("Stopping simulation loop's sleep!");

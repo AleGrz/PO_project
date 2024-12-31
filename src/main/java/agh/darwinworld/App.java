@@ -16,6 +16,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        Application.setUserAgentStylesheet("/theme.css");
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getClassLoader().getResource("startMenu.fxml"));
         GridPane root = loader.load();

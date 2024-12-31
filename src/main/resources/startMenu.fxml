@@ -199,7 +199,7 @@
         </GridPane.margin>
     </Label>
     <ComboBox fx:id="mapTypeComboBox" onAction="#onMapTypeSelectionChanged" prefWidth="150.0" value="World map"
-              GridPane.columnIndex="1" GridPane.rowIndex="13">
+              GridPane.columnIndex="1" GridPane.rowIndex="13" minWidth="180.0">
         <items>
             <FXCollections fx:factory="observableArrayList">
                 <String fx:value="World map"/>
@@ -240,7 +240,7 @@
         </GridPane.margin>
     </Label>
     <ComboBox layoutX="199.0" layoutY="542.0" prefWidth="150.0" value="Normal" GridPane.columnIndex="1"
-              GridPane.rowIndex="16">
+              GridPane.rowIndex="16" minWidth="180.0">
         <items>
             <FXCollections fx:factory="observableArrayList">
                 <String fx:value="Normal"/>
@@ -269,12 +269,12 @@
             <Insets bottom="5.0" top="5.0"/>
         </GridPane.margin>
     </Label>
-    <IntField fx:id="seedIntField" text="1" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="18">
+    <IntField fx:id="seedIntField" text="1" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="18" maxWidth="135.0">
         <GridPane.margin>
             <Insets bottom="5.0" top="5.0"/>
         </GridPane.margin>
     </IntField>
-    <Button onAction="#onSeedGenerate" text="🎲" GridPane.columnIndex="1" GridPane.halignment="RIGHT"
+    <Button onAction="#onSeedGenerate" text="🎲" GridPane.columnIndex="1" GridPane.halignment="RIGHT" prefWidth="40.0"
             GridPane.rowIndex="18">
         <GridPane.margin>
             <Insets bottom="5.0" top="5.0"/>
@@ -287,14 +287,20 @@
         </GridPane.margin>
     </Label>
     <Button fx:id="csvButton" onAction="#onSaveToCSV" text="Choose" GridPane.columnIndex="1" GridPane.halignment="LEFT"
-            GridPane.rowIndex="19">
+            GridPane.rowIndex="19" prefWidth="135.0" styleClass="button-outlined">
+        <GridPane.margin>
+            <Insets bottom="5.0" top="5.0"/>
+        </GridPane.margin>
+    </Button>
+    <Button fx:id="deleteCsvButton" onAction="#onDelete" text="🗑" GridPane.columnIndex="1" GridPane.halignment="RIGHT"
+            GridPane.rowIndex="19" prefWidth="40.0" styleClass="button-outlined, danger">
         <GridPane.margin>
             <Insets bottom="5.0" top="5.0"/>
         </GridPane.margin>
     </Button>
 
     <Button onAction="#onSimulationStart" text="Start new simulation" GridPane.columnSpan="2"
-            GridPane.halignment="CENTER" GridPane.rowIndex="20">
+            GridPane.halignment="CENTER" GridPane.rowIndex="20" styleClass="accent">
         <GridPane.margin>
             <Insets bottom="5.0" top="5.0"/>
         </GridPane.margin>

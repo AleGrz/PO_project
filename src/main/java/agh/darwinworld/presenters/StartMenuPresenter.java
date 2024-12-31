@@ -26,6 +26,8 @@ import java.util.Random;
 
 public class StartMenuPresenter {
     @FXML
+    private Button deleteCsvButton;
+    @FXML
     private Button csvButton;
     @FXML
     private IntField heightIntField;
@@ -169,7 +171,14 @@ public class StartMenuPresenter {
         File file = fileChooser.showSaveDialog(((Node) actionEvent.getSource()).getScene().getWindow());
         csvButton.setText(file != null ? file.getName() : "Choose");
         if (file != null) {
+            csvButton.getStyleClass().add("success");
             csvListener = new CsvPrinter(file.getAbsolutePath());
         }
+    }
+
+    public void onDelete(ActionEvent actionEvent) {
+        csvButton.setText("Choose");
+        csvButton.getStyleClass().remove("success");
+        csvListener = null;
     }
 }
