@@ -27,5 +27,10 @@ public enum MoveDirection {
     LEFT,
 
     /** Movement forward and to the left. */
-    FORWARD_LEFT
+    FORWARD_LEFT;
+
+    @Override
+    public String toString() {
+        return Integer.toString(this.ordinal());
+    }
 }

@@ -172,12 +172,12 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
         MoveDirection[] genome = selectedAnimal.getGenome();
         StringBuilder genomeString = new StringBuilder();
         for (MoveDirection gene : genome) {
-            genomeString.append(gene.ordinal());
+            genomeString.append(gene.toString());
         }
         selectedAnimalGenomeLabel.setText(genomeString.toString());
         selectedAnimalPlantsEatenAmountLabel.setText(Integer.toString(selectedAnimal.getTotalEatenPlants()));
         selectedAnimalUuidLabel.setText(selectedAnimal.getUuid().toString());
-        selectedAnimalCurrentGeneLabel.setText(Integer.toString(selectedAnimal.getCurrentGene().ordinal()));
+        selectedAnimalCurrentGeneLabel.setText(selectedAnimal.getCurrentGene().toString());
         selectedAnimalCurrentDirectionLabel.setText(selectedAnimal.getDirection().toString());
     }
 
@@ -493,10 +493,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
             case "childrenAmount" -> new FutureTask<>(() -> selectedAnimalChildrenAmountLabel.setText(evt.getNewValue().toString()), null);
             case "descendantsAmount" -> new FutureTask<>(() -> selectedAnimalDescendantsAmountLabel.setText(evt.getNewValue().toString()), null);
             case "totalEatenPlants" -> new FutureTask<>(() -> selectedAnimalPlantsEatenAmountLabel.setText(evt.getNewValue().toString()), null);
-            case "currentGene" -> new FutureTask<>(() -> {
-                if (!(evt.getNewValue() instanceof MoveDirection moveDirection)) return;
-                selectedAnimalCurrentGeneLabel.setText(Integer.toString(moveDirection.ordinal()));
-            }, null);
+            case "currentGene" -> new FutureTask<>(() -> selectedAnimalCurrentGeneLabel.setText(evt.getNewValue().toString()), null);
             case "direction" -> new FutureTask<>(() -> selectedAnimalCurrentDirectionLabel.setText(evt.getNewValue().toString()), null);
             default -> null;
         };
