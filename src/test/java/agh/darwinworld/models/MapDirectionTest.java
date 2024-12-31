@@ -1,4 +1,4 @@
-package agh.darwinworld.model;
+package agh.darwinworld.models;
 
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -94,73 +94,73 @@ public class MapDirectionTest {
 
     @Test
     public void testRotateMoveForwardLeft() {
-        assertEquals(MapDirection.NORTH.rotate(MoveDirection.FORWARD_LEFT), MapDirection.NORTHWEST,
+        assertEquals(MapDirection.NORTHWEST, MapDirection.NORTH.rotate(MoveDirection.FORWARD_LEFT),
                 "Wrong direction on rotate forward left from NORTH.");
-        assertEquals(MapDirection.NORTHEAST.rotate(MoveDirection.FORWARD_LEFT), MapDirection.NORTH,
+        assertEquals(MapDirection.NORTH, MapDirection.NORTHEAST.rotate(MoveDirection.FORWARD_LEFT),
                 "Wrong direction on rotate forward left from NORTHEAST.");
-        assertEquals(MapDirection.EAST.rotate(MoveDirection.FORWARD_LEFT), MapDirection.NORTHEAST,
+        assertEquals(MapDirection.NORTHEAST, MapDirection.EAST.rotate(MoveDirection.FORWARD_LEFT),
                 "Wrong direction on rotate forward left from EAST.");
-        assertEquals(MapDirection.SOUTHEAST.rotate(MoveDirection.FORWARD_LEFT), MapDirection.EAST,
+        assertEquals(MapDirection.EAST, MapDirection.SOUTHEAST.rotate(MoveDirection.FORWARD_LEFT),
                 "Wrong direction on rotate forward left from SOUTHEAST.");
-        assertEquals(MapDirection.SOUTH.rotate(MoveDirection.FORWARD_LEFT), MapDirection.SOUTHEAST,
+        assertEquals(MapDirection.SOUTHEAST, MapDirection.SOUTH.rotate(MoveDirection.FORWARD_LEFT),
                 "Wrong direction on rotate forward left from SOUTH.");
-        assertEquals(MapDirection.SOUTHWEST.rotate(MoveDirection.FORWARD_LEFT), MapDirection.SOUTH,
+        assertEquals(MapDirection.SOUTH, MapDirection.SOUTHWEST.rotate(MoveDirection.FORWARD_LEFT),
                 "Wrong direction on rotate forward left from SOUTHWEST.");
-        assertEquals(MapDirection.WEST.rotate(MoveDirection.FORWARD_LEFT), MapDirection.SOUTHWEST,
+        assertEquals(MapDirection.SOUTHWEST, MapDirection.WEST.rotate(MoveDirection.FORWARD_LEFT),
                 "Wrong direction on rotate forward left from WEST.");
-        assertEquals(MapDirection.NORTHWEST.rotate(MoveDirection.FORWARD_LEFT), MapDirection.WEST,
+        assertEquals(MapDirection.WEST, MapDirection.NORTHWEST.rotate(MoveDirection.FORWARD_LEFT),
                 "Wrong direction on rotate forward left from NORTHWEST.");
     }
 
     @Test
     public void testRotateMoveLeft() {
-        assertEquals(MapDirection.NORTH.rotate(MoveDirection.LEFT), MapDirection.WEST,
+        assertEquals(MapDirection.WEST, MapDirection.NORTH.rotate(MoveDirection.LEFT),
                 "Wrong direction on rotate left from NORTH.");
-        assertEquals(MapDirection.NORTHEAST.rotate(MoveDirection.LEFT), MapDirection.NORTHWEST,
+        assertEquals(MapDirection.NORTHWEST, MapDirection.NORTHEAST.rotate(MoveDirection.LEFT),
                 "Wrong direction on rotate left from NORTHEAST.");
-        assertEquals(MapDirection.EAST.rotate(MoveDirection.LEFT), MapDirection.NORTH,
+        assertEquals(MapDirection.NORTH, MapDirection.EAST.rotate(MoveDirection.LEFT),
                 "Wrong direction on rotate left from EAST.");
-        assertEquals(MapDirection.SOUTHEAST.rotate(MoveDirection.LEFT), MapDirection.NORTHEAST,
+        assertEquals(MapDirection.NORTHEAST, MapDirection.SOUTHEAST.rotate(MoveDirection.LEFT),
                 "Wrong direction on rotate left from SOUTHEAST.");
-        assertEquals(MapDirection.SOUTH.rotate(MoveDirection.LEFT), MapDirection.EAST,
+        assertEquals(MapDirection.EAST, MapDirection.SOUTH.rotate(MoveDirection.LEFT),
                 "Wrong direction on rotate left from SOUTH.");
-        assertEquals(MapDirection.SOUTHWEST.rotate(MoveDirection.LEFT), MapDirection.SOUTHEAST,
+        assertEquals(MapDirection.SOUTHEAST, MapDirection.SOUTHWEST.rotate(MoveDirection.LEFT),
                 "Wrong direction on rotate left from SOUTHWEST.");
-        assertEquals(MapDirection.WEST.rotate(MoveDirection.LEFT), MapDirection.SOUTH,
+        assertEquals(MapDirection.SOUTH, MapDirection.WEST.rotate(MoveDirection.LEFT),
                 "Wrong direction on rotate left from WEST.");
-        assertEquals(MapDirection.NORTHWEST.rotate(MoveDirection.LEFT), MapDirection.SOUTHWEST,
+        assertEquals(MapDirection.SOUTHWEST, MapDirection.NORTHWEST.rotate(MoveDirection.LEFT),
                 "Wrong direction on rotate left from NORTHWEST.");
     }
 
     @Test
     public void testRotateMoveBackwardLeft() {
-        assertEquals(MapDirection.NORTH.rotate(MoveDirection.BACKWARD_LEFT), MapDirection.SOUTHWEST,
+        assertEquals(MapDirection.SOUTHWEST, MapDirection.NORTH.rotate(MoveDirection.BACKWARD_LEFT),
                 "Wrong direction on rotate backward left from NORTH.");
-        assertEquals(MapDirection.NORTHEAST.rotate(MoveDirection.BACKWARD_LEFT), MapDirection.WEST,
+        assertEquals(MapDirection.WEST, MapDirection.NORTHEAST.rotate(MoveDirection.BACKWARD_LEFT),
                 "Wrong direction on rotate backward left from NORTHEAST.");
-        assertEquals(MapDirection.EAST.rotate(MoveDirection.BACKWARD_LEFT), MapDirection.NORTHWEST,
+        assertEquals(MapDirection.NORTHWEST, MapDirection.EAST.rotate(MoveDirection.BACKWARD_LEFT),
                 "Wrong direction on rotate backward left from EAST.");
-        assertEquals(MapDirection.SOUTHEAST.rotate(MoveDirection.BACKWARD_LEFT), MapDirection.NORTH,
+        assertEquals(MapDirection.NORTH, MapDirection.SOUTHEAST.rotate(MoveDirection.BACKWARD_LEFT),
                 "Wrong direction on rotate backward left from SOUTHEAST.");
-        assertEquals(MapDirection.SOUTH.rotate(MoveDirection.BACKWARD_LEFT), MapDirection.NORTHEAST,
+        assertEquals(MapDirection.NORTHEAST, MapDirection.SOUTH.rotate(MoveDirection.BACKWARD_LEFT),
                 "Wrong direction on rotate backward left from SOUTH.");
-        assertEquals(MapDirection.SOUTHWEST.rotate(MoveDirection.BACKWARD_LEFT), MapDirection.EAST,
+        assertEquals(MapDirection.EAST, MapDirection.SOUTHWEST.rotate(MoveDirection.BACKWARD_LEFT),
                 "Wrong direction on rotate backward left from SOUTHWEST.");
-        assertEquals(MapDirection.WEST.rotate(MoveDirection.BACKWARD_LEFT), MapDirection.SOUTHEAST,
+        assertEquals(MapDirection.SOUTHEAST, MapDirection.WEST.rotate(MoveDirection.BACKWARD_LEFT),
                 "Wrong direction on rotate backward left from WEST.");
-        assertEquals(MapDirection.NORTHWEST.rotate(MoveDirection.BACKWARD_LEFT), MapDirection.SOUTH,
+        assertEquals(MapDirection.SOUTH, MapDirection.NORTHWEST.rotate(MoveDirection.BACKWARD_LEFT),
                 "Wrong direction on rotate backward left from NORTHWEST.");
     }
 
     @Test
     public void testGetValue() {
-        assertEquals(MapDirection.NORTH.getValue(), new Vector2D(0, 1));
-        assertEquals(MapDirection.NORTHEAST.getValue(), new Vector2D(1, 1));
-        assertEquals(MapDirection.EAST.getValue(), new Vector2D(1, 0));
-        assertEquals(MapDirection.SOUTHEAST.getValue(), new Vector2D(1, -1));
-        assertEquals(MapDirection.SOUTH.getValue(), new Vector2D(0, -1));
-        assertEquals(MapDirection.SOUTHWEST.getValue(), new Vector2D(-1, -1));
-        assertEquals(MapDirection.WEST.getValue(), new Vector2D(-1, 0));
-        assertEquals(MapDirection.NORTHWEST.getValue(), new Vector2D(-1, 1));
+        assertEquals(new Vector2D(0, 1), MapDirection.NORTH.getValue());
+        assertEquals(new Vector2D(1, 1), MapDirection.NORTHEAST.getValue());
+        assertEquals(new Vector2D(1, 0), MapDirection.EAST.getValue());
+        assertEquals(new Vector2D(1, -1), MapDirection.SOUTHEAST.getValue());
+        assertEquals(new Vector2D(0, -1), MapDirection.SOUTH.getValue());
+        assertEquals(new Vector2D(-1, -1), MapDirection.SOUTHWEST.getValue());
+        assertEquals(new Vector2D(-1, 0), MapDirection.WEST.getValue());
+        assertEquals(new Vector2D(-1, 1), MapDirection.NORTHWEST.getValue());
     }
 }

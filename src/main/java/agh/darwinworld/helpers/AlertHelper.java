@@ -1,6 +1,6 @@
-package agh.darwinworld.helper;
+package agh.darwinworld.helpers;
 
-import agh.darwinworld.model.UserFriendlyException;
+import agh.darwinworld.models.exceptions.UserFriendlyException;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;

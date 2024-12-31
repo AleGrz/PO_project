@@ -1,15 +1,16 @@
-package agh.darwinworld.model;
+package agh.darwinworld.models;
 
 import org.junit.jupiter.api.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class Vector2DTest {
     @Test
     public void testEqualsPositive() {
-        Vector2D v1 = new Vector2D(1,1);
-        Vector2D v2 = new Vector2D(1,1);
-        Vector2D v3 = new Vector2D(2,1);
-        Vector2D v4 = new Vector2D(1,2);
+        Vector2D v1 = new Vector2D(1, 1);
+        Vector2D v2 = new Vector2D(1, 1);
+        Vector2D v3 = new Vector2D(2, 1);
+        Vector2D v4 = new Vector2D(1, 2);
         assertEquals(v1, v2);
         assertNotEquals(v1, v3);
         assertNotEquals(v1, v4);
@@ -17,10 +18,10 @@ public class Vector2DTest {
 
     @Test
     public void testEqualsNegative() {
-        Vector2D v1 = new Vector2D(-1,-1);
-        Vector2D v2 = new Vector2D(-1,-1);
-        Vector2D v3 = new Vector2D(-2,-1);
-        Vector2D v4 = new Vector2D(-1,-2);
+        Vector2D v1 = new Vector2D(-1, -1);
+        Vector2D v2 = new Vector2D(-1, -1);
+        Vector2D v3 = new Vector2D(-2, -1);
+        Vector2D v4 = new Vector2D(-1, -2);
         assertEquals(v1, v2);
         assertNotEquals(v1, v3);
         assertNotEquals(v1, v4);
@@ -28,10 +29,10 @@ public class Vector2DTest {
 
     @Test
     public void testEqualsMixed() {
-        Vector2D v1 = new Vector2D(-1,1);
-        Vector2D v2 = new Vector2D(-1,1);
-        Vector2D v3 = new Vector2D(1,-1);
-        Vector2D v4 = new Vector2D(1,-1);
+        Vector2D v1 = new Vector2D(-1, 1);
+        Vector2D v2 = new Vector2D(-1, 1);
+        Vector2D v3 = new Vector2D(1, -1);
+        Vector2D v4 = new Vector2D(1, -1);
         assertEquals(v1, v2);
         assertEquals(v3, v4);
         assertNotEquals(v1, v3);
@@ -40,7 +41,7 @@ public class Vector2DTest {
     @SuppressWarnings("AssertBetweenInconvertibleTypes")
     @Test
     public void testEqualsOther() {
-        Vector2D v1 = new Vector2D(-1,1);
+        Vector2D v1 = new Vector2D(-1, 1);
         assertNotEquals(-1, v1);
         assertNotEquals(1, v1);
         assertNotEquals("(-1,1)", v1);
@@ -48,26 +49,26 @@ public class Vector2DTest {
 
     @Test
     public void testEqualsNull() {
-        Vector2D v1 = new Vector2D(-1,1);
-        Vector2D v2 = new Vector2D(0,0);
+        Vector2D v1 = new Vector2D(-1, 1);
+        Vector2D v2 = new Vector2D(0, 0);
         assertNotEquals(null, v1);
         assertNotEquals(null, v2);
     }
 
     @Test
     public void testToString() {
-        Vector2D v1 = new Vector2D(1,2);
-        Vector2D v2 = new Vector2D(-1,-2);
+        Vector2D v1 = new Vector2D(1, 2);
+        Vector2D v2 = new Vector2D(-1, -2);
         assertEquals("(1,2)", v1.toString());
         assertEquals("(-1,-2)", v2.toString());
     }
 
     @Test
     public void testPrecedes() {
-        Vector2D v1 = new Vector2D(1,2);
-        Vector2D v2 = new Vector2D(1,2);
-        Vector2D v3 = new Vector2D(1,1);
-        Vector2D v4 = new Vector2D(0,1);
+        Vector2D v1 = new Vector2D(1, 2);
+        Vector2D v2 = new Vector2D(1, 2);
+        Vector2D v3 = new Vector2D(1, 1);
+        Vector2D v4 = new Vector2D(0, 1);
 
         boolean v1PrecedesV1 = v1.precedes(v1);
         boolean v1PrecedesV2 = v1.precedes(v2);
@@ -106,10 +107,10 @@ public class Vector2DTest {
 
     @Test
     public void testFollows() {
-        Vector2D v1 = new Vector2D(1,2);
-        Vector2D v2 = new Vector2D(1,2);
-        Vector2D v3 = new Vector2D(1,1);
-        Vector2D v4 = new Vector2D(0,1);
+        Vector2D v1 = new Vector2D(1, 2);
+        Vector2D v2 = new Vector2D(1, 2);
+        Vector2D v3 = new Vector2D(1, 1);
+        Vector2D v4 = new Vector2D(0, 1);
 
         boolean v1FollowsV1 = v1.follows(v1);
         boolean v1FollowsV2 = v1.follows(v2);
@@ -220,8 +221,8 @@ public class Vector2DTest {
 
     @Test
     public void testAdd() {
-        Vector2D v1 = new Vector2D(1,1);
-        Vector2D v2 = new Vector2D(1,1);
+        Vector2D v1 = new Vector2D(1, 1);
+        Vector2D v2 = new Vector2D(1, 1);
         Vector2D resultA = v1.add(v2);
         Vector2D resultB = v2.add(v1);
         assertEquals(2, resultA.x());
@@ -232,8 +233,8 @@ public class Vector2DTest {
 
     @Test
     public void testSubtract() {
-        Vector2D v1 = new Vector2D(1,1);
-        Vector2D v2 = new Vector2D(1,1);
+        Vector2D v1 = new Vector2D(1, 1);
+        Vector2D v2 = new Vector2D(1, 1);
         Vector2D resultA = v1.subtract(v2);
         Vector2D resultB = v2.subtract(v1);
         assertEquals(0, resultA.x());
@@ -299,6 +300,24 @@ public class Vector2DTest {
     @Test
     public void testNormalize() {
         Vector2D vector = new Vector2D(3, 3);
+        assertEquals(new Vector2D(0, 1), vector.normalize(3, 2));
+    }
+
+    @Test
+    public void testNormalizeOnlyWidthNegative() {
+        Vector2D vector = new Vector2D(-3, -3);
+        assertEquals(new Vector2D(1, -3), vector.normalize(2, null));
+    }
+
+    @Test
+    public void testNormalizeOnlyHeightNegative() {
+        Vector2D vector = new Vector2D(-3, -3);
+        assertEquals(new Vector2D(-3, 1), vector.normalize(null, 2));
+    }
+
+    @Test
+    public void testNormalizeNegative() {
+        Vector2D vector = new Vector2D(-3, -3);
         assertEquals(new Vector2D(0, 1), vector.normalize(3, 2));
     }
 

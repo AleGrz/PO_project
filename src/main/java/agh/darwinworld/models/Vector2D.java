@@ -1,4 +1,4 @@
-package agh.darwinworld.model;
+package agh.darwinworld.models;
 
 /**
  * Represents a 2D vector with integer coordinates, providing various vector operations.
@@ -93,13 +93,13 @@ public record Vector2D(int x, int y) {
      */
     public boolean equals(Object other) {
         if (this == other) return true;
-        if (!(other instanceof Vector2D v)) return false;
-        return x == v.x && y == v.y;
+        if (!(other instanceof Vector2D(int x1, int y1))) return false;
+        return x == x1 && y == y1;
     }
 
     @Override
     public int hashCode() {
-        return Integer.hashCode(x) + Integer.hashCode(y);
+        return 31 * Integer.hashCode(x) + Integer.hashCode(y);
     }
 
     @Override

@@ -1,7 +1,4 @@
-package agh.darwinworld.model;
-
-import agh.darwinworld.Simulation;
-import org.junit.jupiter.api.Test;
+package agh.darwinworld.models;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
