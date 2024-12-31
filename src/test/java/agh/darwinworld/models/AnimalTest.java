@@ -1,5 +1,7 @@
 package agh.darwinworld.models;
 
+import agh.darwinworld.models.listeners.MovementHandler;
+import javafx.util.Pair;
 import org.junit.jupiter.api.*;
 
 import java.util.Random;
@@ -8,6 +10,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class AnimalTest {
     private final Random random = new Random();
+    private final SimpleMovementHandler movementHandler = new SimpleMovementHandler();
+
+    private static class SimpleMovementHandler implements MovementHandler {
+        @Override
+        public Pair<Vector2D, MapDirection> move(Vector2D position, MapDirection move) {
+            return new Pair<>(position, move);
+        }
+    }
 
     @Test
     public void testConstructorA() {
@@ -88,18 +98,18 @@ public class AnimalTest {
         assertEquals(1, otherChild.getDescendantsAmount());
         assertEquals(0, childABOther.getDescendantsAmount());
     }
-    /*
 
     @Test
-    public void testIsDead() {
+    public void testIsDeadForceKill() {
         Animal animal = new Animal(random ,1, 0);
+        animal.forceKill(0);
         assertTrue(animal.isDead());
     }
 
     @Test
     public void testMoveAgeChange() {
         Animal animal = new Animal(random ,1, 10);
-        assertEquals(animal.getAge(), 0);
+        assertEquals(0, animal.getAge());
     }
 
     @Test
@@ -108,53 +118,16 @@ public class AnimalTest {
         Animal animal = new Animal(random ,1, baseEnergy);
         for (int i = baseEnergy; i > 0; i--) {
             assertEquals(animal.getEnergy(), i);
-            animal.move(new Vector2D(0, 0), 1, 1);
+            animal.move(movementHandler, new Vector2D(0, 0), 0);
         }
-        assertEquals(animal.getEnergy(), 0);
-        assertThrows(IllegalStateException.class, () -> animal.move(new Vector2D(0, 0), 1, 1));
-    }
-
-    @Test
-    public void testMoveWidthLoop() {
-        final Random seededRandom = new Random(4098);
-        Animal animal = new Animal(seededRandom ,1, 10);
-        assertEquals(animal.getCurrentGene(), MoveDirection.RIGHT);
-        assertEquals(animal.getDirection(), MapDirection.NORTH);
-        assertEquals(new Vector2D(0, 0), animal.move(new Vector2D(1, 0), 2, 1));
-    }
-
-    // add more move tests
-
-    @Test
-    public void testMutateNoChange() {
-        final int genomeLength = 100;
-        Animal animal = new Animal(random ,genomeLength, 10);
-        MoveDirection[] copiedGenome = Arrays.copyOf(animal.getGenome(), genomeLength);
-        animal.mutate(0, 1);
-        assertArrayEquals(copiedGenome, animal.getGenome());
-    }
-
-    @Test
-    public void testMutateInMaxRange() {
-        final int genomeLength = 100;
-        Animal animal = new Animal(random ,genomeLength, 10);
-        MoveDirection[] copiedGenome = Arrays.copyOf(animal.getGenome(), genomeLength);
-        animal.mutate(0, 5);
-        int visibleChanges = 0;
-        MoveDirection[] currentGenome = animal.getGenome();
-        for (int i = 0; i < currentGenome.length; i++) {
-            if (copiedGenome[i] != currentGenome[i])
-                visibleChanges++;
-        }
-        assertTrue(visibleChanges < 5);
+        assertEquals(0, animal.getEnergy());
     }
 
     @Test
     public void testEat() {
         Animal animal = new Animal(random, 1, 10);
-        animal.eat(5);
+        animal.eat(5, 0);
         assertEquals(15, animal.getEnergy());
-        assertThrows(IllegalArgumentException.class, () -> animal.eat(-1));
+        assertThrows(IllegalArgumentException.class, () -> animal.eat(-1, 0));
     }
-*/
 }
