@@ -1,8 +1,6 @@
-package agh.darwinworld.models.listeners;
+package agh.darwinworld.model;
 
-import agh.darwinworld.models.MoveDirection;
-import agh.darwinworld.models.Vector2D;
-import javafx.util.Pair;
+import java.io.IOException;
 
 /**
  * Interface for listening to simulation step events in a simulation.
