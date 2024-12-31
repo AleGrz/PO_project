@@ -91,7 +91,9 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
     @FXML
     private Label selectedAnimalAgeLabel;
     @FXML
-    private Label selectedAnimalEnergyLabel;
+    private Label selectedAnimalEnergyOrDiedAtLabel;
+    @FXML
+    private Label selectedAnimalEnergyOrDiedAtValueLabel;
     @FXML
     private Label selectedAnimalChildrenAmountLabel;
     @FXML
@@ -101,7 +103,11 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
     @FXML
     private Label selectedAnimalPlantsEatenAmountLabel;
     @FXML
-    private Label selectedAnimalDiedAtLabel;
+    private Label selectedAnimalUuidLabel;
+    @FXML
+    private Label selectedAnimalCurrentGeneLabel;
+    @FXML
+    private Label selectedAnimalCurrentDirectionLabel;
     @FXML
     private Button startStopButton;
     @FXML
@@ -153,7 +159,26 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
         if (cell != null)
             cell.setIsSelected(true);
         selectedAnimalGridPane.setVisible(true);
-        updateSelectedAnimalStats();
+        selectedAnimalAgeLabel.setText(Integer.toString(selectedAnimal.getAge()));
+        if (selectedAnimal.isDead()) {
+            selectedAnimalEnergyOrDiedAtLabel.setText("Died at:");
+            selectedAnimalEnergyOrDiedAtValueLabel.setText(Integer.toString(selectedAnimal.diedAt()));
+        } else {
+            selectedAnimalEnergyOrDiedAtLabel.setText("Energy:");
+            selectedAnimalEnergyOrDiedAtValueLabel.setText(Integer.toString(selectedAnimal.getEnergy()));
+        }
+        selectedAnimalChildrenAmountLabel.setText(Integer.toString(selectedAnimal.getChildrenAmount()));
+        selectedAnimalDescendantsAmountLabel.setText(Integer.toString(selectedAnimal.getDescendantsAmount()));
+        MoveDirection[] genome = selectedAnimal.getGenome();
+        StringBuilder genomeString = new StringBuilder();
+        for (MoveDirection gene : genome) {
+            genomeString.append(gene.ordinal());
+        }
+        selectedAnimalGenomeLabel.setText(genomeString.toString());
+        selectedAnimalPlantsEatenAmountLabel.setText(Integer.toString(selectedAnimal.getTotalEatenPlants()));
+        selectedAnimalUuidLabel.setText(selectedAnimal.getUuid().toString());
+        selectedAnimalCurrentGeneLabel.setText(Integer.toString(selectedAnimal.getCurrentGene().ordinal()));
+        selectedAnimalCurrentDirectionLabel.setText(selectedAnimal.getDirection().toString());
     }
 
     private void unselectAnimal() {
@@ -166,21 +191,6 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
         }
         selectedAnimalPos = null;
         selectedAnimalGridPane.setVisible(false);
-    }
-
-    private void updateSelectedAnimalStats() {
-        selectedAnimalAgeLabel.setText(Integer.toString(selectedAnimal.getAge()));
-        selectedAnimalEnergyLabel.setText(Integer.toString(selectedAnimal.getEnergy()));
-        selectedAnimalChildrenAmountLabel.setText(Integer.toString(selectedAnimal.getChildrenAmount()));
-        selectedAnimalDescendantsAmountLabel.setText(Integer.toString(selectedAnimal.getDescendantsAmount()));
-        MoveDirection[] genome = selectedAnimal.getGenome();
-        StringBuilder genomeString = new StringBuilder();
-        for (MoveDirection gene : genome) {
-            genomeString.append(gene.ordinal());
-        }
-        selectedAnimalGenomeLabel.setText(genomeString.toString());
-        selectedAnimalPlantsEatenAmountLabel.setText(Integer.toString(selectedAnimal.getTotalEatenPlants()));
-        selectedAnimalDiedAtLabel.setText(Integer.toString(selectedAnimal.diedAt()));
     }
 
     public void setSimulation(Simulation simulation) {
@@ -471,12 +481,23 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         FutureTask<?> task = switch (evt.getPropertyName()) {
-            case "energy" -> new FutureTask<>(() -> selectedAnimalEnergyLabel.setText(evt.getNewValue().toString()), null);
+            case "energy" -> new FutureTask<>(() -> {
+                if (evt.getNewValue() instanceof Integer i && i < 0) return;
+                selectedAnimalEnergyOrDiedAtValueLabel.setText(evt.getNewValue().toString());
+            }, null);
+            case "diedAt" -> new FutureTask<>(() -> {
+                selectedAnimalEnergyOrDiedAtLabel.setText("Died at:");
+                selectedAnimalEnergyOrDiedAtValueLabel.setText(evt.getNewValue().toString());
+            }, null);
             case "age" -> new FutureTask<>(() -> selectedAnimalAgeLabel.setText(evt.getNewValue().toString()), null);
             case "childrenAmount" -> new FutureTask<>(() -> selectedAnimalChildrenAmountLabel.setText(evt.getNewValue().toString()), null);
             case "descendantsAmount" -> new FutureTask<>(() -> selectedAnimalDescendantsAmountLabel.setText(evt.getNewValue().toString()), null);
             case "totalEatenPlants" -> new FutureTask<>(() -> selectedAnimalPlantsEatenAmountLabel.setText(evt.getNewValue().toString()), null);
-            case "diedAt" -> new FutureTask<>(() -> selectedAnimalDiedAtLabel.setText(evt.getNewValue().toString()), null);
+            case "currentGene" -> new FutureTask<>(() -> {
+                if (!(evt.getNewValue() instanceof MoveDirection moveDirection)) return;
+                selectedAnimalCurrentGeneLabel.setText(Integer.toString(moveDirection.ordinal()));
+            }, null);
+            case "direction" -> new FutureTask<>(() -> selectedAnimalCurrentDirectionLabel.setText(evt.getNewValue().toString()), null);
             default -> null;
         };
         if (task != null)

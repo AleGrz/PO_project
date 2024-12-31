@@ -6,13 +6,13 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane fx:id="rootBorderPane" minHeight="575.0" minWidth="850.0" stylesheets="styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.darwinworld.presenters.SimulationPresenter">
+<BorderPane fx:id="rootBorderPane" minHeight="575.0" minWidth="850.0" stylesheets="styles.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.darwinworld.presenters.SimulationPresenter">
     <left>
         <VBox fx:id="leftVBox" minWidth="350.0" prefWidth="350.0" spacing="10">
             <GridPane alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
                 <columnConstraints>
                     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="150.0" />
-               <ColumnConstraints />
+                    <ColumnConstraints />
                 </columnConstraints>
                 <rowConstraints>
                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -78,7 +78,7 @@
                         <Font size="10.0" />
                     </font>
                 </Label>
-                <Label contentDisplay="RIGHT" text="Most popular genotype: " GridPane.rowIndex="5">
+                <Label contentDisplay="RIGHT" text="Most popular genome: " GridPane.rowIndex="5">
                     <graphic>
                         <Label fx:id="popularGenotype" text="PLACEHOLDER">
                             <font>
@@ -137,85 +137,117 @@
                     <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
                 </rowConstraints>
                 <Label text="Selected animal" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.valignment="CENTER">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font></Label>
+                    <font>
+                        <Font name="System Bold" size="12.0" />
+                    </font>
+                </Label>
                 <Label contentDisplay="RIGHT" text="Age:" GridPane.rowIndex="1">
                     <graphic>
                         <Label fx:id="selectedAnimalAgeLabel" text="10">
-                     <font>
-                        <Font size="10.0" />
-                     </font></Label>
+                            <font>
+                                <Font size="10.0" />
+                            </font>
+                        </Label>
                     </graphic>
-               <font>
-                  <Font size="10.0" />
-               </font>
+                    <font>
+                        <Font size="10.0" />
+                    </font>
                 </Label>
-                <Label contentDisplay="RIGHT" layoutX="10.0" layoutY="47.0" text="Energy:" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <Label fx:id="selectedAnimalEnergyOrDiedAtLabel" contentDisplay="RIGHT" layoutX="10.0" layoutY="47.0" text="Energy:" GridPane.columnIndex="1" GridPane.rowIndex="1">
                     <graphic>
-                        <Label fx:id="selectedAnimalEnergyLabel" text="10">
-                     <font>
-                        <Font size="10.0" />
-                     </font></Label>
+                        <Label fx:id="selectedAnimalEnergyOrDiedAtValueLabel" text="10">
+                            <font>
+                                <Font size="10.0" />
+                            </font>
+                        </Label>
                     </graphic>
-               <font>
-                  <Font size="10.0" />
-               </font>
+                    <font>
+                        <Font size="10.0" />
+                    </font>
                 </Label>
                 <Label contentDisplay="RIGHT" layoutX="125.0" layoutY="47.0" text="Children amount:" GridPane.rowIndex="2">
                     <graphic>
                         <Label fx:id="selectedAnimalChildrenAmountLabel" text="10">
-                     <font>
-                        <Font size="10.0" />
-                     </font></Label>
+                            <font>
+                                <Font size="10.0" />
+                            </font>
+                        </Label>
                     </graphic>
-               <font>
-                  <Font size="10.0" />
-               </font>
+                    <font>
+                        <Font size="10.0" />
+                    </font>
                 </Label>
                 <Label contentDisplay="RIGHT" layoutX="10.0" layoutY="77.0" text="Descendants amount:" GridPane.columnIndex="1" GridPane.rowIndex="2">
                     <graphic>
                         <Label fx:id="selectedAnimalDescendantsAmountLabel" text="10">
-                     <font>
-                        <Font size="10.0" />
-                     </font></Label>
+                            <font>
+                                <Font size="10.0" />
+                            </font>
+                        </Label>
                     </graphic>
-               <font>
-                  <Font size="10.0" />
-               </font>
+                    <font>
+                        <Font size="10.0" />
+                    </font>
                 </Label>
                 <Label alignment="TOP_CENTER" contentDisplay="RIGHT" layoutX="125.0" layoutY="77.0" text="Genome:" GridPane.columnIndex="1" GridPane.rowIndex="3">
                     <graphic>
                         <Label fx:id="selectedAnimalGenomeLabel" contentDisplay="RIGHT" text="0011232421423">
-                     <font>
-                        <Font size="10.0" />
-                     </font></Label>
+                            <font>
+                                <Font size="10.0" />
+                            </font>
+                        </Label>
                     </graphic>
-               <font>
-                  <Font size="10.0" />
-               </font>
+                    <font>
+                        <Font size="10.0" />
+                    </font>
                 </Label>
                 <Label contentDisplay="RIGHT" layoutX="125.0" layoutY="137.0" text="Total eaten plants:" GridPane.columnSpan="2" GridPane.rowIndex="3">
                     <graphic>
                         <Label fx:id="selectedAnimalPlantsEatenAmountLabel" text="10">
-                     <font>
-                        <Font size="10.0" />
-                     </font></Label>
+                            <font>
+                                <Font size="10.0" />
+                            </font>
+                        </Label>
                     </graphic>
-               <font>
-                  <Font size="10.0" />
-               </font>
+                    <font>
+                        <Font size="10.0" />
+                    </font>
                 </Label>
-                <Label contentDisplay="RIGHT" layoutX="125.0" layoutY="167.0" text="Died at day:" GridPane.rowIndex="4">
+                <Label contentDisplay="RIGHT" layoutX="125.0" layoutY="167.0" text="Uuid:" GridPane.columnSpan="2" GridPane.rowIndex="5">
                     <graphic>
-                        <Label fx:id="selectedAnimalDiedAtLabel" text="10">
-                     <font>
-                        <Font size="10.0" />
-                     </font></Label>
+                        <Label fx:id="selectedAnimalUuidLabel" text="10">
+                            <font>
+                                <Font size="10.0" />
+                            </font>
+                        </Label>
                     </graphic>
-               <font>
-                  <Font size="10.0" />
-               </font>
+                    <font>
+                        <Font size="10.0" />
+                    </font>
+                </Label>
+                <Label alignment="TOP_CENTER" contentDisplay="RIGHT" layoutX="175.0" layoutY="83.0" text="Current gene:" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                    <graphic>
+                        <Label fx:id="selectedAnimalCurrentGeneLabel" contentDisplay="RIGHT" text="1">
+                            <font>
+                                <Font size="10.0" />
+                            </font>
+                        </Label>
+                    </graphic>
+                    <font>
+                        <Font size="10.0" />
+                    </font>
+                </Label>
+                <Label contentDisplay="RIGHT" layoutX="10.0" layoutY="103.0" text="Current direction:" GridPane.rowIndex="4">
+                    <graphic>
+                        <Label fx:id="selectedAnimalCurrentDirectionLabel" text="10">
+                            <font>
+                                <Font size="10.0" />
+                            </font>
+                        </Label>
+                    </graphic>
+                    <font>
+                        <Font size="10.0" />
+                    </font>
                 </Label>
             </GridPane>
             <HBox alignment="CENTER">
@@ -235,212 +267,212 @@
             <BorderPane.margin>
                 <Insets />
             </BorderPane.margin>
-             <Label text="Simulation parameters">
-                 <font>
-                     <Font name="System Bold" size="12.0" />
-                 </font>
-             </Label>
+            <Label text="Simulation parameters">
+                <font>
+                    <Font name="System Bold" size="12.0" />
+                </font>
+            </Label>
             <FlowPane hgap="15.0" vgap="5.0">
                 <Label contentDisplay="RIGHT" text="Map height:">
                     <font>
-                        <Font size="10.0"/>
+                        <Font size="10.0" />
                     </font>
                     <graphic>
                         <Label fx:id="heightLabel" text="PLACEHOLDER">
                             <font>
-                                <Font size="10.0"/>
+                                <Font size="10.0" />
                             </font>
                         </Label>
                     </graphic>
                 </Label>
                 <Label contentDisplay="RIGHT" text="Map width:">
                     <font>
-                        <Font size="10.0"/>
+                        <Font size="10.0" />
                     </font>
                     <graphic>
                         <Label fx:id="widthLabel" text="PLACEHOLDER">
                             <font>
-                                <Font size="10.0"/>
+                                <Font size="10.0" />
                             </font>
                         </Label>
                     </graphic>
                 </Label>
                 <Label contentDisplay="RIGHT" text="Plants spawning at the start:">
                     <font>
-                        <Font size="10.0"/>
+                        <Font size="10.0" />
                     </font>
                     <graphic>
                         <Label fx:id="startingPlantAmountLabel" text="PLACEHOLDER">
                             <font>
-                                <Font size="10.0"/>
+                                <Font size="10.0" />
                             </font>
                         </Label>
                     </graphic>
                 </Label>
                 <Label contentDisplay="RIGHT" text="Plants growing in each day:">
                     <font>
-                        <Font size="10.0"/>
+                        <Font size="10.0" />
                     </font>
                     <graphic>
                         <Label fx:id="plantGrowingAmountLabel" text="PLACEHOLDER">
                             <font>
-                                <Font size="10.0"/>
+                                <Font size="10.0" />
                             </font>
                         </Label>
                     </graphic>
                 </Label>
                 <Label contentDisplay="RIGHT" text="Plant energy profit:">
                     <font>
-                        <Font size="10.0"/>
+                        <Font size="10.0" />
                     </font>
                     <graphic>
                         <Label fx:id="plantEnergyAmountLabel" text="PLACEHOLDER">
                             <font>
-                                <Font size="10.0"/>
+                                <Font size="10.0" />
                             </font>
                         </Label>
                     </graphic>
                 </Label>
                 <Label contentDisplay="RIGHT" text="Animals spawning at the start:">
                     <font>
-                        <Font size="10.0"/>
+                        <Font size="10.0" />
                     </font>
                     <graphic>
                         <Label fx:id="startingAnimalAmountLabel" text="PLHD">
                             <font>
-                                <Font size="10.0"/>
+                                <Font size="10.0" />
                             </font>
                         </Label>
                     </graphic>
                 </Label>
                 <Label contentDisplay="RIGHT" text="Animal start energy:">
                     <font>
-                        <Font size="10.0"/>
+                        <Font size="10.0" />
                     </font>
                     <graphic>
                         <Label fx:id="startingEnergyAmountLabel" text="PLACEHOLDER">
                             <font>
-                                <Font size="10.0"/>
+                                <Font size="10.0" />
                             </font>
                         </Label>
                     </graphic>
                 </Label>
                 <Label contentDisplay="RIGHT" text="Minimum breeding energy:">
                     <font>
-                        <Font size="10.0"/>
+                        <Font size="10.0" />
                     </font>
                     <graphic>
                         <Label fx:id="minimumBreedingEnergyLabel" text="PLACEHOLDER">
                             <font>
-                                <Font size="10.0"/>
+                                <Font size="10.0" />
                             </font>
                         </Label>
                     </graphic>
                 </Label>
                 <Label contentDisplay="RIGHT" text="Breeding energy cost:">
                     <font>
-                        <Font size="10.0"/>
+                        <Font size="10.0" />
                     </font>
                     <graphic>
                         <Label fx:id="breedingEnergyCostLabel" text="PLACEHOLDER">
                             <font>
-                                <Font size="10.0"/>
+                                <Font size="10.0" />
                             </font>
                         </Label>
                     </graphic>
                 </Label>
                 <Label contentDisplay="RIGHT" text="Minimum mutation amount:">
                     <font>
-                        <Font size="10.0"/>
+                        <Font size="10.0" />
                     </font>
                     <graphic>
                         <Label fx:id="minimumMutationAmountLabel" text="PLACEHOLDER">
                             <font>
-                                <Font size="10.0"/>
+                                <Font size="10.0" />
                             </font>
                         </Label>
                     </graphic>
                 </Label>
                 <Label contentDisplay="RIGHT" text="Maximum mutation amount:">
                     <font>
-                        <Font size="10.0"/>
+                        <Font size="10.0" />
                     </font>
                     <graphic>
                         <Label fx:id="maximumMutationAmountLabel" text="PLACEHOLDER">
                             <font>
-                                <Font size="10.0"/>
+                                <Font size="10.0" />
                             </font>
                         </Label>
                     </graphic>
                 </Label>
                 <Label contentDisplay="RIGHT" text="Animal genome length:">
                     <font>
-                        <Font size="10.0"/>
+                        <Font size="10.0" />
                     </font>
                     <graphic>
                         <Label fx:id="animalGenomeLengthLabel" text="PLACEHOLDER">
                             <font>
-                                <Font size="10.0"/>
+                                <Font size="10.0" />
                             </font>
                         </Label>
                     </graphic>
                 </Label>
                 <Label contentDisplay="RIGHT" text="Fire interval:">
                     <font>
-                        <Font size="10.0"/>
+                        <Font size="10.0" />
                     </font>
                     <graphic>
                         <Label fx:id="fireIntervalLabel" text="PLACEHOLDER">
                             <font>
-                                <Font size="10.0"/>
+                                <Font size="10.0" />
                             </font>
                         </Label>
                     </graphic>
                 </Label>
                 <Label contentDisplay="RIGHT" text="Fire length:">
                     <font>
-                        <Font size="10.0"/>
+                        <Font size="10.0" />
                     </font>
                     <graphic>
                         <Label fx:id="fireLengthLabel" text="PLACEHOLDER">
                             <font>
-                                <Font size="10.0"/>
+                                <Font size="10.0" />
                             </font>
                         </Label>
                     </graphic>
                 </Label>
                 <Label contentDisplay="RIGHT" text="Refresh time (ms):">
                     <font>
-                        <Font size="10.0"/>
+                        <Font size="10.0" />
                     </font>
                     <graphic>
                         <Label fx:id="refreshTimeLabel" text="PLACEHOLDER">
                             <font>
-                                <Font size="10.0"/>
+                                <Font size="10.0" />
                             </font>
                         </Label>
                     </graphic>
                 </Label>
                 <Label contentDisplay="RIGHT" layoutX="294.0" layoutY="70.0" text="Simulation seed:">
                     <font>
-                        <Font size="10.0"/>
+                        <Font size="10.0" />
                     </font>
                     <graphic>
                         <Label fx:id="seedLabel" text="PLACEHOLDER">
                             <font>
-                                <Font size="10.0"/>
+                                <Font size="10.0" />
                             </font>
                         </Label>
                     </graphic>
                 </Label>
             </FlowPane>
-         <padding>
-            <Insets bottom="5.0" left="10.0" right="10.0" top="10.0" />
-         </padding>
+            <padding>
+                <Insets bottom="5.0" left="10.0" right="10.0" top="10.0" />
+            </padding>
         </VBox>
     </top>
-   <center>
-          <GridPane fx:id="mapGrid" alignment="CENTER" onMouseClicked="#onGridMouseClicked" snapToPixel="false" BorderPane.alignment="CENTER">
-                </GridPane>
-   </center>
+    <center>
+        <GridPane fx:id="mapGrid" alignment="CENTER" onMouseClicked="#onGridMouseClicked" snapToPixel="false" BorderPane.alignment="CENTER">
+        </GridPane>
+    </center>
 </BorderPane>

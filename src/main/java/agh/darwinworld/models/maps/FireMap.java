@@ -10,26 +10,34 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * A map with additional fires that spreads on plants and kill animals.
+ */
 public class FireMap extends AbstractMap implements MovementHandler {
     private final HashMap<Vector2D, Integer> fire = new HashMap<>();
 
+    /**
+     * Checks if there is fire at the specified position on the map.
+     * @param position the position to check on the map.
+     * @return {@code true} if there is fire at the specified position, {@code false} otherwise.
+     */
     public boolean isFireAtPosition(Vector2D position) {
         return fire.containsKey(position);
     }
 
     @Override
-    public void step(int count) {
-        super.step(count);
-        propagateFire(count);
-        if (count % this.params.fireInterval() == 0 && !plants.isEmpty()) {
+    public void step(int stepNumber) {
+        super.step(stepNumber);
+        propagateFire(stepNumber);
+        if (stepNumber % this.params.fireInterval() == 0 && !plants.isEmpty()) {
             Vector2D randomPos = plants.toArray(new Vector2D[0])[this.params.random().nextInt(plants.size())];
             fire.put(randomPos, this.params.fireLength());
         }
-        updateStatistics(count);
+        updateStatistics(stepNumber);
 
     }
 
-    public void propagateFire(int step) {
+    private void propagateFire(int step) {
         HashMap<Vector2D, Integer> newFire = new HashMap<>();
         Iterator<Map.Entry<Vector2D, Integer>> iterator = fire.entrySet().iterator();
         while (iterator.hasNext()) {

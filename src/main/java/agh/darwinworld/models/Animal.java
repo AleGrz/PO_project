@@ -144,7 +144,7 @@ public class Animal implements AnimalListener {
     private void selectNextGene() {
         MoveDirection oldGene = getCurrentGene();
         this.currentGeneIndex = (this.currentGeneIndex + 1) % this.genome.length;
-        PropertyChangeEvent event = new PropertyChangeEvent(this, "energy", oldGene, getCurrentGene());
+        PropertyChangeEvent event = new PropertyChangeEvent(this, "currentGene", oldGene, getCurrentGene());
         listeners.forEach(listener -> listener.propertyChange(event));
     }
 
