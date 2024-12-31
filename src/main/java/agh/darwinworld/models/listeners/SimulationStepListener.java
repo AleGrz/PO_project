@@ -1,4 +1,8 @@
-package agh.darwinworld.model;
+package agh.darwinworld.models.listeners;
+
+import agh.darwinworld.models.MoveDirection;
+import agh.darwinworld.models.Vector2D;
+import javafx.util.Pair;
 
 import java.io.IOException;
 
