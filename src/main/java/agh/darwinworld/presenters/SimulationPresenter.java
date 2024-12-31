@@ -326,12 +326,10 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
         try {
             if (simulationThread == null) {
                 simulationThread = new Thread(simulation);
-                simulationThread.setUncaughtExceptionHandler((thread, throwable) -> {
-                    Platform.runLater(() -> {
-                        AlertHelper.ShowExceptionAlert(currentStage, throwable);
-                        startStopButton.setDisable(true);
-                    });
-                });
+                simulationThread.setUncaughtExceptionHandler((thread, throwable) -> Platform.runLater(() -> {
+                    AlertHelper.ShowExceptionAlert(currentStage, throwable);
+                    startStopButton.setDisable(true);
+                }));
                 simulationThread.start();
             }
             if (simulation.isRunning()) {
@@ -430,7 +428,6 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
             XYChart.Series<Number, Number> animalCountSeries = dataLineChart.getData().get(0);
             XYChart.Series<Number, Number> plantCountSeries = dataLineChart.getData().get(1);
             XYChart.Series<Number, Number> emptyFieldCountSeries = dataLineChart.getData().get(2);
-            XYChart.Series<Number, Number> popularGenotypeSeries = dataLineChart.getData().get(3);
             XYChart.Series<Number, Number> averageLifetimeSeries = dataLineChart.getData().get(4);
             XYChart.Series<Number, Number> averageDescendantsAmountSeries = dataLineChart.getData().get(5);
             animalCountSeries.getData().add(new XYChart.Data<>(step, animalCount));
