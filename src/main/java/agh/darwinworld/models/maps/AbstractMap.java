@@ -42,6 +42,12 @@ public abstract class AbstractMap implements MovementHandler {
         return plants.size();
     }
 
+    public boolean isPrefferedRow(int row) {
+        int equatorHeight = Math.round(params.height() * 0.2f);
+        int barHeight = Math.round((params.height() - equatorHeight) / 2f);
+        return row >= barHeight && row < barHeight + equatorHeight;
+    }
+
     public int emptyFieldCount() {
         HashSet<Vector2D> allFields = new HashSet<>(plants);
         allFields.addAll(animals.keySet());

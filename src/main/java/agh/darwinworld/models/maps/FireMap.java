@@ -13,7 +13,7 @@ import java.util.Map;
 public class FireMap extends AbstractMap implements MovementHandler {
     private final HashMap<Vector2D, Integer> fire = new HashMap<>();
 
-    public boolean isFireOnPosition(Vector2D position) {
+    public boolean isFireAtPosition(Vector2D position) {
         return fire.containsKey(position);
     }
 
@@ -52,7 +52,7 @@ public class FireMap extends AbstractMap implements MovementHandler {
             final int max = getMaxAnimalAmount();
             listeners.forEach(listener -> listener.updateAnimal(position, 0, max));
             if (animals.containsKey(position)) {
-                for(Animal animal : animals.get(position)) {
+                for (Animal animal : animals.get(position)) {
                     animal.forceKill(step);
                     totalLifetime += animal.getAge();
                     deadCount++;
@@ -76,7 +76,7 @@ public class FireMap extends AbstractMap implements MovementHandler {
     @Override
     public Pair<Vector2D, MapDirection> move(Vector2D position, MapDirection direction) {
         Vector2D newPos = position.add(direction.getValue())
-                .lowerLeft(new Vector2D(this.params.width()-1, this.params.height()-1))
+                .lowerLeft(new Vector2D(this.params.width() - 1, this.params.height() - 1))
                 .upperRight(new Vector2D(0, 0));
         return new Pair<>(newPos, direction);
     }

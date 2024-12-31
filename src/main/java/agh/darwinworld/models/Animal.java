@@ -8,6 +8,8 @@ import java.beans.PropertyChangeEvent;
 import java.util.*;
 import java.util.stream.Stream;
 
+// TODO: Animal can die on move -> his energy is < 0, and then eat and be still alive. It's needed to be fixed
+
 /**
  * Represents an animal in the Darwin World simulation.
  */
@@ -287,7 +289,7 @@ public class Animal implements AnimalListener {
         selectNextGene();
         updateEnergy(getEnergy() - 1, step);
         increaseAge();
-        // TODO: Move this age verifier to movement handler or somewhere else
+        // TODO: Move this age verifier to movement handler or somewhere and add into sim params
         if (random.nextInt(100) < Math.min(age, 80)) {
             return position;
         }

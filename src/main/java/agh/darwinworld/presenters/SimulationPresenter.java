@@ -24,6 +24,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -251,14 +252,17 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
             row.setMaxHeight(cellSize);
         }
         defaultFont.set(new Font(cellSize / 2f));
+        boldFont.set(Font.font("System", FontWeight.BOLD, cellSize / 2f));
         mapGrid.setGridLinesVisible(showGridLines);
     }
 
     ObjectProperty<Font> defaultFont = new SimpleObjectProperty<>(new Font(12));
+    ObjectProperty<Font> boldFont = new SimpleObjectProperty<>(Font.font("System", FontWeight.BOLD, 12));
 
     private void createLabelCell(String text, int x, int y) {
+        SimulationParameters p = simulation.getParameters();
         Label cell = new Label(text);
-        cell.fontProperty().bind(defaultFont);
+        cell.fontProperty().bind(p.map().isPrefferedRow(p.height() - y) ? boldFont : defaultFont);
         cell.setAlignment(Pos.CENTER);
         GridPane.setHgrow(cell, Priority.ALWAYS);
         GridPane.setVgrow(cell, Priority.ALWAYS);
