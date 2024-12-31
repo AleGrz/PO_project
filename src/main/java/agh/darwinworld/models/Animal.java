@@ -14,20 +14,20 @@ import java.util.stream.Stream;
  * Represents an animal in the Darwin World simulation.
  */
 public class Animal implements AnimalListener {
-    private final Random random;
-    private final UUID uuid = UUID.randomUUID();
-    private final ArrayList<AnimalListener> listeners = new ArrayList<>();
-    private final ArrayList<Animal> subscribedTo = new ArrayList<>();
-    private final HashSet<Animal> descendants = new HashSet<>();
+    protected final Random random;
+    protected final UUID uuid = UUID.randomUUID();
+    protected final ArrayList<AnimalListener> listeners = new ArrayList<>();
+    protected final ArrayList<Animal> subscribedTo = new ArrayList<>();
+    protected final HashSet<Animal> descendants = new HashSet<>();
 
-    private final MoveDirection[] genome;
-    private MapDirection direction;
-    private int energy;
-    private int currentGeneIndex;
-    private int age = 0;
-    private int childrenAmount = 0;
-    private int totalEatenPlants = 0;
-    private int diedAt = -1;
+    protected final MoveDirection[] genome;
+    protected MapDirection direction;
+    protected int energy;
+    protected int currentGeneIndex;
+    protected int age = 0;
+    protected int childrenAmount = 0;
+    protected int totalEatenPlants = 0;
+    protected int diedAt = -1;
 
     /**
      * @return the current direction of the animal.
@@ -112,7 +112,7 @@ public class Animal implements AnimalListener {
     /**
      * Updates animal's age by increasing by 1 and notifies listeners about the change.
      */
-    private void increaseAge() {
+    protected void increaseAge() {
         this.age++;
         PropertyChangeEvent event = new PropertyChangeEvent(this, "age", this.age - 1, this.age);
         listeners.forEach(listener -> listener.propertyChange(event));
@@ -121,7 +121,7 @@ public class Animal implements AnimalListener {
     /**
      * Updates animal's energy and notifies listeners about the change.
      */
-    private void updateEnergy(int newEnergy, int step) {
+    protected void updateEnergy(int newEnergy, int step) {
         PropertyChangeEvent event = new PropertyChangeEvent(this, "energy", this.energy, newEnergy);
         this.energy = newEnergy;
         listeners.forEach(listener -> listener.propertyChange(event));
@@ -141,7 +141,7 @@ public class Animal implements AnimalListener {
     /**
      * Updates animal's current genome index and notifies listeners about the change.
      */
-    private void selectNextGene() {
+    protected void selectNextGene() {
         MoveDirection oldGene = getCurrentGene();
         this.currentGeneIndex = (this.currentGeneIndex + 1) % this.genome.length;
         PropertyChangeEvent event = new PropertyChangeEvent(this, "currentGene", oldGene, getCurrentGene());
@@ -151,7 +151,7 @@ public class Animal implements AnimalListener {
     /**
      * Updates animal's children amount and notifies listeners about the change.
      */
-    private void increaseChildrenAmount(Animal child) {
+    protected void increaseChildrenAmount(Animal child) {
         this.childrenAmount++;
         PropertyChangeEvent event = new PropertyChangeEvent(this, "childrenAmount", this.childrenAmount - 1, this.childrenAmount);
         listeners.forEach(listener -> listener.propertyChange(event));
@@ -163,7 +163,7 @@ public class Animal implements AnimalListener {
     /**
      * Updates animal's descendants amount and notifies listeners about the change.
      */
-    private void increaseDescendantsAmount(Animal descendant) {
+    protected void increaseDescendantsAmount(Animal descendant) {
         if (descendants.contains(descendant)) return;
         descendants.add(descendant);
         PropertyChangeEvent event = new PropertyChangeEvent(this, "descendantsAmount", getDescendantsAmount() - 1, getDescendantsAmount());
@@ -175,7 +175,7 @@ public class Animal implements AnimalListener {
     /**
      * Updates animal's current direction and notifies listeners about the change.
      */
-    private void updateDirection(MapDirection direction) {
+    protected void updateDirection(MapDirection direction) {
         PropertyChangeEvent event = new PropertyChangeEvent(this, "direction", this.direction, direction);
         this.direction = direction;
         listeners.forEach(listener -> listener.propertyChange(event));
@@ -289,10 +289,6 @@ public class Animal implements AnimalListener {
         selectNextGene();
         updateEnergy(getEnergy() - 1, step);
         increaseAge();
-        // TODO: Move this age verifier to movement handler or somewhere and add into sim params
-        if (random.nextInt(100) < Math.min(age, 80)) {
-            return position;
-        }
         Pair<Vector2D, MapDirection> movePair = handler.move(position, direction);
         Vector2D newPos = movePair.getKey();
         updateDirection(movePair.getValue());

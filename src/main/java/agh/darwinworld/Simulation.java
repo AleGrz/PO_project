@@ -8,8 +8,8 @@ import agh.darwinworld.presenters.SimulationPresenter;
 public class Simulation implements Runnable {
     private final SimulationParameters params;
     private final AbstractMap map;
-    private int step = 1;
 
+    private int step = 1;
     private boolean isRunning = false;
 
     public Simulation(SimulationParameters params) {
