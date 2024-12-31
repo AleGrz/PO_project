@@ -1,9 +1,12 @@
-package agh.darwinworld.presenter;
+package agh.darwinworld.presenters;
 
 import agh.darwinworld.Simulation;
-import agh.darwinworld.control.CellRegion;
-import agh.darwinworld.helper.AlertHelper;
-import agh.darwinworld.model.*;
+import agh.darwinworld.controls.CellRegion;
+import agh.darwinworld.helpers.AlertHelper;
+import agh.darwinworld.models.*;
+import agh.darwinworld.models.listeners.AnimalListener;
+import agh.darwinworld.models.listeners.SimulationPauseListener;
+import agh.darwinworld.models.listeners.SimulationStepListener;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.event.ActionEvent;
@@ -21,12 +24,19 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Pair;
 
+import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.FutureTask;
+import java.util.stream.Collectors;
 
 public class SimulationPresenter implements SimulationStepListener, AnimalListener {
     @FXML
@@ -398,7 +408,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
     @Override
     public void updateFire(Vector2D position, int length) {
         Platform.runLater(() -> {
-            CellRegion cell = getCellByRowColumn(position);
+            CellRegion cell = cells.get(position);
             if (cell != null) {
                 cell.setCurrentFireStage(length);
             }
