@@ -4,7 +4,7 @@ public enum MapType {
     FIRE("Fire map"),
     WORLD("World map");
 
-    public AbstractMap getMap() {
+    public AbstractMap createMap() {
         return switch (this) {
             case FIRE -> new FireMap();
             case WORLD -> new WorldMap();

@@ -79,6 +79,10 @@ public class StartMenuPresenter implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         generateSeed();
+        ObservableList<MapType> mapTypes = FXCollections.observableArrayList(MapType.values());
+        FXCollections.reverse(mapTypes);
+        mapTypeComboBox.setItems(mapTypes);
+        mapTypeComboBox.getSelectionModel().select(MapType.WORLD);
         Platform.runLater(this::updateLayout);
     }
 
