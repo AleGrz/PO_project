@@ -69,6 +69,8 @@ public class StartMenuPresenter implements Initializable {
     @FXML
     private ComboBox<MapType> mapTypeComboBox;
     @FXML
+    private ComboBox<AnimalType> behaviourComboBox;
+    @FXML
     private Label fireLengthLabel;
     @FXML
     private Label fireIntervalLabel;
@@ -84,6 +86,9 @@ public class StartMenuPresenter implements Initializable {
         FXCollections.reverse(mapTypes);
         mapTypeComboBox.setItems(mapTypes);
         mapTypeComboBox.getSelectionModel().select(MapType.WORLD);
+        ObservableList<AnimalType> animalTypes = FXCollections.observableArrayList(AnimalType.values());
+        behaviourComboBox.setItems(animalTypes);
+        behaviourComboBox.getSelectionModel().select(AnimalType.ANIMAL);
         Platform.runLater(this::updateLayout);
     }
 
@@ -96,6 +101,7 @@ public class StartMenuPresenter implements Initializable {
         assert currentStage != null;
         try {
             MapType mapType = mapTypeComboBox.getSelectionModel().getSelectedItem();
+            AnimalType animalType = behaviourComboBox.getSelectionModel().getSelectedItem();
             SimulationParameters params = SimulationParameters.createFromIntField(
                     widthIntField,
                     heightIntField,
@@ -114,7 +120,7 @@ public class StartMenuPresenter implements Initializable {
                     refreshTimeIntField,
                     seedIntField,
                     mapType,
-                    AnimalType.AGEING_ANIMAL
+                    animalType
             );
             Simulation simulation = new Simulation(params);
             FXMLLoader loader = new FXMLLoader();

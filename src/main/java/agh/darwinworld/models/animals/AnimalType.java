@@ -3,8 +3,8 @@ package agh.darwinworld.models.animals;
 import java.util.Random;
 
 public enum AnimalType {
-    ANIMAL,
-    AGEING_ANIMAL;
+    ANIMAL("Normal"),
+    AGEING_ANIMAL("Oldness - sadness");
 
     public Animal createAnimal(Random random, int genomeLength, int energy) {
         return switch (this) {
@@ -21,5 +21,15 @@ public enum AnimalType {
             case AGEING_ANIMAL ->
                     new AgeingAnimal(mommy, daddy, breedingEnergyCost, minimalBreedingEnergy, minMutations, maxMutations, step);
         };
+    }
+
+    private final String label;
+
+    AnimalType(String label) {
+        this.label = label;
+    }
+
+    public String toString() {
+        return label;
     }
 }

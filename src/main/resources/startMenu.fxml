@@ -1,291 +1,310 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import agh.darwinworld.controls.*?>
-<?import java.lang.*?>
-<?import javafx.collections.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane fx:id="rootBorderPane" minHeight="800.0" minWidth="1000.0" styleClass="start" stylesheets="@styles.css, @theme.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.darwinworld.presenters.StartMenuPresenter">
+<BorderPane fx:id="rootBorderPane" minHeight="800.0" minWidth="1000.0" styleClass="start"
+            stylesheets="@styles.css, @theme.css" xmlns="http://javafx.com/javafx/11.0.14-internal"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.darwinworld.presenters.StartMenuPresenter">
     <right>
         <GridPane alignment="CENTER" hgap="10.0" styleClass="background" BorderPane.alignment="CENTER">
             <columnConstraints>
-                <ColumnConstraints maxWidth="200.0" minWidth="200.0" />
-                <ColumnConstraints maxWidth="180.0" minWidth="180.0" />
+                <ColumnConstraints maxWidth="200.0" minWidth="200.0"/>
+                <ColumnConstraints maxWidth="180.0" minWidth="180.0"/>
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints valignment="BOTTOM" vgrow="ALWAYS" />
-                <RowConstraints />
-                <RowConstraints />
-                <RowConstraints />
-                <RowConstraints />
-                <RowConstraints />
-                <RowConstraints />
-                <RowConstraints />
-                <RowConstraints />
-                <RowConstraints />
-                <RowConstraints />
-                <RowConstraints />
-                <RowConstraints />
-                <RowConstraints />
-                <RowConstraints />
-                <RowConstraints />
-                <RowConstraints />
-                <RowConstraints />
-                <RowConstraints />
-                <RowConstraints />
-                <RowConstraints vgrow="ALWAYS" />
+                <RowConstraints valignment="BOTTOM" vgrow="ALWAYS"/>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints/>
+                <RowConstraints vgrow="ALWAYS"/>
             </rowConstraints>
             <Label text="Properties" GridPane.columnSpan="2" GridPane.halignment="CENTER">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
                 <padding>
-                    <Insets bottom="2.0" />
+                    <Insets bottom="2.0"/>
                 </padding>
             </Label>
 
             <Label text="Map height:" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </Label>
-            <IntField fx:id="heightIntField" text="25" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.vgrow="SOMETIMES">
+            <IntField fx:id="heightIntField" text="25" GridPane.columnIndex="1" GridPane.halignment="LEFT"
+                      GridPane.rowIndex="1" GridPane.vgrow="SOMETIMES">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </IntField>
 
             <Label text="Map width:" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </Label>
-            <IntField fx:id="widthIntField" text="50" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2">
+            <IntField fx:id="widthIntField" text="50" GridPane.columnIndex="1" GridPane.halignment="LEFT"
+                      GridPane.rowIndex="2">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </IntField>
 
             <Label text="Plants spawning at the start:" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </Label>
-            <IntField fx:id="startingPlantAmountIntField" text="15" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="3">
+            <IntField fx:id="startingPlantAmountIntField" text="15" GridPane.columnIndex="1" GridPane.halignment="LEFT"
+                      GridPane.rowIndex="3">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </IntField>
 
             <Label text="Plants growing in each day:" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </Label>
-            <IntField fx:id="plantGrowingAmountIntField" text="10" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="4">
+            <IntField fx:id="plantGrowingAmountIntField" text="10" GridPane.columnIndex="1" GridPane.halignment="LEFT"
+                      GridPane.rowIndex="4">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </IntField>
 
             <Label text="Plant energy profit:" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </Label>
-            <IntField fx:id="plantEnergyAmountIntField" text="15" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="5">
+            <IntField fx:id="plantEnergyAmountIntField" text="15" GridPane.columnIndex="1" GridPane.halignment="LEFT"
+                      GridPane.rowIndex="5">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </IntField>
 
             <Label text="Animals spawning at the start:" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </Label>
-            <IntField fx:id="startingAnimalAmountIntField" text="10" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="6">
+            <IntField fx:id="startingAnimalAmountIntField" text="10" GridPane.columnIndex="1" GridPane.halignment="LEFT"
+                      GridPane.rowIndex="6">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </IntField>
 
             <Label text="Animal start energy:" GridPane.halignment="RIGHT" GridPane.rowIndex="7">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </Label>
-            <IntField fx:id="startingEnergyAmountIntField" text="40" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="7">
+            <IntField fx:id="startingEnergyAmountIntField" text="40" GridPane.columnIndex="1" GridPane.halignment="LEFT"
+                      GridPane.rowIndex="7">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </IntField>
 
             <Label text="Minimum breeding energy:" GridPane.halignment="RIGHT" GridPane.rowIndex="8">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </Label>
-            <IntField fx:id="minimumBreedingEnergyIntField" text="15" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="8">
+            <IntField fx:id="minimumBreedingEnergyIntField" text="15" GridPane.columnIndex="1"
+                      GridPane.halignment="LEFT" GridPane.rowIndex="8">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </IntField>
 
             <Label text="Breeding energy cost:" GridPane.halignment="RIGHT" GridPane.rowIndex="9">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </Label>
-            <IntField fx:id="breedingEnergyCostIntField" text="10" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="9">
+            <IntField fx:id="breedingEnergyCostIntField" text="10" GridPane.columnIndex="1" GridPane.halignment="LEFT"
+                      GridPane.rowIndex="9">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </IntField>
 
             <Label text="Minimum mutation amount:" GridPane.halignment="RIGHT" GridPane.rowIndex="10">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </Label>
-            <IntField fx:id="minimumMutationAmountIntField" text="4" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="10">
+            <IntField fx:id="minimumMutationAmountIntField" text="4" GridPane.columnIndex="1" GridPane.halignment="LEFT"
+                      GridPane.rowIndex="10">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </IntField>
 
             <Label text="Maximum mutation amount:" GridPane.halignment="RIGHT" GridPane.rowIndex="11">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </Label>
-            <IntField fx:id="maximumMutationAmountIntField" text="10" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="11">
+            <IntField fx:id="maximumMutationAmountIntField" text="10" GridPane.columnIndex="1"
+                      GridPane.halignment="LEFT" GridPane.rowIndex="11">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </IntField>
 
             <Label text="Animal genome length:" GridPane.halignment="RIGHT" GridPane.rowIndex="12">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </Label>
-            <IntField fx:id="animalGenomeLengthIntField" text="10" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="12">
+            <IntField fx:id="animalGenomeLengthIntField" text="10" GridPane.columnIndex="1" GridPane.halignment="LEFT"
+                      GridPane.rowIndex="12">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </IntField>
             <Label layoutX="65.0" layoutY="506.0" text="Map type:" GridPane.halignment="RIGHT" GridPane.rowIndex="13">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </Label>
-            <ComboBox fx:id="mapTypeComboBox" minWidth="180.0" onAction="#onMapTypeSelectionChanged" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="13">
+            <ComboBox fx:id="mapTypeComboBox" minWidth="180.0" onAction="#onMapTypeSelectionChanged" prefWidth="150.0"
+                      GridPane.columnIndex="1" GridPane.rowIndex="13">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </ComboBox>
             <Label fx:id="fireIntervalLabel" text="Fire interval:" GridPane.halignment="RIGHT" GridPane.rowIndex="14">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </Label>
-            <IntField fx:id="fireIntervalIntField" text="100" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="14">
+            <IntField fx:id="fireIntervalIntField" text="100" GridPane.columnIndex="1" GridPane.halignment="LEFT"
+                      GridPane.rowIndex="14">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </IntField>
             <Label fx:id="fireLengthLabel" text="Fire length:" GridPane.halignment="RIGHT" GridPane.rowIndex="15">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </Label>
-            <IntField fx:id="fireLengthIntField" text="5" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="15">
+            <IntField fx:id="fireLengthIntField" text="5" GridPane.columnIndex="1" GridPane.halignment="LEFT"
+                      GridPane.rowIndex="15">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </IntField>
-            <Label layoutX="135.0" layoutY="546.0" text="Behaviour type:" GridPane.halignment="RIGHT" GridPane.rowIndex="16">
+            <Label layoutX="135.0" layoutY="546.0" text="Behaviour type:" GridPane.halignment="RIGHT"
+                   GridPane.rowIndex="16">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </Label>
-            <ComboBox layoutX="199.0" layoutY="542.0" minWidth="180.0" prefWidth="150.0" value="Normal" GridPane.columnIndex="1" GridPane.rowIndex="16">
-                <items>
-                    <FXCollections fx:factory="observableArrayList">
-                        <String fx:value="Normal" />
-                        <String fx:value="Oldness - sadness" />
-                    </FXCollections>
-                </items>
+            <ComboBox layoutX="199.0" layoutY="542.0" minWidth="180.0" prefWidth="150.0" value="Normal"
+                      GridPane.columnIndex="1" GridPane.rowIndex="16" fx:id="behaviourComboBox">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </ComboBox>
 
             <Label text="Refresh time (ms):" GridPane.halignment="RIGHT" GridPane.rowIndex="17">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </Label>
-            <IntField fx:id="refreshTimeIntField" text="100" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="17">
+            <IntField fx:id="refreshTimeIntField" text="100" GridPane.columnIndex="1" GridPane.halignment="LEFT"
+                      GridPane.rowIndex="17">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </IntField>
 
             <Label text="Simulation seed:" GridPane.halignment="RIGHT" GridPane.rowIndex="18">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </Label>
-            <IntField fx:id="seedIntField" maxWidth="135.0" text="1" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="18">
+            <IntField fx:id="seedIntField" maxWidth="135.0" text="1" GridPane.columnIndex="1" GridPane.halignment="LEFT"
+                      GridPane.rowIndex="18">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </IntField>
-            <Button onAction="#onSeedGenerate" prefWidth="40.0" text="🎲" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="18">
+            <Button onAction="#onSeedGenerate" prefWidth="40.0" text="🎲" GridPane.columnIndex="1"
+                    GridPane.halignment="RIGHT" GridPane.rowIndex="18">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </Button>
 
             <Label text="Save to CSV:" GridPane.halignment="RIGHT" GridPane.rowIndex="19">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </Label>
-            <Button fx:id="csvButton" onAction="#onSaveToCSV" prefWidth="135.0" styleClass="button-outlined" text="Choose" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="19">
+            <Button fx:id="csvButton" onAction="#onSaveToCSV" prefWidth="135.0" styleClass="button-outlined"
+                    text="Choose" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="19">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </Button>
-            <Button fx:id="deleteCsvButton" onAction="#onDelete" prefWidth="40.0" styleClass="button-outlined, danger" text="🗑" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="19">
+            <Button fx:id="deleteCsvButton" onAction="#onDelete" prefWidth="40.0" styleClass="button-outlined, danger"
+                    text="🗑" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="19">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </Button>
 
-            <Button onAction="#onSimulationStart" styleClass="accent" text="Start new simulation" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="20" GridPane.valignment="TOP">
+            <Button onAction="#onSimulationStart" styleClass="accent" text="Start new simulation"
+                    GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="20"
+                    GridPane.valignment="TOP">
                 <GridPane.margin>
-                    <Insets bottom="5.0" top="5.0" />
+                    <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </Button>
             <BorderPane.margin>
-                <Insets />
+                <Insets/>
             </BorderPane.margin>
             <padding>
-                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
             </padding>
         </GridPane>
     </right>
-   <center>
-      <Label text="Darwin&#10;World&#10;Project" textAlignment="CENTER" textFill="WHITE" wrapText="true" BorderPane.alignment="CENTER">
-         <font>
-            <Font size="70.0" />
-         </font>
-      </Label>
-   </center>
+    <center>
+        <Label text="Darwin&#10;World&#10;Project" textAlignment="CENTER" textFill="WHITE" wrapText="true"
+               BorderPane.alignment="CENTER">
+            <font>
+                <Font size="70.0"/>
+            </font>
+        </Label>
+    </center>
 </BorderPane>
