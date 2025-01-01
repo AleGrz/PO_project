@@ -218,7 +218,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
             fireIntervalLabel.setText(Integer.toString(p.fireInterval()));
             fireLengthLabel.setText(Integer.toString(p.fireLength()));
             refreshTimeLabel.setText(Integer.toString(p.refreshTime()));
-            seedLabel.setText("NIE DZIALA TBD");
+            seedLabel.setText(Integer.toString(p.seed()));
             drawMap();
         });
     }
