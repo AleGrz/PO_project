@@ -25,6 +25,7 @@ import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class StartMenuPresenter implements Initializable {
@@ -89,7 +90,7 @@ public class StartMenuPresenter implements Initializable {
         Stage currentStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         assert currentStage != null;
         try {
-            String mapType = mapTypeComboBox.getSelectionModel().getSelectedItem();
+            MapType mapType = mapTypeComboBox.getSelectionModel().getSelectedItem();
             SimulationParameters params = SimulationParameters.createFromIntField(
                     widthIntField,
                     heightIntField,
@@ -144,8 +145,8 @@ public class StartMenuPresenter implements Initializable {
     }
 
     private void updateLayout() {
-        String mapType = mapTypeComboBox.getSelectionModel().getSelectedItem();
-        boolean v = mapType.equals("Fire map");
+        MapType mapType = mapTypeComboBox.getSelectionModel().getSelectedItem();
+        boolean v = mapType.equals(MapType.FIRE);
         fireLengthIntField.setVisible(v);
         fireLengthIntField.setManaged(v);
         fireIntervalIntField.setVisible(v);
