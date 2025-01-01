@@ -229,7 +229,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
             try {
                 simulationThread.interrupt();
             } catch (SecurityException e) {
-                Platform.runLater(() -> AlertHelper.ShowExceptionAlert(stage, e));
+                Platform.runLater(() -> AlertHelper.showExceptionAlert(stage, e));
             }
         }
     }
@@ -327,7 +327,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
             if (simulationThread == null) {
                 simulationThread = new Thread(simulation);
                 simulationThread.setUncaughtExceptionHandler((thread, throwable) -> Platform.runLater(() -> {
-                    AlertHelper.ShowExceptionAlert(currentStage, throwable);
+                    AlertHelper.showExceptionAlert(currentStage, throwable);
                     startStopButton.setDisable(true);
                 }));
                 simulationThread.start();
@@ -341,7 +341,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
                 startStopButton.setText("Stop");
             }
         } catch (Exception e) {
-            AlertHelper.ShowExceptionAlert(currentStage, e);
+            AlertHelper.showExceptionAlert(currentStage, e);
         }
     }
 

@@ -20,7 +20,7 @@ public class AlertHelper {
      * @param owner The owner window for the alert, can be {@code null} if no owner window is needed.
      * @param e The exception to be displayed in the alert.
      */
-    public static void ShowExceptionAlert(Window owner, Throwable e) {
+    public static void showExceptionAlert(Window owner, Throwable e) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.initOwner(owner);
         alert.setTitle("Exception");
@@ -40,6 +40,7 @@ public class AlertHelper {
         expContent.add(label, 0, 0);
         expContent.add(textArea, 0, 1);
         alert.getDialogPane().setExpandableContent(expContent);
+        setDarkMode(alert, true);
         alert.showAndWait();
     }
 
@@ -49,12 +50,17 @@ public class AlertHelper {
      * @param owner The owner window for the alert, can be {@code null} if no owner window is needed.
      * @param e The user-friendly exception to be displayed in the alert.
      */
-    public static void ShowUserFriendlyExceptionAlert(Window owner, UserFriendlyException e) {
+    public static void showUserFriendlyExceptionAlert(Window owner, UserFriendlyException e) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.initOwner(owner);
         alert.setTitle("Warning");
         alert.setHeaderText(e.getHeader());
         alert.setContentText(e.getMessage());
+        setDarkMode(alert, true);
         alert.showAndWait();
+    }
+
+    public static void setDarkMode(Alert alert, boolean darkMode) {
+        StageHelper.setDarkMode(alert.getDialogPane().getScene().getWindow(), true);
     }
 }

@@ -6,13 +6,11 @@ import agh.darwinworld.helpers.AlertHelper;
 import agh.darwinworld.helpers.StageHelper;
 import agh.darwinworld.models.*;
 import agh.darwinworld.models.exceptions.UserFriendlyException;
-import agh.darwinworld.models.maps.FireMap;
-import agh.darwinworld.models.maps.WorldMap;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -23,9 +21,10 @@ import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 
 import java.io.File;
-import java.util.Random;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class StartMenuPresenter {
+public class StartMenuPresenter implements Initializable {
     @FXML
     private Button deleteCsvButton;
     @FXML
@@ -68,11 +67,13 @@ public class StartMenuPresenter {
     private Label fireLengthLabel;
     @FXML
     private Label fireIntervalLabel;
+    @FXML
+    private BorderPane rootBorderPane;
 
     private CsvPrinter csvListener;
 
-    @FXML
-    public void initialize() {
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
         generateSeed();
         Platform.runLater(this::updateLayout);
     }
@@ -82,12 +83,9 @@ public class StartMenuPresenter {
     }
 
     public void onSimulationStart(ActionEvent actionEvent) {
-        Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        Stage currentStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        assert currentStage != null;
         try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
-            BorderPane root = loader.load();
-            SimulationPresenter presenter = loader.getController();
             String mapType = mapTypeComboBox.getSelectionModel().getSelectedItem();
             SimulationParameters params = SimulationParameters.createFromIntField(
                     widthIntField,
@@ -109,6 +107,10 @@ public class StartMenuPresenter {
                     mapType.equals("Fire map") ? MapType.FIRE : MapType.WORLD
             );
             Simulation simulation = new Simulation(params);
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
+            BorderPane root = loader.load();
+            SimulationPresenter presenter = loader.getController();
             presenter.setSimulation(simulation);
             if (csvListener != null) {
                 simulation.addStepListener(csvListener);
@@ -120,11 +122,12 @@ public class StartMenuPresenter {
             simulationStage.setTitle("Simulation");
             simulationStage.setScene(new Scene(root));
             StageHelper.bindMinSize(simulationStage, root);
+            StageHelper.setDarkMode(simulationStage, true);
             simulationStage.show();
         } catch (UserFriendlyException e) {
-            AlertHelper.ShowUserFriendlyExceptionAlert(currentStage, e);
+            AlertHelper.showUserFriendlyExceptionAlert(currentStage, e);
         } catch (Exception e) {
-            AlertHelper.ShowExceptionAlert(currentStage, e);
+            AlertHelper.showExceptionAlert(currentStage, e);
         }
     }
 
@@ -166,4 +169,5 @@ public class StartMenuPresenter {
         csvButton.getStyleClass().remove("success");
         csvListener = null;
     }
+
 }

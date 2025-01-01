@@ -25,6 +25,7 @@ public class App extends Application {
         stage.setTitle("Darwin World Project");
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("icon.png"))));
         StageHelper.bindMinSize(stage, root);
+        StageHelper.setDarkMode(stage, true);
         stage.show();
     }
 }
