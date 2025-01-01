@@ -31,13 +31,14 @@ public class Simulation implements Runnable {
     public void run() {
         while (true) {
             if (isRunning) {
-                long deltatime = System.currentTimeMillis();
+                long deltaTime = System.currentTimeMillis();
                 map.step(step);
-                long elapsed = System.currentTimeMillis() - deltatime;
+                long elapsed = System.currentTimeMillis() - deltaTime;
                 System.out.println("Step " + step + " took " + elapsed + "ms");
                 step++;
             }
             try {
+                //noinspection BusyWait
                 Thread.sleep(this.params.refreshTime());
             } catch (InterruptedException e) {
                 System.out.println("Stopping simulation loop's sleep!");
