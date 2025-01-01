@@ -1,10 +1,8 @@
 package agh.darwinworld.models;
 
 import agh.darwinworld.controls.IntField;
+import agh.darwinworld.models.animals.AnimalType;
 import agh.darwinworld.models.exceptions.UserFriendlyException;
-import agh.darwinworld.models.maps.AbstractMap;
-
-import java.util.Random;
 
 public record SimulationParameters(
         int width,

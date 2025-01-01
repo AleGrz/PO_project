@@ -1,5 +1,6 @@
 package agh.darwinworld.models;
 
+import agh.darwinworld.models.animals.Animal;
 import agh.darwinworld.models.listeners.MovementHandler;
 import javafx.util.Pair;
 import org.junit.jupiter.api.*;

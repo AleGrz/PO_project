@@ -4,6 +4,7 @@ import agh.darwinworld.Simulation;
 import agh.darwinworld.controls.CellRegion;
 import agh.darwinworld.helpers.AlertHelper;
 import agh.darwinworld.models.*;
+import agh.darwinworld.models.animals.Animal;
 import agh.darwinworld.models.listeners.AnimalListener;
 import agh.darwinworld.models.listeners.SimulationPauseListener;
 import agh.darwinworld.models.listeners.SimulationStepListener;

@@ -1,6 +1,6 @@
 package agh.darwinworld.models.maps;
 
-import agh.darwinworld.models.Animal;
+import agh.darwinworld.models.animals.Animal;
 import agh.darwinworld.models.MapDirection;
 import agh.darwinworld.models.listeners.MovementHandler;
 import agh.darwinworld.models.Vector2D;

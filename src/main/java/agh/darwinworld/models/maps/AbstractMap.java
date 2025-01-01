@@ -1,6 +1,7 @@
 package agh.darwinworld.models.maps;
 
 import agh.darwinworld.models.*;
+import agh.darwinworld.models.animals.Animal;
 import agh.darwinworld.models.listeners.MovementHandler;
 import agh.darwinworld.models.listeners.SimulationStepListener;
 import javafx.util.Pair;

@@ -1,5 +1,7 @@
-package agh.darwinworld.models;
+package agh.darwinworld.models.animals;
 
+import agh.darwinworld.models.MapDirection;
+import agh.darwinworld.models.Vector2D;
 import agh.darwinworld.models.listeners.MovementHandler;
 import javafx.util.Pair;
 

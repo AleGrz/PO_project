@@ -5,6 +5,7 @@ import agh.darwinworld.controls.IntField;
 import agh.darwinworld.helpers.AlertHelper;
 import agh.darwinworld.helpers.StageHelper;
 import agh.darwinworld.models.*;
+import agh.darwinworld.models.animals.AnimalType;
 import agh.darwinworld.models.exceptions.UserFriendlyException;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;

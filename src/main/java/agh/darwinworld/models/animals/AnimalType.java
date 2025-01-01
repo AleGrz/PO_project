@@ -1,4 +1,4 @@
-package agh.darwinworld.models;
+package agh.darwinworld.models.animals;
 
 import java.util.Random;
 
