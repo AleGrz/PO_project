@@ -7,7 +7,10 @@ import agh.darwinworld.helpers.StageHelper;
 import agh.darwinworld.models.*;
 import agh.darwinworld.models.animals.AnimalType;
 import agh.darwinworld.models.exceptions.UserFriendlyException;
+import agh.darwinworld.models.maps.MapType;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,6 +26,7 @@ import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class StartMenuPresenter implements Initializable {
@@ -63,7 +67,7 @@ public class StartMenuPresenter implements Initializable {
     @FXML
     private IntField seedIntField;
     @FXML
-    private ComboBox<String> mapTypeComboBox;
+    private ComboBox<MapType> mapTypeComboBox;
     @FXML
     private Label fireLengthLabel;
     @FXML
@@ -76,6 +80,10 @@ public class StartMenuPresenter implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         generateSeed();
+        ObservableList<MapType> mapTypes = FXCollections.observableArrayList(MapType.values());
+        FXCollections.reverse(mapTypes);
+        mapTypeComboBox.setItems(mapTypes);
+        mapTypeComboBox.getSelectionModel().select(MapType.WORLD);
         Platform.runLater(this::updateLayout);
     }
 
@@ -87,7 +95,7 @@ public class StartMenuPresenter implements Initializable {
         Stage currentStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         assert currentStage != null;
         try {
-            String mapType = mapTypeComboBox.getSelectionModel().getSelectedItem();
+            MapType mapType = mapTypeComboBox.getSelectionModel().getSelectedItem();
             SimulationParameters params = SimulationParameters.createFromIntField(
                     widthIntField,
                     heightIntField,
@@ -105,7 +113,7 @@ public class StartMenuPresenter implements Initializable {
                     fireLengthIntField,
                     refreshTimeIntField,
                     seedIntField,
-                    mapType.equals("Fire map") ? MapType.FIRE : MapType.WORLD,
+                    mapType,
                     AnimalType.AGEING_ANIMAL
             );
             Simulation simulation = new Simulation(params);
@@ -142,8 +150,8 @@ public class StartMenuPresenter implements Initializable {
     }
 
     private void updateLayout() {
-        String mapType = mapTypeComboBox.getSelectionModel().getSelectedItem();
-        boolean v = mapType.equals("Fire map");
+        MapType mapType = mapTypeComboBox.getSelectionModel().getSelectedItem();
+        boolean v = mapType.equals(MapType.FIRE);
         fireLengthIntField.setVisible(v);
         fireLengthIntField.setManaged(v);
         fireIntervalIntField.setVisible(v);

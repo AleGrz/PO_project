@@ -7,6 +7,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import com.sun.javafx.scene.control.ContextMenuContent.MenuBox?>
+<?import agh.darwinworld.models.maps.MapType?>
 <BorderPane fx:id="rootBorderPane" minHeight="800.0" minWidth="1000.0" styleClass="start"
             stylesheets="@styles.css, @theme.css"
             xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1"
@@ -198,13 +200,7 @@
                 </GridPane.margin>
             </Label>
             <ComboBox fx:id="mapTypeComboBox" minWidth="180.0" onAction="#onMapTypeSelectionChanged" prefWidth="150.0"
-                      value="World map" GridPane.columnIndex="1" GridPane.rowIndex="13">
-                <items>
-                    <FXCollections fx:factory="observableArrayList">
-                        <String fx:value="World map"/>
-                        <String fx:value="Fire map"/>
-                    </FXCollections>
-                </items>
+                      GridPane.columnIndex="1" GridPane.rowIndex="13">
                 <GridPane.margin>
                     <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
