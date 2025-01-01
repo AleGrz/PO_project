@@ -1,8 +1,8 @@
 package agh.darwinworld.models.maps;
 
 public enum MapType {
-    FIRE("Fire map"),
-    WORLD("World map");
+    WORLD("World map"),
+    FIRE("Fire map");
 
     public AbstractMap createMap() {
         return switch (this) {
