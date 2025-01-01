@@ -180,7 +180,7 @@ public class StartMenuPresenter implements Initializable {
         }
     }
 
-    public void onDelete(ActionEvent actionEvent) {
+    public void onDelete(ActionEvent ignored) {
         csvButton.setText("Choose");
         csvButton.getStyleClass().remove("success");
         csvListener = null;
