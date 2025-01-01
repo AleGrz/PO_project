@@ -424,7 +424,7 @@ Text {
 }
 */
 .breadcrumbs {
-    -fx-padding: 8px 12px 8px 12px;
+    -fx-padding: 6px 8px 6px 9px;
 }
 .breadcrumbs > .hyperlink {
     -color-link-fg-visited: -color-link-fg;
@@ -453,7 +453,7 @@ Text {
     -fx-graphic-text-gap: 6px;
     -fx-text-fill: -color-button-fg;
     -fx-alignment: CENTER;
-    -fx-padding: 8px 12px 8px 12px;
+    -fx-padding: 6px 8px 6px 9px;
 }
 .button .font-icon, .button .ikonli-font-icon {
     -fx-icon-color: -color-button-fg;
@@ -1214,7 +1214,7 @@ Text {
 }
 
 .color-picker > .color-picker-label {
-    -fx-padding: 8px 12px 8px 12px;
+    -fx-padding: 6px 8px 6px 9px;
 }
 .color-picker > .color-picker-label > .label {
     -fx-text-fill: -color-fg-default;
@@ -1416,7 +1416,7 @@ Text {
     -fx-background-insets: 0, 1px;
 }
 .combo-box-base > .arrow-button {
-    -fx-padding: 8px 12px 8px 12px;
+    -fx-padding: 6px 8px 6px 9px;
 }
 .combo-box-base > .arrow-button > .arrow {
     -fx-shape: "M7 10l5 5 5-5z";
@@ -1441,7 +1441,7 @@ Text {
 .combo-box > .list-cell {
     -fx-background-color: transparent;
     -fx-text-fill: -color-fg-default;
-    -fx-padding: 8px 12px 8px 12px;
+    -fx-padding: 6px 8px 6px 9px;
     -fx-graphic-text-gap: 6px;
 }
 .combo-box:success > .list-cell {
@@ -1463,7 +1463,7 @@ Text {
     -fx-cell-size: 0;
     -fx-background-color: -color-bg-default;
     -fx-background-radius: 4px, 3px;
-    -fx-padding: 8px 12px 8px 12px;
+    -fx-padding: 6px 8px 6px 9px;
     -fx-graphic-text-gap: 6px;
     -fx-text-fill: -color-fg-default;
 }
@@ -1498,7 +1498,7 @@ Text {
     -fx-text-fill: -color-fg-default;
     -fx-alignment: CENTER;
     -fx-content-display: LEFT;
-    -fx-padding: 8px 12px 8px 12px;
+    -fx-padding: 6px 8px 6px 9px;
 }
 .choice-box:disabled {
     -fx-opacity: 0.4;
@@ -2542,7 +2542,7 @@ Add support for NO_HEADER tweak in tables .table-view.no-header > .column-header
     -fx-stroke: -color-fg-default;
 }
 .label.left-pill, .label.center-pill, .label.right-pill {
-    -fx-padding: 8px 12px 8px 12px;
+    -fx-padding: 6px 8px 6px 9px;
     -fx-background-color: -color-border-default, -color-bg-subtle;
     -fx-background-insets: 0, 1px;
 }
@@ -2689,7 +2689,7 @@ Add support for NO_HEADER tweak in tables .table-view.no-header > .column-header
 
 .menu-item {
     -fx-background-color: -color-bg-default;
-    -fx-padding: 8px 12px 8px 12px;
+    -fx-padding: 6px 8px 6px 9px;
     -fx-background-radius: 5px;
 }
 .menu-item > .graphic-container {
@@ -2741,7 +2741,7 @@ Add support for NO_HEADER tweak in tables .table-view.no-header > .column-header
 }
 
 .caption-menu-item {
-    -fx-padding: 8px 12px 8px 12px;
+    -fx-padding: 6px 8px 6px 9px;
 }
 .caption-menu-item:hover, .caption-menu-item:focused, .caption-menu-item:pressed {
     -fx-background-color: transparent;
@@ -2872,7 +2872,7 @@ Add support for NO_HEADER tweak in tables .table-view.no-header > .column-header
 }
 .menu-button > .label,
 .split-menu-button > .label {
-    -fx-padding: 8px 12px 8px 12px;
+    -fx-padding: 6px 8px 6px 9px;
     -fx-text-fill: -color-button-fg;
 }
 .menu-button > .arrow-button,
@@ -3105,7 +3105,7 @@ Add support for NO_HEADER tweak in tables .table-view.no-header > .column-header
     -color-button-fg: -color-fg-emphasis;
 }
 .split-menu-button > .arrow-button {
-    -fx-padding: 8px 12px 8px 12px;
+    -fx-padding: 6px 8px 6px 9px;
     -fx-background-radius: 0 3px 3px 0;
     -fx-border-color: -color-button-fg;
     -fx-border-width: 0 0 0 0.75px;
@@ -4224,7 +4224,7 @@ Add support for NO_HEADER tweak in tables .table-view.no-header > .column-header
     -fx-highlight-fill: -color-input-bg-highlight;
     -fx-highlight-text-fill: -color-input-fg-highlight;
     -fx-prompt-text-fill: -color-fg-subtle;
-    -fx-padding: 8px 12px 8px 12px;
+    -fx-padding: 6px 8px 6px 9px;
     -fx-cursor: text;
 }
 .text-input:focused {
@@ -4307,7 +4307,7 @@ Add support for NO_HEADER tweak in tables .table-view.no-header > .column-header
 }
 .text-area .content {
     -fx-cursor: text;
-    -fx-padding: 8px 12px 8px 12px;
+    -fx-padding: 6px 8px 6px 9px;
 }
 
 .password-field {
@@ -4448,7 +4448,7 @@ Add support for NO_HEADER tweak in tables .table-view.no-header > .column-header
     -fx-alignment: CENTER;
     -color-button-bg-selected: -color-accent-emphasis;
     -color-button-fg-selected: -color-fg-emphasis;
-    -fx-padding: 8px 12px 8px 12px;
+    -fx-padding: 6px 8px 6px 9px;
 }
 .toggle-button .font-icon, .toggle-button .ikonli-font-icon {
     -fx-icon-color: -color-button-fg;
@@ -4591,7 +4591,7 @@ Add support for NO_HEADER tweak in tables .table-view.no-header > .column-header
 .tool-bar > .container > .button.button-icon,
 .tool-bar > .container > .menu-button.button-icon,
 .tool-bar > .container > .split-menu-button.button-icon {
-    -fx-padding: 8px 12px 8px 12px;
+    -fx-padding: 6px 8px 6px 9px;
 }
 .tool-bar > .container .toggle-button {
     -color-button-bg: -color-bg-subtle;
@@ -4662,7 +4662,7 @@ Add support for NO_HEADER tweak in tables .table-view.no-header > .column-header
     -fx-text-fill: -color-fg-default;
     -fx-font-size: 14px;
     -fx-font-weight: normal;
-    -fx-padding: 8px 12px 8px 12px;
+    -fx-padding: 6px 8px 6px 9px;
     -fx-opacity: 0.85;
     -fx-effect: dropshadow(three-pass-box, -color-shadow-default, 8px, 0.6, 0, 2);
 }

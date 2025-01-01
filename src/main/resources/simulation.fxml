@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane fx:id="rootBorderPane" minHeight="575.0" minWidth="850.0" stylesheets="styles.css"
+<BorderPane fx:id="rootBorderPane" minHeight="575.0" minWidth="850.0" stylesheets="@styles.css, @theme.css"
             xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="agh.darwinworld.presenters.SimulationPresenter">
     <left>

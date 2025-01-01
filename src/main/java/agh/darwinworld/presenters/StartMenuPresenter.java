@@ -3,6 +3,7 @@ package agh.darwinworld.presenters;
 import agh.darwinworld.Simulation;
 import agh.darwinworld.controls.IntField;
 import agh.darwinworld.helpers.AlertHelper;
+import agh.darwinworld.helpers.StageHelper;
 import agh.darwinworld.models.*;
 import agh.darwinworld.models.exceptions.UserFriendlyException;
 import agh.darwinworld.models.maps.FireMap;
@@ -118,13 +119,7 @@ public class StartMenuPresenter {
             simulationStage.getIcons().addAll(currentStage.getIcons());
             simulationStage.setTitle("Simulation");
             simulationStage.setScene(new Scene(root));
-            simulationStage.setOnShown(e -> {
-                Insets windowInsets = getWindowInsets(simulationStage);
-                simulationStage.minWidthProperty().bind(root.minWidthProperty().add(windowInsets.getLeft() + windowInsets.getRight()));
-                simulationStage.minHeightProperty().bind(root.minHeightProperty().add(windowInsets.getTop() + windowInsets.getBottom()));
-                simulationStage.setWidth(simulationStage.getMinWidth());
-                simulationStage.setHeight(simulationStage.getMinHeight());
-            });
+            StageHelper.bindMinSize(simulationStage, root);
             simulationStage.show();
         } catch (UserFriendlyException e) {
             AlertHelper.ShowUserFriendlyExceptionAlert(currentStage, e);
@@ -152,16 +147,6 @@ public class StartMenuPresenter {
         fireLengthLabel.setManaged(v);
         fireIntervalLabel.setVisible(v);
         fireIntervalLabel.setManaged(v);
-    }
-
-    private Insets getWindowInsets(Stage stage) {
-        double stageWidth = stage.getWidth();
-        double stageHeight = stage.getHeight();
-        double contentWidth = stage.getScene().getWidth();
-        double contentHeight = stage.getScene().getHeight();
-        double horizontalInsets = (stageWidth - contentWidth) / 2;
-        double verticalInsets = stageHeight - contentHeight - horizontalInsets;
-        return new Insets(verticalInsets, horizontalInsets, verticalInsets, horizontalInsets);
     }
 
     public void onSaveToCSV(ActionEvent actionEvent) {
