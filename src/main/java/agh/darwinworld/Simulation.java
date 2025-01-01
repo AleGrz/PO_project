@@ -16,7 +16,7 @@ public class Simulation implements Runnable {
 
     public Simulation(SimulationParameters params) {
         this.params = params;
-        this.map = params.mapType().getMap();
+        this.map = params.mapType().createMap();
         this.map.setParameters(params);
         this.map.setRandom(new Random(params.seed()));
         map.populateAnimals(params.startingAnimalAmount());

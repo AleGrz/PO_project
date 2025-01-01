@@ -78,10 +78,6 @@ public class StartMenuPresenter implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         generateSeed();
-        ObservableList<MapType> mapTypes = FXCollections.observableArrayList(MapType.values());
-        FXCollections.reverse(mapTypes);
-        mapTypeComboBox.setItems(mapTypes);
-        mapTypeComboBox.getSelectionModel().select(MapType.WORLD);
         Platform.runLater(this::updateLayout);
     }
 
@@ -93,7 +89,7 @@ public class StartMenuPresenter implements Initializable {
         Stage currentStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
         assert currentStage != null;
         try {
-            MapType mapType = mapTypeComboBox.getSelectionModel().getSelectedItem();
+            String mapType = mapTypeComboBox.getSelectionModel().getSelectedItem();
             SimulationParameters params = SimulationParameters.createFromIntField(
                     widthIntField,
                     heightIntField,
@@ -111,7 +107,8 @@ public class StartMenuPresenter implements Initializable {
                     fireLengthIntField,
                     refreshTimeIntField,
                     seedIntField,
-                    mapType
+                    mapType,
+                    AnimalType.AGEING_ANIMAL
             );
             Simulation simulation = new Simulation(params);
             FXMLLoader loader = new FXMLLoader();
@@ -147,8 +144,8 @@ public class StartMenuPresenter implements Initializable {
     }
 
     private void updateLayout() {
-        MapType mapType = mapTypeComboBox.getSelectionModel().getSelectedItem();
-        boolean v = mapType.equals(MapType.FIRE);
+        String mapType = mapTypeComboBox.getSelectionModel().getSelectedItem();
+        boolean v = mapType.equals("Fire map");
         fireLengthIntField.setVisible(v);
         fireLengthIntField.setManaged(v);
         fireIntervalIntField.setVisible(v);
@@ -171,7 +168,7 @@ public class StartMenuPresenter implements Initializable {
         }
     }
 
-    public void onDelete(ActionEvent ignored) {
+    public void onDelete(ActionEvent actionEvent) {
         csvButton.setText("Choose");
         csvButton.getStyleClass().remove("success");
         csvListener = null;
