@@ -22,8 +22,8 @@ public record SimulationParameters(
         int fireInterval,
         int fireLength,
         int refreshTime,
-        Random random,
-        AbstractMap map
+        int seed,
+        MapType mapType
 ) {
     public static SimulationParameters createFromIntField(
             IntField width,
@@ -41,8 +41,8 @@ public record SimulationParameters(
             IntField fireInterval,
             IntField fireLength,
             IntField refreshTime,
-            Random random,
-            AbstractMap map
+            IntField seed,
+            MapType mapType
     ) throws UserFriendlyException {
         return new SimulationParameters(
                 getValidatedIntField(width, "Width", 1, 100),
@@ -60,8 +60,8 @@ public record SimulationParameters(
                 getValidatedIntField(fireInterval, "Fire interval", 1, null),
                 getValidatedIntField(fireLength, "Fire length", 1, null),
                 getValidatedIntField(refreshTime, "Refresh time", 10, null),
-                random,
-                map
+                getValidatedIntField(seed, "Seed", null, null),
+                mapType
         );
     }
 

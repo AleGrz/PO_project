@@ -16,8 +16,9 @@ public class Simulation implements Runnable {
 
     public Simulation(SimulationParameters params) {
         this.params = params;
-        this.map = params.map();
+        this.map = params.mapType().getMap();
         this.map.setParameters(params);
+        this.map.setRandom(new Random(params.seed()));
         map.populateAnimals(params.startingAnimalAmount());
         map.growPlants(params.startingPlantAmount());
     }
@@ -63,5 +64,9 @@ public class Simulation implements Runnable {
 
     public void removeStepListener(SimulationPresenter simulationPresenter) {
         map.removeStepListener(simulationPresenter);
+    }
+
+    public AbstractMap getMap() {
+        return this.map;
     }
 }

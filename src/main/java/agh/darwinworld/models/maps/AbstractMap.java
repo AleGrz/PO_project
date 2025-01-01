@@ -14,6 +14,7 @@ public abstract class AbstractMap implements MovementHandler {
     protected HashSet<Vector2D> plants = new HashSet<>();
     protected SimulationParameters params;
     protected final List<SimulationStepListener> listeners = new ArrayList<>();
+    protected Random random;
 
     public void setParameters(SimulationParameters params) {
         this.params = params;
@@ -91,10 +92,10 @@ public abstract class AbstractMap implements MovementHandler {
 
     public void populateAnimals(int amount) {
         for (int i = 0; i < amount; i++) {
-            int x = this.params.random().nextInt(params.width());
-            int y = this.params.random().nextInt(params.height());
+            int x = this.random.nextInt(params.width());
+            int y = this.random.nextInt(params.height());
             Vector2D v = new Vector2D(x, y);
-            Animal animal = new Animal(this.params.random(), params.animalGenomeLength(), params.startingEnergyAmount());
+            Animal animal = new Animal(this.random, params.animalGenomeLength(), params.startingEnergyAmount());
             animals.computeIfAbsent(v, k -> new ArrayList<>());
             animals.get(v).add(animal);
         }
@@ -107,7 +108,7 @@ public abstract class AbstractMap implements MovementHandler {
                             .comparingInt(Animal::getEnergy).reversed()
                             .thenComparingInt(Animal::getAge).reversed()
                             .thenComparingInt(Animal::getChildrenAmount).reversed()
-                            .thenComparing(a -> params.random().nextInt()))
+                            .thenComparing(a -> random.nextInt()))
                     .limit(2)
                     .toList();
 
@@ -232,7 +233,7 @@ public abstract class AbstractMap implements MovementHandler {
     }
 
     private List<Vector2D> selectRandom(List<Vector2D> positions, int amount) {
-        Collections.shuffle(positions, this.params.random());
+        Collections.shuffle(positions, this.random);
         return positions.subList(0, Math.min(amount, positions.size()));
     }
 
@@ -263,6 +264,10 @@ public abstract class AbstractMap implements MovementHandler {
                 averageLifetime(),
                 averageDescendantsAmount()
         ));
+    }
+
+    public void setRandom(Random random) {
+        this.random = random;
     }
 
 }

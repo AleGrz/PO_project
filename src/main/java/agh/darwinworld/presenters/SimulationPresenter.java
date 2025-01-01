@@ -269,10 +269,10 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
     ObjectProperty<Font> defaultFont = new SimpleObjectProperty<>(new Font(12));
     ObjectProperty<Font> boldFont = new SimpleObjectProperty<>(Font.font("System", FontWeight.BOLD, 12));
 
+
     private void createLabelCell(String text, int x, int y) {
-        SimulationParameters p = simulation.getParameters();
         Label cell = new Label(text);
-        cell.fontProperty().bind(p.map().isPrefferedRow(p.height() - y) ? boldFont : defaultFont);
+        cell.fontProperty().bind(simulation.getMap().isPrefferedRow(simulation.getParameters().height() - y) ? boldFont : defaultFont);
         cell.setAlignment(Pos.CENTER);
         GridPane.setHgrow(cell, Priority.ALWAYS);
         GridPane.setVgrow(cell, Priority.ALWAYS);
@@ -303,13 +303,13 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
                 mapGrid.getRowConstraints().add(new RowConstraints(cellSize, cellSize, cellSize));
                 createLabelCell(Integer.toString(p.height() - j - 1), 0, j + 1);
             }
-            int maxAnimalAmount = p.map().getMaxAnimalAmount();
+            int maxAnimalAmount = simulation.getMap().getMaxAnimalAmount();
             int maxFireLength = p.fireLength();
             for (int i = 0; i < p.width(); i++) {
                 for (int j = 0; j < p.height(); j++) {
                     Vector2D pos = new Vector2D(i, p.height() - j - 1);
-                    int animalAmount = p.map().getAnimalsOnPosition(pos).size();
-                    boolean isPlant = p.map().isPlantOnPosition(pos);
+                    int animalAmount = simulation.getMap().getAnimalsOnPosition(pos).size();
+                    boolean isPlant = simulation.getMap().isPlantOnPosition(pos);
                     CellRegion cell = new CellRegion(isPlant, animalAmount, maxAnimalAmount, 0, maxFireLength);
                     GridPane.setHgrow(cell, Priority.ALWAYS);
                     GridPane.setVgrow(cell, Priority.ALWAYS);
@@ -356,7 +356,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
         int colIndex = (int) ((x - gapH) / cellSize) - 1;
         int rowIndex = p.height() - (int) ((y - gapV) / cellSize);
         Vector2D mouseOverPosition = new Vector2D(colIndex, rowIndex);
-        List<Animal> animals = p.map().getAnimalsOnPosition(mouseOverPosition);
+        List<Animal> animals = simulation.getMap().getAnimalsOnPosition(mouseOverPosition);
         if (animals.size() == 1) {
             selectAnimal(animals.getFirst(), mouseOverPosition);
         } else if (animals.size() > 1) {

@@ -30,7 +30,7 @@ public class FireMap extends AbstractMap implements MovementHandler {
         super.step(stepNumber);
         propagateFire(stepNumber);
         if (stepNumber % this.params.fireInterval() == 0 && !plants.isEmpty()) {
-            Vector2D randomPos = plants.toArray(new Vector2D[0])[this.params.random().nextInt(plants.size())];
+            Vector2D randomPos = plants.toArray(new Vector2D[0])[this.random.nextInt(plants.size())];
             fire.put(randomPos, this.params.fireLength());
         }
         updateStatistics(stepNumber);

@@ -104,8 +104,8 @@ public class StartMenuPresenter {
                     fireIntervalIntField,
                     fireLengthIntField,
                     refreshTimeIntField,
-                    new Random(seedIntField.getValue()),
-                    mapType.equals("Fire map") ? new FireMap() : new WorldMap()
+                    seedIntField,
+                    mapType.equals("Fire map") ? MapType.FIRE : MapType.WORLD
             );
             Simulation simulation = new Simulation(params);
             presenter.setSimulation(simulation);
