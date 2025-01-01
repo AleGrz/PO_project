@@ -5,16 +5,13 @@ import agh.darwinworld.models.maps.FireMap;
 import agh.darwinworld.models.maps.WorldMap;
 
 public enum MapType {
-    FIRE(new FireMap()),
-    WORLD(new WorldMap());
-
-    private final AbstractMap map;
-
-    MapType(AbstractMap map) {
-        this.map = map;
-    }
+    FIRE,
+    WORLD;
 
     public AbstractMap getMap() {
-        return map;
+        return switch (this) {
+            case FIRE -> new FireMap();
+            case WORLD -> new WorldMap();
+        };
     }
 }
