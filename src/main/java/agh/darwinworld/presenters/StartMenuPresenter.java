@@ -104,7 +104,8 @@ public class StartMenuPresenter implements Initializable {
                     fireLengthIntField,
                     refreshTimeIntField,
                     seedIntField,
-                    mapType.equals("Fire map") ? MapType.FIRE : MapType.WORLD
+                    mapType.equals("Fire map") ? MapType.FIRE : MapType.WORLD,
+                    AnimalType.AGEING_ANIMAL
             );
             Simulation simulation = new Simulation(params);
             FXMLLoader loader = new FXMLLoader();
