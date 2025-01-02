@@ -5,8 +5,6 @@ import agh.darwinworld.models.listeners.SimulationStepListener;
 import agh.darwinworld.models.maps.AbstractMap;
 import agh.darwinworld.presenters.SimulationPresenter;
 
-import java.util.*;
-
 public class Simulation implements Runnable {
     private final SimulationParameters params;
     private final AbstractMap map;
@@ -18,7 +16,6 @@ public class Simulation implements Runnable {
         this.params = params;
         this.map = params.mapType().createMap();
         this.map.setParameters(params);
-        this.map.setRandom(new Random(params.seed()));
         map.populateAnimals(params.startingAnimalAmount());
         map.growPlants(params.startingPlantAmount());
     }

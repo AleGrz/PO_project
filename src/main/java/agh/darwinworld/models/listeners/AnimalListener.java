@@ -11,8 +11,10 @@ import java.beans.PropertyChangeListener;
 public interface AnimalListener extends PropertyChangeListener {
     /**
      * Called whenever an {@code Animal} has moved to a new position on the map.
+     *
      * @param oldPosition the previous position of the animal.
      * @param newPosition the new position of the animal.
      */
-    default void move(Vector2D oldPosition, Vector2D newPosition) { }
+    default void move(Vector2D oldPosition, Vector2D newPosition) {
+    }
 }

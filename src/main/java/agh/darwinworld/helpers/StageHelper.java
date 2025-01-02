@@ -6,7 +6,6 @@ import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.WinDef;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.control.Alert;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -14,7 +13,16 @@ import javafx.stage.WindowEvent;
 
 import java.lang.reflect.Method;
 
+/**
+ * A utility class for stages.
+ */
 public class StageHelper {
+    /**
+     * Checks stage's decoration insets.
+     *
+     * @param stage instance of the stage.
+     * @return insets of the window.
+     */
     public static Insets getWindowInsets(Stage stage) {
         double stageWidth = stage.getWidth();
         double stageHeight = stage.getHeight();
@@ -25,6 +33,14 @@ public class StageHelper {
         return new Insets(verticalInsets, horizontalInsets, verticalInsets, horizontalInsets);
     }
 
+    /**
+     * Binds stage's min height and min width into root element's
+     * min height and min width. Also default width ang height
+     * of the stage is set to its min width and min height
+     *
+     * @param stage instance of the stage.
+     * @param root  root element of the scene.
+     */
     public static void bindMinSize(Stage stage, Pane root) {
         EventHandler<WindowEvent> oldOnShown = stage.getOnShown();
         stage.setOnShown(e -> {
@@ -38,6 +54,12 @@ public class StageHelper {
         });
     }
 
+    /**
+     * Enables or disables dark mode on window.
+     *
+     * @param stage    instance of the window.
+     * @param darkMode should dark mode be enabled?
+     */
     public static void setDarkMode(Window stage, boolean darkMode) {
         if (stage.isShowing()) {
             setDarkModeInternal(stage, darkMode);
@@ -57,7 +79,9 @@ public class StageHelper {
         WinDef.HWND hwnd = getNativeHandleForWindow(stage);
         Dwmapi dwmapi = Dwmapi.INSTANCE;
         WinDef.BOOLByReference darkModeRef = new WinDef.BOOLByReference(new WinDef.BOOL(darkMode));
-        dwmapi.DwmSetWindowAttribute(hwnd, 20, darkModeRef, Native.getNativeSize(WinDef.BOOLByReference.class));
+        int result = dwmapi.DwmSetWindowAttribute(hwnd, 20, darkModeRef, Native.getNativeSize(WinDef.BOOLByReference.class));
+        if (result != 0)
+            System.out.println("Failed to set dark Mode!");
     }
 
 

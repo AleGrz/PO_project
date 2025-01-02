@@ -11,8 +11,6 @@ import java.beans.PropertyChangeEvent;
 import java.util.*;
 import java.util.stream.Stream;
 
-// TODO: Animal can die on move -> his energy is < 0, and then eat and be still alive. It's needed to be fixed
-
 /**
  * Represents an animal in the Darwin World simulation.
  */
@@ -186,9 +184,10 @@ public class Animal implements AnimalListener {
 
     /**
      * Constructs an animal with the specified genome length and initial energy.
-     * @param random the random number generator.
+     *
+     * @param random       the random number generator.
      * @param genomeLength the length of the genome.
-     * @param energy the initial energy of the animal/
+     * @param energy       the initial energy of the animal/
      * @throws IllegalArgumentException if genomeLength < 0 or energy < 0.
      */
     public Animal(Random random, int genomeLength, int energy) {
@@ -209,12 +208,13 @@ public class Animal implements AnimalListener {
 
     /**
      * Constructs an offspring animal from two parent animals.
-     * @param mommy the first parent animal.
-     * @param daddy the second parent animal.
-     * @param breedingEnergyCost the energy cost for breeding.
+     *
+     * @param mommy                 the first parent animal.
+     * @param daddy                 the second parent animal.
+     * @param breedingEnergyCost    the energy cost for breeding.
      * @param minimalBreedingEnergy the minimal energy required for breeding.
-     * @param minMutations the minimum number of genome mutations.
-     * @param maxMutations the maximum number of genome mutations.
+     * @param minMutations          the minimum number of genome mutations.
+     * @param maxMutations          the maximum number of genome mutations.
      * @throws IllegalArgumentException if any parent is null, dead, or lacks energy.
      */
     public Animal(Animal mommy, Animal daddy, int breedingEnergyCost, int minimalBreedingEnergy,
@@ -255,6 +255,7 @@ public class Animal implements AnimalListener {
 
     /**
      * Adds a listener to monitor events related to the animal.
+     *
      * @param listener the {@link AnimalListener} instance to be added.
      */
     public void addListener(AnimalListener listener) {
@@ -263,6 +264,7 @@ public class Animal implements AnimalListener {
 
     /**
      * Removes a listener from monitoring events related to the animal.
+     *
      * @param listener the {@link AnimalListener} instance to be removed.
      */
     public void removeListener(AnimalListener listener) {
@@ -275,23 +277,34 @@ public class Animal implements AnimalListener {
     }
 
     /**
-     * Moves the animal to a new position based on its current genome and movement logic.
-     * @param handler the {@code MovementHandler} responsible for determining the new position and direction.
-     * @param position the current position of the animal.
+     * Returns new map direction based on the genome.
+     *
      * @param step the current simulation step at which the movement occurs.
-     * @return the new position of the animal after the move.
-     * @throws IllegalStateException if the animal is dead or its genome is empty.
+     * @return new map direction.
      */
-    public Vector2D move(MovementHandler handler, Vector2D position, int step) {
+    protected MapDirection getNextMove(int step) {
         if (isDead())
             throw new IllegalStateException("Cannot move animal that is dead!");
         if (this.genome.length == 0)
             throw new IllegalStateException("Cannot move animal with empty genome!");
-
         MapDirection direction = this.direction.rotate(this.genome[this.currentGeneIndex]);
         selectNextGene();
         updateEnergy(getEnergy() - 1, step);
         increaseAge();
+        return direction;
+    }
+
+    /**
+     * Moves the animal to a new position based on its current genome and movement logic.
+     *
+     * @param handler  the {@code MovementHandler} responsible for determining the new position and direction.
+     * @param position the current position of the animal.
+     * @param step     the current simulation step at which the movement occurs.
+     * @return the new position of the animal after the move.
+     * @throws IllegalStateException if the animal is dead or its genome is empty.
+     */
+    public Vector2D move(MovementHandler handler, Vector2D position, int step) {
+        MapDirection direction = getNextMove(step);
         Pair<Vector2D, MapDirection> movePair = handler.move(position, direction);
         Vector2D newPos = movePair.getKey();
         updateDirection(movePair.getValue());
@@ -302,8 +315,9 @@ public class Animal implements AnimalListener {
 
     /**
      * Increases the animal's energy by the specified amount and updates the count of eaten plants.
+     *
      * @param energy the amount of energy to add. Must be greater than or equal to 0.
-     * @param step the current simulation step at which this action occurs.
+     * @param step   the current simulation step at which this action occurs.
      * @throws IllegalArgumentException if {@code energy} is less than 0.
      */
     public void eat(int energy, int step) {
@@ -318,6 +332,7 @@ public class Animal implements AnimalListener {
 
     /**
      * Forces the animal to be marked as dead by reducing its energy below zero.
+     *
      * @param step the current simulation step at which this action occurs.
      */
     public void forceKill(int step) {
@@ -327,16 +342,17 @@ public class Animal implements AnimalListener {
     /**
      * Mutates the genome of the animal by modifying a random number of genes within a specified range.
      * Each mutation replaces a gene with a randomly selected {@code MoveDirection}.
-     * @param min the minimum number (inclusive) of genes to mutate. Must be less than {@code max}.
-     * @param max the maximum number (exclusive) of genes to mutate. Must be greater than {@code min}.
+     *
+     * @param min the minimum number (inclusive) of genes to mutate. Must be less than or equal to {@code max}.
+     * @param max the maximum number (inclusive) of genes to mutate. Must be greater than or equal to {@code min}.
      * @throws IllegalArgumentException if the animal is dead, or if {@code min} is greater than or equal to {@code max}.
      */
     private void mutate(int min, int max) {
         if (isDead())
             throw new IllegalArgumentException("Cannot mutate genome when animal is dead!");
-        if (min >= max)
+        if (min > max)
             throw new IllegalArgumentException("Minimum amount of mutations has to be less than maximum amount of mutations!");
-        int mutateAmount = random.nextInt(max - min) + min;
+        int mutateAmount = random.nextInt(max - min + 1) + min;
         ArrayList<Integer> indexes = new ArrayList<>();
         for (int i = 0; i < genome.length; i++) indexes.add(i);
         Collections.shuffle(indexes, random);
@@ -348,10 +364,11 @@ public class Animal implements AnimalListener {
 
     /**
      * Extracts a specified number of genes from the genome, either from the left or right side.
+     *
      * @param leftPart a boolean indicating whether to extract from the left part of the genome.
      *                 If {@code true}, genes are extracted from the beginning of the genome.
      *                 If {@code false}, genes are extracted from the end of the genome.
-     * @param amount the number of genes to extract. Must be greater than or equal to 0.
+     * @param amount   the number of genes to extract. Must be greater than or equal to 0.
      * @return an array of {@code MoveDirection} containing the extracted genes.
      * @throws IllegalArgumentException if {@code amount} is less than 0.
      */

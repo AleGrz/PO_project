@@ -12,13 +12,14 @@ public abstract class AbstractMap implements MovementHandler {
     protected int deadCount = 0;
     protected int totalLifetime = 0;
     protected HashMap<Vector2D, ArrayList<Animal>> animals = new HashMap<>();
-    protected HashSet<Vector2D> plants = new HashSet<>();
+    protected final HashSet<Vector2D> plants = new HashSet<>();
     protected SimulationParameters params;
     protected final List<SimulationStepListener> listeners = new ArrayList<>();
     protected Random random;
 
     public void setParameters(SimulationParameters params) {
         this.params = params;
+        random = new Random(params.seed());
     }
 
     public int getMaxAnimalAmount() {
@@ -26,10 +27,6 @@ public abstract class AbstractMap implements MovementHandler {
     }
 
     public List<Animal> getAnimalsOnPosition(Vector2D position) {
-        return animals.containsKey(position) ? animals.get(position) : new ArrayList<>();
-    }
-
-    public List<Animal> getAllAnimals(Vector2D position) {
         return animals.containsKey(position) ? animals.get(position) : new ArrayList<>();
     }
 
@@ -45,7 +42,7 @@ public abstract class AbstractMap implements MovementHandler {
         return plants.size();
     }
 
-    public boolean isPrefferedRow(int row) {
+    public boolean isPreferredRow(int row) {
         int equatorHeight = Math.round(params.height() * 0.2f);
         int barHeight = Math.round((params.height() - equatorHeight) / 2f);
         return row >= barHeight && row < barHeight + equatorHeight;
@@ -76,7 +73,7 @@ public abstract class AbstractMap implements MovementHandler {
 
     public int averageLifetime() {
         if (deadCount == 0) return 0;
-        return totalLifetime/deadCount;
+        return totalLifetime / deadCount;
     }
 
     public int averageDescendantsAmount() {
@@ -87,7 +84,7 @@ public abstract class AbstractMap implements MovementHandler {
                 childrenAmount += animal.getDescendantsAmount();
             }
         }
-        return childrenAmount/animalCount();
+        return childrenAmount / animalCount();
     }
 
 
@@ -238,6 +235,18 @@ public abstract class AbstractMap implements MovementHandler {
         return positions.subList(0, Math.min(amount, positions.size()));
     }
 
+    protected void updateStatistics(int step) {
+        listeners.forEach(l -> l.updateStatistics(
+                step,
+                animalCount(),
+                plantCount(),
+                emptyFieldCount(),
+                popularGenome(),
+                averageLifetime(),
+                averageDescendantsAmount()
+        ));
+    }
+
     public void addStepListener(SimulationStepListener listener) {
         listeners.add(listener);
         listeners.forEach(l -> l.updateStatistics(
@@ -254,21 +263,4 @@ public abstract class AbstractMap implements MovementHandler {
     public void removeStepListener(SimulationStepListener listener) {
         listeners.remove(listener);
     }
-
-    protected void updateStatistics(int step) {
-        listeners.forEach(l -> l.updateStatistics(
-                step,
-                animalCount(),
-                plantCount(),
-                emptyFieldCount(),
-                popularGenome(),
-                averageLifetime(),
-                averageDescendantsAmount()
-        ));
-    }
-
-    public void setRandom(Random random) {
-        this.random = random;
-    }
-
 }

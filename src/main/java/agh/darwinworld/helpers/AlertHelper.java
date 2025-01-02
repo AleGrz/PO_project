@@ -12,13 +12,14 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 /**
- * A utility class for displaying alert dialogs to the user.
+ * A utility class for alert dialogs.
  */
 public class AlertHelper {
     /**
      * Shows an alert dialog for an exception, displaying the error message and the stack trace.
+     *
      * @param owner The owner window for the alert, can be {@code null} if no owner window is needed.
-     * @param e The exception to be displayed in the alert.
+     * @param e     The exception to be displayed in the alert.
      */
     public static void showExceptionAlert(Window owner, Throwable e) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -47,8 +48,9 @@ public class AlertHelper {
     /**
      * Shows a user-friendly alert dialog for a custom exception.
      * This type of alert is generally used for warnings that can be presented to the user in a more friendly manner.
+     *
      * @param owner The owner window for the alert, can be {@code null} if no owner window is needed.
-     * @param e The user-friendly exception to be displayed in the alert.
+     * @param e     The user-friendly exception to be displayed in the alert.
      */
     public static void showUserFriendlyExceptionAlert(Window owner, UserFriendlyException e) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -60,7 +62,13 @@ public class AlertHelper {
         alert.showAndWait();
     }
 
+    /**
+     * Enables or disables dark mode on alert window.
+     *
+     * @param alert    instance of the alert.
+     * @param darkMode should dark mode be enabled?
+     */
     public static void setDarkMode(Alert alert, boolean darkMode) {
-        StageHelper.setDarkMode(alert.getDialogPane().getScene().getWindow(), true);
+        StageHelper.setDarkMode(alert.getDialogPane().getScene().getWindow(), darkMode);
     }
 }

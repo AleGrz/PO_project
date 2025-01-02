@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane fx:id="rootBorderPane" minHeight="575.0" minWidth="850.0" stylesheets="@styles.css, @theme.css"
+<BorderPane fx:id="rootBorderPane" minHeight="575.0" minWidth="850.0" stylesheets="@theme.css, @styles.css"
             xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="agh.darwinworld.presenters.SimulationPresenter">
     <left>
@@ -327,7 +327,7 @@
                         </Label>
                     </graphic>
                 </Label>
-                <Label contentDisplay="RIGHT" text="Plants growing in each day:">
+                <Label contentDisplay="RIGHT" text="Plants growing in each step:">
                     <font>
                         <Font size="10.0"/>
                     </font>

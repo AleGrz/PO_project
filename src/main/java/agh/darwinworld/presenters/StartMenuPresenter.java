@@ -26,7 +26,6 @@ import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.net.URL;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 public class StartMenuPresenter implements Initializable {
@@ -96,7 +95,7 @@ public class StartMenuPresenter implements Initializable {
     }
 
     public void onSimulationStart(ActionEvent actionEvent) {
-        Stage currentStage = (Stage)((Node)actionEvent.getSource()).getScene().getWindow();
+        Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         assert currentStage != null;
         try {
             MapType mapType = mapTypeComboBox.getSelectionModel().getSelectedItem();

@@ -18,6 +18,7 @@ public class CsvPrinter implements SimulationStepListener, SimulationPauseListen
 
     /**
      * Constructs a CsvPrinter with the specified filename.
+     *
      * @param filename The name of the CSV file to write data to.
      */
     public CsvPrinter(String filename) {
@@ -26,6 +27,7 @@ public class CsvPrinter implements SimulationStepListener, SimulationPauseListen
 
     /**
      * Retrieves the filename associated with this CsvPrinter.
+     *
      * @return The name of the CSV file.
      */
     public String getFilename() {
@@ -33,16 +35,20 @@ public class CsvPrinter implements SimulationStepListener, SimulationPauseListen
     }
 
     @Override
-    public void addPlant(Vector2D position) {}
+    public void addPlant(Vector2D position) {
+    }
 
     @Override
-    public void removePlant(Vector2D position) {}
+    public void removePlant(Vector2D position) {
+    }
 
     @Override
-    public void updateAnimal(Vector2D position, int animalCount, int maxAnimalCount) {}
+    public void updateAnimal(Vector2D position, int animalCount, int maxAnimalCount) {
+    }
 
     @Override
-    public void updateFire(Vector2D position, int length) {}
+    public void updateFire(Vector2D position, int length) {
+    }
 
     @Override
     public void updateStatistics(int step, int animalCount, int plantCount, int emptyFieldCount, Pair<MoveDirection[], Integer> popularGenome,

@@ -9,7 +9,8 @@ public class UserFriendlyException extends RuntimeException {
 
     /**
      * Constructs a new UserFriendlyException with the specified header and message.
-     * @param header a brief description of the error.
+     *
+     * @param header  a brief description of the error.
      * @param message the detailed message explaining the error.
      */
     public UserFriendlyException(String header, String message) {
@@ -19,6 +20,7 @@ public class UserFriendlyException extends RuntimeException {
 
     /**
      * Returns the header of the exception.
+     *
      * @return the header of the exception.
      */
     public String getHeader() {

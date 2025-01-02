@@ -2,12 +2,14 @@ package agh.darwinworld.models;
 
 /**
  * Represents a 2D vector with integer coordinates, providing various vector operations.
+ *
  * @param x the x-coordinate of the vector.
  * @param y the y-coordinate of the vector.
  */
 public record Vector2D(int x, int y) {
     /**
      * Checks if this vector precedes another vector in both coordinates.
+     *
      * @param other the vector to compare with.
      * @return true if this vector precedes the other vector, false otherwise.
      */
@@ -17,6 +19,7 @@ public record Vector2D(int x, int y) {
 
     /**
      * Checks if this vector follows another vector in both coordinates.
+     *
      * @param other the vector to compare with.
      * @return true if this vector follows the other vector, false otherwise.
      */
@@ -26,6 +29,7 @@ public record Vector2D(int x, int y) {
 
     /**
      * Adds another vector coordinates to this vector.
+     *
      * @param other the vector to add.
      * @return a new vector representing the sum of the two vectors.
      */
@@ -45,6 +49,7 @@ public record Vector2D(int x, int y) {
 
     /**
      * Calculates the upper-right corner of this vector and another vector.
+     *
      * @param other the vector to compare with.
      * @return a new vector representing the upper-right corner.
      */
@@ -54,6 +59,7 @@ public record Vector2D(int x, int y) {
 
     /**
      * Calculates the lower-left corner of this vector and another vector.
+     *
      * @param other the vector to compare with.
      * @return a new vector representing the lower-left corner.
      */
@@ -63,6 +69,7 @@ public record Vector2D(int x, int y) {
 
     /**
      * Returns the opposite of this vector.
+     *
      * @return a new vector representing the opposite of this vector.
      */
     public Vector2D opposite() {
@@ -71,6 +78,7 @@ public record Vector2D(int x, int y) {
 
     /**
      * Normalizes this vector within the given width and height boundaries.
+     *
      * @param width  the width boundary (can be null for no normalization in x-direction).
      * @param height the height boundary (can be null for no normalization in y-direction).
      * @return a new vector normalized within the specified boundaries.
@@ -88,6 +96,7 @@ public record Vector2D(int x, int y) {
 
     /**
      * Checks if this vector is equal to another object.
+     *
      * @param other the object to compare with.
      * @return true if the other object is a Vector2D with the same coordinates, false otherwise.
      */

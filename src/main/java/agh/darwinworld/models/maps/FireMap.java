@@ -18,6 +18,7 @@ public class FireMap extends AbstractMap implements MovementHandler {
 
     /**
      * Checks if there is fire at the specified position on the map.
+     *
      * @param position the position to check on the map.
      * @return {@code true} if there is fire at the specified position, {@code false} otherwise.
      */

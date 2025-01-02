@@ -23,8 +23,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -267,13 +268,18 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
         mapGrid.setGridLinesVisible(showGridLines);
     }
 
-    ObjectProperty<Font> defaultFont = new SimpleObjectProperty<>(new Font(12));
-    ObjectProperty<Font> boldFont = new SimpleObjectProperty<>(Font.font("System", FontWeight.BOLD, 12));
+    private final ObjectProperty<Font> defaultFont = new SimpleObjectProperty<>(new Font(12));
+    private final ObjectProperty<Font> boldFont = new SimpleObjectProperty<>(Font.font("System", FontWeight.BOLD, 12));
 
 
     private void createLabelCell(String text, int x, int y) {
         Label cell = new Label(text);
-        cell.fontProperty().bind(simulation.getMap().isPrefferedRow(simulation.getParameters().height() - y) ? boldFont : defaultFont);
+        if (simulation.getMap().isPreferredRow(simulation.getParameters().height() - y)) {
+            cell.getStyleClass().add("preferred-row");
+            cell.fontProperty().bind(boldFont);
+        } else {
+            cell.fontProperty().bind(defaultFont);
+        }
         cell.setAlignment(Pos.CENTER);
         GridPane.setHgrow(cell, Priority.ALWAYS);
         GridPane.setVgrow(cell, Priority.ALWAYS);

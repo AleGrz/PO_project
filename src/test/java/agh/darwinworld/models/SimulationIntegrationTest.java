@@ -1,11 +1,5 @@
 package agh.darwinworld.models;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public class SimulationIntegrationTest {
-//    @Test
-//    public void testSimulation() {
-//        Simulation simulation = new Simulation(10, 10, 1, 1, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 1);
-//        simulation.run();
-//    }
+
 }

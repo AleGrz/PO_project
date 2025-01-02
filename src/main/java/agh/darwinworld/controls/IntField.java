@@ -18,9 +18,10 @@ public class IntField extends TextField {
     /**
      * Replaces a portion of the text with the given input, if it is valid.
      * Only integer values or an empty string are allowed.
+     *
      * @param start the starting position of the range to replace.
-     * @param end the ending position of the range to replace.
-     * @param text the text to replace the range with.
+     * @param end   the ending position of the range to replace.
+     * @param text  the text to replace the range with.
      */
     @Override
     public void replaceText(int start, int end, String text) {
@@ -32,6 +33,7 @@ public class IntField extends TextField {
     /**
      * Replaces the current selection with the given input, if it is valid.
      * Only integer values or an empty string are allowed.
+     *
      * @param text the text to replace the current selection with.
      */
     @Override
@@ -50,6 +52,7 @@ public class IntField extends TextField {
 
     /**
      * Gets the integer value currently in the field.
+     *
      * @return The integer value, or {@code null} if the field is empty.
      * @throws NumberFormatException if the text cannot be parsed into an integer,
      *                               such as when the value is too large or too long.
@@ -61,6 +64,7 @@ public class IntField extends TextField {
 
     /**
      * Sets the value of the field to the given integer.
+     *
      * @param value the integer value to set.
      */
     public void setValue(int value) {
