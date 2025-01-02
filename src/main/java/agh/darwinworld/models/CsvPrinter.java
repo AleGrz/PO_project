@@ -28,7 +28,7 @@ public class CsvPrinter implements SimulationStepListener, SimulationPauseListen
      * Retrieves the filename associated with this CsvPrinter.
      * @return The name of the CSV file.
      */
-    public String getFileName() {
+    public String getFilename() {
         return filename;
     }
 
