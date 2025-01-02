@@ -12,6 +12,7 @@ import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -23,9 +24,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -33,14 +32,12 @@ import javafx.stage.StageStyle;
 import javafx.util.Pair;
 
 import java.beans.PropertyChangeEvent;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.net.URL;
+import java.util.*;
 import java.util.concurrent.FutureTask;
 import java.util.stream.Collectors;
 
-public class SimulationPresenter implements SimulationStepListener, AnimalListener {
+public class SimulationPresenter implements Initializable, SimulationStepListener, AnimalListener {
     @FXML
     private Label stepLabel;
     @FXML
@@ -132,8 +129,8 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
     private final List<SimulationPauseListener> listeners = new ArrayList<>();
     private HashMap<Vector2D, CellRegion> cells = new HashMap<>();
 
-    @FXML
-    public void initialize() {
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
         rootBorderPane.widthProperty().addListener((observable, oldValue, newValue) -> resizeMap());
         rootBorderPane.heightProperty().addListener((observable, oldValue, newValue) -> resizeMap());
         selectedAnimalGridPane.setVisible(false);
