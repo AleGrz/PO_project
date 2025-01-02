@@ -8,6 +8,6 @@ public class CsvPrinterTest {
     @Test
     public void testGetFileName() {
         CsvPrinter p = new CsvPrinter("test");
-        assertEquals("test", p.getFileName());
+        assertEquals("test", p.getFilename());
     }
 }

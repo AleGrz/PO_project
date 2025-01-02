@@ -39,6 +39,9 @@
                 <RowConstraints vgrow="ALWAYS"/>
             </rowConstraints>
             <Label text="Properties" GridPane.columnSpan="2" GridPane.halignment="CENTER">
+                <font>
+                    <Font name="System Bold" size="20.0"/>
+                </font>
                 <GridPane.margin>
                     <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
@@ -299,12 +302,11 @@
             </padding>
         </GridPane>
     </right>
-    <center>
-        <Label text="Darwin&#10;World&#10;Project" textAlignment="CENTER" textFill="WHITE" wrapText="true"
-               BorderPane.alignment="CENTER">
-            <font>
-                <Font size="70.0"/>
-            </font>
-        </Label>
-    </center>
+   <center>
+      <Label text="Darwin&#10;World&#10;Project" textAlignment="CENTER" wrapText="true" BorderPane.alignment="CENTER" style="-fx-text-fill: #2ac3de">
+         <font>
+            <Font name="System Bold" size="70.0" />
+         </font>
+      </Label>
+   </center>
 </BorderPane>
