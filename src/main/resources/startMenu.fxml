@@ -6,8 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane fx:id="rootBorderPane" minHeight="880.0" minWidth="1000.0" styleClass="start" stylesheets="@styles.css, @theme.css" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.darwinworld.presenters.StartMenuPresenter">
-<BorderPane fx:id="rootBorderPane" minHeight="800.0" minWidth="1000.0" styleClass="start"
+<BorderPane fx:id="rootBorderPane" minHeight="880.0" minWidth="1000.0" styleClass="start"
             stylesheets="@styles.css, @theme.css" xmlns="http://javafx.com/javafx/11.0.14-internal"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.darwinworld.presenters.StartMenuPresenter">
     <right>
