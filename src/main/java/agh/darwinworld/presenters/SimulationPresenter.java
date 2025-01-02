@@ -316,6 +316,46 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
                     GridPane.setVgrow(cell, Priority.ALWAYS);
                     mapGrid.add(cell, i + 1, j + 1);
                     cells.put(pos, cell);
+                    cell.setOnMouseClicked(mouseEvent -> {
+                        Stage currentStage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+                        List<Animal> animals = simulation.getMap().getAnimalsOnPosition(pos);
+                        if (animals.size() == 1) {
+                            selectAnimal(animals.getFirst(), pos);
+                        } else if (animals.size() > 1) {
+                            Stage modal = new Stage();
+                            modal.setX(mouseEvent.getScreenX());
+                            modal.setY(mouseEvent.getScreenY());
+                            modal.initModality(Modality.WINDOW_MODAL);
+                            modal.initOwner(currentStage);
+                            modal.initStyle(StageStyle.UNDECORATED);
+                            VBox content = new VBox(10);
+                            boolean isRunning = simulation.isRunning();
+                            for (int k = 0; k < animals.size(); k++) {
+                                Button button = new Button("Animal " + (k + 1));
+                                button.setFont(new Font(11));
+                                final int index = k;
+                                button.setOnAction(event -> {
+                                    selectAnimal(animals.get(index), pos);
+                                    modal.close();
+                                    if (isRunning)
+                                        simulation.start();
+                                });
+                                content.getChildren().add(button);
+                            }
+                            content.setPadding(new Insets(5, 5, 5, 5));
+                            ScrollPane scrollPane = new ScrollPane(content);
+                            scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+                            scrollPane.setFitToWidth(true);
+                            scrollPane.getStylesheets().add("styles.css");
+                            Scene scene = new Scene(scrollPane);
+                            modal.setScene(scene);
+                            modal.setMaxHeight(100);
+                            simulation.stop();
+                            modal.show();
+                        } else {
+                            unselectAnimal();
+                        }
+                    });
                 }
             }
             mapGrid.setDisable(false);
@@ -343,56 +383,6 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
             }
         } catch (Exception e) {
             AlertHelper.showExceptionAlert(currentStage, e);
-        }
-    }
-
-    public void onGridMouseClicked(MouseEvent mouseEvent) {
-        SimulationParameters p = simulation.getParameters();
-        Stage currentStage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-        double x = mouseEvent.getX();
-        double y = mouseEvent.getY();
-        double cellSize = calculateCellSize();
-        double gapH = (mapGrid.getWidth() - cellSize * (p.width() + 1)) / 2;
-        double gapV = (mapGrid.getHeight() - cellSize * (p.height() + 1)) / 2;
-        int colIndex = (int) ((x - gapH) / cellSize) - 1;
-        int rowIndex = p.height() - (int) ((y - gapV) / cellSize);
-        Vector2D mouseOverPosition = new Vector2D(colIndex, rowIndex);
-        List<Animal> animals = simulation.getMap().getAnimalsOnPosition(mouseOverPosition);
-        if (animals.size() == 1) {
-            selectAnimal(animals.getFirst(), mouseOverPosition);
-        } else if (animals.size() > 1) {
-            Stage modal = new Stage();
-            modal.setX(mouseEvent.getScreenX());
-            modal.setY(mouseEvent.getScreenY());
-            modal.initModality(Modality.WINDOW_MODAL);
-            modal.initOwner(currentStage);
-            modal.initStyle(StageStyle.UNDECORATED);
-            VBox content = new VBox(10);
-            boolean isRunning = simulation.isRunning();
-            for (int i = 0; i < animals.size(); i++) {
-                Button button = new Button("Animal " + (i + 1));
-                button.setFont(new Font(11));
-                final int index = i;
-                button.setOnAction(event -> {
-                    selectAnimal(animals.get(index), mouseOverPosition);
-                    modal.close();
-                    if (isRunning)
-                        simulation.start();
-                });
-                content.getChildren().add(button);
-            }
-            content.setPadding(new Insets(5, 5, 5, 5));
-            ScrollPane scrollPane = new ScrollPane(content);
-            scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-            scrollPane.setFitToWidth(true);
-            scrollPane.getStylesheets().add("styles.css");
-            Scene scene = new Scene(scrollPane);
-            modal.setScene(scene);
-            modal.setMaxHeight(100);
-            simulation.stop();
-            modal.show();
-        } else {
-            unselectAnimal();
         }
     }
 
@@ -463,7 +453,7 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
             }
         });
     }
-  
+
     @Override
     public void move(Vector2D oldPosition, Vector2D newPosition) {
         Platform.runLater(() -> {
@@ -493,11 +483,16 @@ public class SimulationPresenter implements SimulationStepListener, AnimalListen
                 selectedAnimalEnergyOrDiedAtValueLabel.setText(evt.getNewValue().toString());
             }, null);
             case "age" -> new FutureTask<>(() -> selectedAnimalAgeLabel.setText(evt.getNewValue().toString()), null);
-            case "childrenAmount" -> new FutureTask<>(() -> selectedAnimalChildrenAmountLabel.setText(evt.getNewValue().toString()), null);
-            case "descendantsAmount" -> new FutureTask<>(() -> selectedAnimalDescendantsAmountLabel.setText(evt.getNewValue().toString()), null);
-            case "totalEatenPlants" -> new FutureTask<>(() -> selectedAnimalPlantsEatenAmountLabel.setText(evt.getNewValue().toString()), null);
-            case "currentGene" -> new FutureTask<>(() -> selectedAnimalCurrentGeneLabel.setText(evt.getNewValue().toString()), null);
-            case "direction" -> new FutureTask<>(() -> selectedAnimalCurrentDirectionLabel.setText(evt.getNewValue().toString()), null);
+            case "childrenAmount" ->
+                    new FutureTask<>(() -> selectedAnimalChildrenAmountLabel.setText(evt.getNewValue().toString()), null);
+            case "descendantsAmount" ->
+                    new FutureTask<>(() -> selectedAnimalDescendantsAmountLabel.setText(evt.getNewValue().toString()), null);
+            case "totalEatenPlants" ->
+                    new FutureTask<>(() -> selectedAnimalPlantsEatenAmountLabel.setText(evt.getNewValue().toString()), null);
+            case "currentGene" ->
+                    new FutureTask<>(() -> selectedAnimalCurrentGeneLabel.setText(evt.getNewValue().toString()), null);
+            case "direction" ->
+                    new FutureTask<>(() -> selectedAnimalCurrentDirectionLabel.setText(evt.getNewValue().toString()), null);
             default -> null;
         };
         if (task != null)
