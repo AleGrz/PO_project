@@ -1,7 +1,7 @@
-.animal:hover {
-    -fx-border-color: red;
-    -fx-border-width: 1px;
-}
+/*.animal:hover {*/
+/*    -fx-border-color: red;*/
+/*    -fx-border-width: 1px;*/
+/*}*/
 
 .animal:pressed {
     -fx-border-color: red;
