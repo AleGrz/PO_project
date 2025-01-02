@@ -8,6 +8,8 @@ import agh.darwinworld.models.animals.Animal;
 import agh.darwinworld.models.listeners.AnimalListener;
 import agh.darwinworld.models.listeners.SimulationPauseListener;
 import agh.darwinworld.models.listeners.SimulationStepListener;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.event.ActionEvent;
@@ -23,12 +25,14 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 import javafx.util.Pair;
 
 import java.beans.PropertyChangeEvent;
@@ -273,7 +277,7 @@ public class SimulationPresenter implements Initializable, SimulationStepListene
     private final ObjectProperty<Font> boldFont = new SimpleObjectProperty<>(Font.font("System", FontWeight.BOLD, 12));
 
 
-    private void createLabelCell(String text, int x, int y) {
+    private Label createLabelCell(String text, int x, int y) {
         Label cell = new Label(text);
         if (simulation.getMap().isPreferredRow(simulation.getParameters().height() - y)) {
             cell.getStyleClass().add("preferred-row");
@@ -286,87 +290,125 @@ public class SimulationPresenter implements Initializable, SimulationStepListene
         GridPane.setVgrow(cell, Priority.ALWAYS);
         cell.setMaxWidth(Double.MAX_VALUE);
         cell.setMaxHeight(Double.MAX_VALUE);
-        mapGrid.add(cell, x, y);
+        GridPane.setColumnIndex(cell, x);
+        GridPane.setRowIndex(cell, y);
         GridPane.setHalignment(cell, HPos.CENTER);
+        return cell;
     }
 
     public void drawMap() {
         SimulationParameters p = simulation.getParameters();
         cells = new HashMap<>();
+        int maxAnimalAmount = simulation.getMap().getMaxAnimalAmount();
+        int maxFireLength = p.fireLength();
+        for (int i = 0; i < p.width(); i++) {
+            for (int j = 0; j < p.height(); j++) {
+                Vector2D pos = new Vector2D(i, p.height() - j - 1);
+                int animalAmount = simulation.getMap().getAnimalsOnPosition(pos).size();
+                boolean isPlant = simulation.getMap().isPlantOnPosition(pos);
+                CellRegion cell = new CellRegion(isPlant, animalAmount, maxAnimalAmount, 0, maxFireLength);
+                GridPane.setHgrow(cell, Priority.ALWAYS);
+                GridPane.setVgrow(cell, Priority.ALWAYS);
+                GridPane.setColumnIndex(cell, i + 1);
+                GridPane.setRowIndex(cell, j + 1);
+                cells.put(pos, cell);
+                cell.setOnMouseClicked(mouseEvent -> handleCellClick(mouseEvent, pos));
+            }
+        }
+        ArrayList<Node> cellsToAdd = new ArrayList<>(cells.values());
+        cellsToAdd.add(createLabelCell("y/x", 0, 0));
+        for (int i = 0; i < p.width(); i++) {
+            cellsToAdd.add(createLabelCell(Integer.toString(i), i + 1, 0));
+        }
+        for (int j = 0; j < p.height(); j++) {
+            cellsToAdd.add(createLabelCell(Integer.toString(p.height() - j - 1), 0, j + 1));
+        }
+        lastCalculatedCellSize = calculateCellSize();
+        ArrayList<ColumnConstraints> columnConstraints = new ArrayList<>();
+        ColumnConstraints cc = new ColumnConstraints(lastCalculatedCellSize, lastCalculatedCellSize, lastCalculatedCellSize);
+        for (int i = 0; i <= p.width(); i++) {
+            columnConstraints.add(cc);
+        }
+        ArrayList<RowConstraints> rowConstraints = new ArrayList<>();
+        RowConstraints rc = new RowConstraints(lastCalculatedCellSize, lastCalculatedCellSize, lastCalculatedCellSize);
+        for (int j = 0; j <= p.height(); j++) {
+            rowConstraints.add(rc);
+        }
         Platform.runLater(() -> {
             mapGrid.setDisable(true);
             if (!mapGrid.getChildren().isEmpty())
                 mapGrid.getChildren().retainAll(mapGrid.getChildren().getFirst());
-            mapGrid.getColumnConstraints().clear();
-            mapGrid.getRowConstraints().clear();
-            double cellSize = calculateCellSize();
-            mapGrid.getColumnConstraints().add(new ColumnConstraints(cellSize, cellSize, cellSize));
-            mapGrid.getRowConstraints().add(new RowConstraints(cellSize, cellSize, cellSize));
-            createLabelCell("y/x", 0, 0);
-            for (int i = 0; i < p.width(); i++) {
-                mapGrid.getColumnConstraints().add(new ColumnConstraints(cellSize, cellSize, cellSize));
-                createLabelCell(Integer.toString(i), i + 1, 0);
-            }
-            for (int j = 0; j < p.height(); j++) {
-                mapGrid.getRowConstraints().add(new RowConstraints(cellSize, cellSize, cellSize));
-                createLabelCell(Integer.toString(p.height() - j - 1), 0, j + 1);
-            }
-            int maxAnimalAmount = simulation.getMap().getMaxAnimalAmount();
-            int maxFireLength = p.fireLength();
-            for (int i = 0; i < p.width(); i++) {
-                for (int j = 0; j < p.height(); j++) {
-                    Vector2D pos = new Vector2D(i, p.height() - j - 1);
-                    int animalAmount = simulation.getMap().getAnimalsOnPosition(pos).size();
-                    boolean isPlant = simulation.getMap().isPlantOnPosition(pos);
-                    CellRegion cell = new CellRegion(isPlant, animalAmount, maxAnimalAmount, 0, maxFireLength);
-                    GridPane.setHgrow(cell, Priority.ALWAYS);
-                    GridPane.setVgrow(cell, Priority.ALWAYS);
-                    mapGrid.add(cell, i + 1, j + 1);
-                    cells.put(pos, cell);
-                    cell.setOnMouseClicked(mouseEvent -> {
-                        Stage currentStage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                        List<Animal> animals = simulation.getMap().getAnimalsOnPosition(pos);
-                        if (animals.size() == 1) {
-                            selectAnimal(animals.getFirst(), pos);
-                        } else if (animals.size() > 1) {
-                            Stage modal = new Stage();
-                            modal.setX(mouseEvent.getScreenX());
-                            modal.setY(mouseEvent.getScreenY());
-                            modal.initModality(Modality.WINDOW_MODAL);
-                            modal.initOwner(currentStage);
-                            modal.initStyle(StageStyle.UNDECORATED);
-                            VBox content = new VBox(10);
-                            boolean isRunning = simulation.isRunning();
-                            for (int k = 0; k < animals.size(); k++) {
-                                Button button = new Button("Animal " + (k + 1));
-                                button.setFont(new Font(11));
-                                final int index = k;
-                                button.setOnAction(event -> {
-                                    selectAnimal(animals.get(index), pos);
-                                    modal.close();
-                                    if (isRunning)
-                                        simulation.start();
-                                });
-                                content.getChildren().add(button);
-                            }
-                            content.setPadding(new Insets(5, 5, 5, 5));
-                            ScrollPane scrollPane = new ScrollPane(content);
-                            scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-                            scrollPane.setFitToWidth(true);
-                            scrollPane.getStylesheets().add("styles.css");
-                            Scene scene = new Scene(scrollPane);
-                            modal.setScene(scene);
-                            modal.setMaxHeight(100);
-                            simulation.stop();
-                            modal.show();
-                        } else {
-                            unselectAnimal();
-                        }
-                    });
-                }
-            }
+            mapGrid.getColumnConstraints().setAll(columnConstraints);
+            mapGrid.getRowConstraints().setAll(rowConstraints);
             mapGrid.setDisable(false);
         });
+        int chunkSize = 25;
+        int totalCells = cellsToAdd.size();
+        final int[] index = {0};
+        Timeline timeline = new Timeline();
+        KeyFrame keyFrame = new KeyFrame(Duration.millis((double) totalCells / chunkSize / 20), event -> {
+            int start = index[0];
+            int end = Math.min(start + chunkSize, totalCells);
+            ArrayList<Node> batch = new ArrayList<>(cellsToAdd.subList(start, end));
+            Platform.runLater(() -> {
+                mapGrid.setDisable(true);
+                mapGrid.getChildren().addAll(batch);
+                mapGrid.setDisable(false);
+            });
+            index[0] = end;
+            if (index[0] >= totalCells) {
+                timeline.stop();
+            }
+        });
+        timeline.getKeyFrames().add(keyFrame);
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+    }
+
+    private void handleCellClick(MouseEvent mouseEvent, Vector2D pos) {
+        Stage currentStage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+        List<Animal> animals = simulation.getMap().getAnimalsOnPosition(pos);
+
+        if (animals.size() == 1) {
+            selectAnimal(animals.getFirst(), pos);
+        } else if (animals.size() > 1) {
+            Stage modal = new Stage();
+            modal.setX(mouseEvent.getScreenX());
+            modal.setY(mouseEvent.getScreenY());
+            modal.initModality(Modality.WINDOW_MODAL);
+            modal.initOwner(currentStage);
+            modal.initStyle(StageStyle.UNDECORATED);
+
+            VBox content = new VBox(10);
+            boolean isRunning = simulation.isRunning();
+
+            for (int k = 0; k < animals.size(); k++) {
+                Button button = new Button("Animal " + (k + 1));
+                button.setFont(new Font(11));
+                final int index = k;
+                button.setOnAction(event -> {
+                    selectAnimal(animals.get(index), pos);
+                    modal.close();
+                    if (isRunning) simulation.start();
+                });
+                content.getChildren().add(button);
+            }
+
+            content.setPadding(new Insets(5, 5, 5, 5));
+            ScrollPane scrollPane = new ScrollPane(content);
+            scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+            scrollPane.setFitToWidth(true);
+            scrollPane.getStylesheets().add("styles.css");
+
+            Scene scene = new Scene(scrollPane);
+            modal.setScene(scene);
+            modal.setMaxHeight(100);
+
+            simulation.stop();
+            modal.show();
+        } else {
+            unselectAnimal();
+        }
     }
 
     public void onStartStopClicked(ActionEvent actionEvent) {
