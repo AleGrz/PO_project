@@ -8,6 +8,9 @@ import javafx.util.Pair;
 
 import java.util.*;
 
+/**
+ * Base class for all map implementations.
+ */
 public abstract class AbstractMap implements MovementHandler {
     protected int deadCount = 0;
     protected int totalLifetime = 0;
@@ -17,43 +20,91 @@ public abstract class AbstractMap implements MovementHandler {
     protected final List<SimulationStepListener> listeners = new ArrayList<>();
     protected Random random;
 
+    /**
+     * Sets the simulation parameters and initializes the random number generator.
+     *
+     * @param params The simulation parameters.
+     */
     public void setParameters(SimulationParameters params) {
         this.params = params;
         random = new Random(params.seed());
     }
 
+    /**
+     * Gets the maximum number of animals at any position.
+     *
+     * @return Maximum number of animals at a single position.
+     */
     public int getMaxAnimalAmount() {
         return animals.values().stream().map(ArrayList::size).max(Integer::compareTo).orElse(0);
     }
 
+    /**
+     * Retrieves the list of animals at a specified position.
+     *
+     * @param position The position to query.
+     * @return A list of animals at the given position.
+     */
     public List<Animal> getAnimalsOnPosition(Vector2D position) {
         return animals.containsKey(position) ? animals.get(position) : new ArrayList<>();
     }
 
+    /**
+     * Checks if a plant exists at a specified position.
+     *
+     * @param position The position to query.
+     * @return True if a plant exists, false otherwise.
+     */
     public boolean isPlantOnPosition(Vector2D position) {
         return plants.contains(position);
     }
 
+    /**
+     * Counts the total number of animals on the map.
+     *
+     * @return Total animal count.
+     */
     public int animalCount() {
         return animals.values().stream().mapToInt(List::size).sum();
     }
 
+    /**
+     * Counts the total number of plants on the map.
+     *
+     * @return Total plant count.
+     */
     public int plantCount() {
         return plants.size();
     }
 
+    /**
+     * Determines if a given row is within the preferred equatorial region.
+     *
+     * @param row The row to check.
+     * @return True if the row is preferred, false otherwise.
+     */
     public boolean isPreferredRow(int row) {
         int equatorHeight = Math.round(params.height() * 0.2f);
         int barHeight = Math.round((params.height() - equatorHeight) / 2f);
         return row >= barHeight && row < barHeight + equatorHeight;
     }
 
+    /**
+     * Counts the number of empty fields on the map.
+     *
+     * @return The count of empty fields.
+     */
     public int emptyFieldCount() {
         HashSet<Vector2D> allFields = new HashSet<>(plants);
         allFields.addAll(animals.keySet());
         return params.width() * params.height() - allFields.size();
     }
 
+    /**
+     * Finds the most common genome among animals and its frequency.
+     *
+     * @return A pair of the most common genome and its frequency.
+     */
     public Pair<MoveDirection[], Integer> popularGenome() {
         HashMap<List<MoveDirection>, Integer> genomeCount = new HashMap<>();
         for (List<Animal> animalList : animals.values()) {
@@ -71,11 +122,21 @@ public abstract class AbstractMap implements MovementHandler {
         return new Pair<>(genome, count);
     }
 
+    /**
+     * Calculates the average lifetime of dead animals.
+     *
+     * @return Average lifetime, or 0 if no animals have died.
+     */
     public int averageLifetime() {
         if (deadCount == 0) return 0;
         return totalLifetime / deadCount;
     }
 
+    /**
+     * Calculates the average number of descendants per animal.
+     *
+     * @return Average descendant count.
+     */
     public int averageDescendantsAmount() {
         if (animalCount() == 0) return 0;
         int childrenAmount = 0;
@@ -87,7 +148,11 @@ public abstract class AbstractMap implements MovementHandler {
         return childrenAmount / animalCount();
     }
 
-
+    /**
+     * Populates the map with a specified number of animals at random positions.
+     *
+     * @param amount The number of animals to add.
+     */
     public void populateAnimals(int amount) {
         for (int i = 0; i < amount; i++) {
             int x = this.random.nextInt(params.width());
@@ -99,6 +164,11 @@ public abstract class AbstractMap implements MovementHandler {
         }
     }
 
+    /**
+     * Handles the breeding of animals at each position.
+     *
+     * @param step the current simulation step
+     */
     protected void breedAnimals(int step) {
         for (Vector2D position : animals.keySet()) {
             List<Animal> topAnimals = animals.get(position).stream()
@@ -120,6 +190,11 @@ public abstract class AbstractMap implements MovementHandler {
         }
     }
 
+    /**
+     * Feeds animals at positions with plants.
+     *
+     * @param step the current simulation step
+     */
     protected void feedAnimals(int step) {
         List<Vector2D> toRemove = new ArrayList<>();
         for (Vector2D position : plants) {
@@ -132,7 +207,11 @@ public abstract class AbstractMap implements MovementHandler {
         toRemove.forEach(plants::remove);
     }
 
-
+    /**
+     * Grows plants on the map in the preferred and non-preferred regions.
+     *
+     * @param amount the total number of plants to grow
+     */
     public void growPlants(int amount) {
         int equatorHeight = Math.round(params.height() * 0.2f);
         int barHeight = Math.round((params.height() - equatorHeight) / 2f);
@@ -164,6 +243,9 @@ public abstract class AbstractMap implements MovementHandler {
         }
     }
 
+    /**
+     * Removes dead animals from the map.
+     */
     protected void removeDeadAnimals() {
         Map<Vector2D, ArrayList<Animal>> animalsToRemove = new HashMap<>();
         List<Vector2D> emptyPositions = new ArrayList<>();
@@ -196,7 +278,12 @@ public abstract class AbstractMap implements MovementHandler {
         }
     }
 
-    private void moveAnimals(int step) {
+    /**
+     * Moves each animal on the map.
+     *
+     * @param step current simulation step.
+     */
+    protected void moveAnimals(int step) {
         HashMap<Vector2D, ArrayList<Animal>> updatedAnimals = new HashMap<>();
         for (Map.Entry<Vector2D, ArrayList<Animal>> entry : animals.entrySet()) {
             Vector2D position = entry.getKey();
@@ -222,6 +309,11 @@ public abstract class AbstractMap implements MovementHandler {
         animals = updatedAnimals;
     }
 
+    /**
+     * Executes a simulation step, including removing dead animals, moving, feeding, breeding, and growing plants.
+     *
+     * @param stepNumber The current step number.
+     */
     public void step(int stepNumber) {
         removeDeadAnimals();
         moveAnimals(stepNumber);
@@ -230,11 +322,23 @@ public abstract class AbstractMap implements MovementHandler {
         growPlants(this.params.plantGrowingAmount());
     }
 
+    /**
+     * Selects random elements from provided list.
+     *
+     * @param positions available items.
+     * @param amount    amount of items to select.
+     * @return new list of selected items.
+     */
     private List<Vector2D> selectRandom(List<Vector2D> positions, int amount) {
         Collections.shuffle(positions, this.random);
         return positions.subList(0, Math.min(amount, positions.size()));
     }
 
+    /**
+     * Updates statistics for all listeners.
+     *
+     * @param step current simulation step.
+     */
     protected void updateStatistics(int step) {
         listeners.forEach(l -> l.updateStatistics(
                 step,
@@ -247,6 +351,11 @@ public abstract class AbstractMap implements MovementHandler {
         ));
     }
 
+    /**
+     * Adds a simulation step listener.
+     *
+     * @param listener The listener to add.
+     */
     public void addStepListener(SimulationStepListener listener) {
         listeners.add(listener);
         listeners.forEach(l -> l.updateStatistics(
@@ -260,6 +369,11 @@ public abstract class AbstractMap implements MovementHandler {
         ));
     }
 
+    /**
+     * Removes a simulation step listener.
+     *
+     * @param listener The listener to remove.
+     */
     public void removeStepListener(SimulationStepListener listener) {
         listeners.remove(listener);
     }

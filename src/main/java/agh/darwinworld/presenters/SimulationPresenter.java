@@ -139,7 +139,11 @@ public class SimulationPresenter implements Initializable, SimulationStepListene
             stage.setOnCloseRequest(windowEvent -> stopSimulationThread());
         });
         dataLineChart.setCreateSymbols(false);
-        String[] seriesNames = new String[]{"Animal count", "Plant count", "Empty field count", "Average lifetime",
+        String[] seriesNames = new String[]{
+                "Animal count",
+                "Plant count",
+                "Empty field count",
+                "Average lifetime",
                 "Average descendants amount"};
         for (String seriesName : seriesNames) {
             XYChart.Series<Number, Number> series = new XYChart.Series<>();
