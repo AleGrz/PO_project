@@ -242,7 +242,7 @@ public record SimulationParameters(
         if (min != null && value < min)
             throw new UserFriendlyException("Value outside of boundaries!", fieldDesc + " must be greater than or equal to " + min + ".");
         if (max != null && value > max)
-            throw new UserFriendlyException("Value outside of boundaries!", parameter + " must be less than or equal to " + max + ".");
+            throw new UserFriendlyException("Value outside of boundaries!", fieldDesc + " must be less than or equal to " + max + ".");
         return value;
     }
 
@@ -250,6 +250,6 @@ public record SimulationParameters(
         if (min != null && parameter < min)
             throw new IllegalArgumentException(fieldDesc + " must be greater than or equal to " + min + ".");
         if (max != null && parameter > max)
-            throw new IllegalArgumentException(parameter + " must be less than or equal to " + max + ".");
+            throw new IllegalArgumentException(fieldDesc + " must be less than or equal to " + max + ".");
     }
 }
