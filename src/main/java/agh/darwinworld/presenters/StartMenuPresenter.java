@@ -17,20 +17,18 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.net.URL;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class StartMenuPresenter implements Initializable {
-    @FXML
-    private Button deleteCsvButton;
     @FXML
     private Button csvButton;
     @FXML
@@ -74,12 +72,34 @@ public class StartMenuPresenter implements Initializable {
     @FXML
     private Label fireIntervalLabel;
     @FXML
-    private BorderPane rootBorderPane;
+    private ListView<String> listView;
+    @FXML
+    private TextField simulationNameTextField;
+    @FXML
+    private Button loadButton;
+    @FXML
+    private Button deleteButton;
 
     private CsvPrinter csvListener;
+    private List<String> saves;
+    private final File dir = new File(System.getenv("APPDATA") + "/DarwinWorld");
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        if (!dir.exists()) {
+            if(!dir.mkdirs()) {
+                AlertHelper.showUserFriendlyExceptionAlert(null, new UserFriendlyException("Directory error", "Could not create simulations directory."));
+            }
+        }
+
+        Optional<File[]> files = Optional.ofNullable(dir.listFiles((dir1, name) -> name.endsWith(".json")));
+        saves = Arrays.stream(files.orElse(new File[0]))
+                .map(File::getName)
+                .map(name -> name.replace(".json", ""))
+                .collect(Collectors.toList());
+
+        listView.setItems(FXCollections.observableArrayList(saves));
+
         generateSeed();
         ObservableList<MapType> mapTypes = FXCollections.observableArrayList(MapType.values());
         mapTypeComboBox.setItems(mapTypes);
@@ -184,4 +204,108 @@ public class StartMenuPresenter implements Initializable {
         csvListener = null;
     }
 
+    public void onSaveConfig(ActionEvent actionEvent) {
+        boolean overwrite = false;
+        Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        try {
+            if (simulationNameTextField.getText().isEmpty()) {
+                throw new UserFriendlyException("Invalid name", "Simulation name cannot be empty.");
+            }
+            if(saves.contains(simulationNameTextField.getText())) {
+                overwrite = AlertHelper.showConfirmationAlert(currentStage, "Simulation already exists", "Do you want to overwrite the existing simulation?");
+                if (!overwrite) {
+                    return;
+                }
+            }
+            SimulationParameters params = SimulationParameters.createFromIntField(
+                    widthIntField,
+                    heightIntField,
+                    startingPlantAmountIntField,
+                    plantGrowingAmountIntField,
+                    plantEnergyAmountIntField,
+                    startingAnimalAmountIntField,
+                    startingEnergyAmountIntField,
+                    minimumBreedingEnergyIntField,
+                    breedingEnergyCostIntField,
+                    minimumMutationAmountIntField,
+                    maximumMutationAmountIntField,
+                    animalGenomeLengthIntField,
+                    fireIntervalIntField,
+                    fireLengthIntField,
+                    refreshTimeIntField,
+                    seedIntField,
+                    mapTypeComboBox.getSelectionModel().getSelectedItem(),
+                    behaviourComboBox.getSelectionModel().getSelectedItem()
+            );
+            if (!dir.exists()) {
+                if (!dir.mkdirs()) {
+                    throw new UserFriendlyException("Directory error", "Could not create simulations directory.");
+                }
+            }
+            String file = new File(dir, simulationNameTextField.getText() + ".json").getPath();
+            params.saveToJson(file);
+            if (!overwrite) {
+                listView.getItems().add(simulationNameTextField.getText());
+                saves.add(simulationNameTextField.getText());
+            }
+        } catch (UserFriendlyException e) {
+            AlertHelper.showUserFriendlyExceptionAlert(currentStage, e);
+        }
+    }
+
+    public void onItemSelected(MouseEvent _ignored) {
+        if (listView.getSelectionModel().getSelectedItem() != null) {
+            loadButton.setDisable(false);
+            deleteButton.setDisable(false);
+        }
+    }
+
+    public void onLoad(ActionEvent actionEvent) {
+        Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        try {
+            String selected = listView.getSelectionModel().getSelectedItem();
+            if (selected == null) {
+                throw new UserFriendlyException("Invalid selection", "Please select a simulation to load.");
+            }
+            SimulationParameters params = SimulationParameters.createFromJson(new File(dir, selected + ".json"));
+            widthIntField.setValue(params.width());
+            heightIntField.setValue(params.height());
+            startingPlantAmountIntField.setValue(params.startingPlantAmount());
+            plantGrowingAmountIntField.setValue(params.plantGrowingAmount());
+            plantEnergyAmountIntField.setValue(params.plantEnergyAmount());
+            startingAnimalAmountIntField.setValue(params.startingAnimalAmount());
+            startingEnergyAmountIntField.setValue(params.startingEnergyAmount());
+            minimumBreedingEnergyIntField.setValue(params.minimumBreedingEnergy());
+            breedingEnergyCostIntField.setValue(params.breedingEnergyCost());
+            minimumMutationAmountIntField.setValue(params.minimumMutationAmount());
+            maximumMutationAmountIntField.setValue(params.maximumMutationAmount());
+            animalGenomeLengthIntField.setValue(params.animalGenomeLength());
+            fireIntervalIntField.setValue(params.fireInterval());
+            fireLengthIntField.setValue(params.fireLength());
+            refreshTimeIntField.setValue(params.refreshTime());
+            seedIntField.setValue(params.seed());
+            mapTypeComboBox.getSelectionModel().select(params.mapType());
+            behaviourComboBox.getSelectionModel().select(params.animalType());
+        } catch (UserFriendlyException e) {
+            AlertHelper.showUserFriendlyExceptionAlert(currentStage, e);
+        }
+    }
+
+    public void onDeleteSimulation(ActionEvent actionEvent) {
+        Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        try {
+            String selected = listView.getSelectionModel().getSelectedItem();
+            if (selected == null) {
+                throw new UserFriendlyException("Invalid selection", "Please select a simulation to delete.");
+            }
+            File file = new File(dir, selected + ".json");
+            if (!file.delete()) {
+                throw new UserFriendlyException("Delete error", "Could not delete the simulation file.");
+            }
+            listView.getItems().remove(selected);
+            saves.remove(selected);
+        } catch (UserFriendlyException e) {
+            AlertHelper.showUserFriendlyExceptionAlert(currentStage, e);
+        }
+    }
 }

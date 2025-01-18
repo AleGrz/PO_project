@@ -2,6 +2,7 @@ package agh.darwinworld.helpers;
 
 import agh.darwinworld.models.exceptions.UserFriendlyException;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
@@ -10,6 +11,7 @@ import javafx.stage.Window;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Optional;
 
 /**
  * A utility class for alert dialogs.
@@ -70,5 +72,16 @@ public class AlertHelper {
      */
     public static void setDarkMode(Alert alert, boolean darkMode) {
         StageHelper.setDarkMode(alert.getDialogPane().getScene().getWindow(), darkMode);
+    }
+
+    public static boolean showConfirmationAlert(Window owner, String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.initOwner(owner);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        setDarkMode(alert, true);
+        Optional<ButtonType> result = alert.showAndWait();
+        return result.isPresent() && result.get() == ButtonType.OK;
     }
 }

@@ -280,7 +280,7 @@
                     <Insets bottom="5.0" top="5.0"/>
                 </GridPane.margin>
             </Button>
-            <Button fx:id="deleteCsvButton" onAction="#onDelete" prefWidth="40.0" styleClass="button-outlined, danger"
+            <Button onAction="#onDelete" prefWidth="40.0" styleClass="button-outlined, danger"
                     text="🗑" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="19">
                 <GridPane.margin>
                     <Insets bottom="5.0" top="5.0"/>
@@ -303,11 +303,18 @@
         </GridPane>
     </right>
     <center>
-        <Label text="Darwin&#10;World&#10;Project" textAlignment="CENTER" wrapText="true" BorderPane.alignment="CENTER"
-               style="-fx-text-fill: #2ac3de">
-            <font>
-                <Font name="System Bold" size="70.0"/>
-            </font>
-        </Label>
+        <VBox alignment="CENTER" spacing="20.0">
+            <ListView VBox.vgrow="ALWAYS" fx:id="listView" onMouseClicked="#onItemSelected">
+            </ListView>
+            <FlowPane alignment="CENTER" hgap="20.0">
+                <TextField prefWidth="200.0" promptText="File name" fx:id="simulationNameTextField"/>
+                <Button text="Save" onAction="#onSaveConfig"/>
+                <Button text="Load" disable="true" fx:id="loadButton" onAction="#onLoad"/>
+                <Button text="Delete" disable="true" fx:id="deleteButton" onAction="#onDeleteSimulation"/>
+            </FlowPane>
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+            </padding>
+        </VBox>
     </center>
 </BorderPane>
