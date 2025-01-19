@@ -161,7 +161,7 @@ public record SimulationParameters(
         );
     }
 
-    public static SimulationParameters createFromJson(File file) {
+    public static SimulationParameters createFromJson(File file) throws UserFriendlyException{
         try (Scanner scanner = new Scanner(file)) {
             scanner.useDelimiter("\\Z");
             JSONObject json = new JSONObject(scanner.next());
@@ -191,7 +191,7 @@ public record SimulationParameters(
 
     }
 
-    public void saveToJson(String path) {
+    public void saveToJson(String path) throws UserFriendlyException {
         JSONObject json = new JSONObject();
         json.put("width", width);
         json.put("height", height);
