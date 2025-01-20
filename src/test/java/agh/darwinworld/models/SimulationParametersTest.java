@@ -6,6 +6,7 @@ import agh.darwinworld.models.exceptions.UserFriendlyException;
 import agh.darwinworld.models.maps.MapType;
 import javafx.application.Platform;
 import org.json.JSONObject;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -15,6 +16,98 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SimulationParametersTest {
+    @BeforeAll
+    public static void setUpBeforeClass() {
+        Platform.startup(() -> {});
+    }
+
+    @Test
+    public void testConstructorWidthTooLow() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+                new SimulationParameters(
+                        0, 50, 10,
+                        5, 10, 20,
+                        100, 50, 20,
+                        0, 8, 8,
+                        5, 3, 30,
+                        12345, MapType.WORLD, AnimalType.ANIMAL
+                )
+        );
+        assertTrue(exception.getMessage().contains("Width must be greater than or equal to 1."));
+    }
+
+    @Test
+    public void testConstructorHeightTooHigh() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+                new SimulationParameters(
+                        50, 101, 10,
+                        5, 10, 20,
+                        100, 50, 20,
+                        0, 8, 8,
+                        5, 3, 30,
+                        12345, MapType.WORLD, AnimalType.ANIMAL
+                )
+        );
+        assertTrue(exception.getMessage().contains("Height must be less than or equal to 100."));
+    }
+
+    @Test
+    public void testConstructorInvalidMutationRange() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+                new SimulationParameters(
+                        50, 50, 10,
+                        5, 10, 20,
+                        100, 50, 20,
+                        10, 5, 8,
+                        5, 3, 30,
+                        12345, MapType.WORLD, AnimalType.ANIMAL
+                )
+        );
+        assertTrue(exception.getMessage().contains("Minimum mutation amount must be less than or equal to maximum mutation amount."));
+    }
+
+    @Test
+    public void testConstructorMutationExceedsGenomeLength() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+                new SimulationParameters(
+                        50, 50, 10,
+                        5, 10, 20,
+                        100, 50, 20,
+                        0, 12, 8,
+                        5, 3, 30,
+                        12345, MapType.WORLD, AnimalType.ANIMAL
+                )
+        );
+        assertTrue(exception.getMessage().contains("Maximum mutation amount must be less than or equal to animal genome length."));
+    }
+
+    @Test
+    public void testCreateFromIntFieldInvalidValues() {
+        IntField invalidWidth = createIntField(0);
+        IntField invalidHeight = createIntField(200);
+
+        Exception exception = assertThrows(UserFriendlyException.class, () ->
+                SimulationParameters.createFromIntField(
+                        invalidWidth, invalidHeight, createIntField(10),
+                        createIntField(5), createIntField(10), createIntField(20),
+                        createIntField(100), createIntField(50), createIntField(20),
+                        createIntField(0), createIntField(8), createIntField(8),
+                        createIntField(5), createIntField(3), createIntField(30),
+                        createIntField(12345),
+                        MapType.FIRE, AnimalType.AGEING_ANIMAL
+                )
+        );
+        assertTrue(exception.getMessage().contains("Width must be greater than or equal to 1."));
+    }
+
+    @Test
+    public void testCreateFromJsonInvalidFile() {
+        File tempFile = new File("non_existent_file.json");
+        assertThrows(UserFriendlyException.class, () ->
+            SimulationParameters.createFromJson(tempFile)
+        );
+    }
+
     @Test
     public void testConstructorValidParameters() {
         assertDoesNotThrow(() -> new SimulationParameters(
@@ -55,7 +148,6 @@ public class SimulationParametersTest {
 
     @Test
     public void testCreateFromIntFieldValidParameters() {
-        Platform.startup(() -> {});
         assertDoesNotThrow(() -> {
             SimulationParameters params = SimulationParameters.createFromIntField(
                     createIntField(50), createIntField(50), createIntField(10),
