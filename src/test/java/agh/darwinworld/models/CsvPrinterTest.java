@@ -34,7 +34,7 @@ class CsvPrinterTest {
     @Test
     void testOnSimulationPaused() throws IOException {
         MoveDirection[] popularGenome = {MoveDirection.FORWARD, MoveDirection.BACKWARD};
-        csvPrinter.updateStatistics(1, 10, 5, 20, new Pair<>(popularGenome, 2), 30, 40);
+        csvPrinter.updateStatistics(1, 10, 5, 20, new Pair<>(popularGenome, 2), 30, 40, 2);
         csvPrinter.onSimulationPaused();
 
         File file = new File(testFilename);
@@ -44,8 +44,8 @@ class CsvPrinterTest {
             String header = reader.readLine();
             String content = reader.readLine();
 
-            assertEquals("step,animalCount,plantCount,emptyFieldCount,popularGenome,averageLifetime,averageDescendantsAmount", header, "Header should match");
-            assertEquals("1,10,5,20,04,30,40", content, "Content should match");
+            assertEquals("step,animalCount,plantCount,emptyFieldCount,popularGenome,averageLifetime,averageDescendantsAmount,averageEnergy", header, "Header should match");
+            assertEquals("1,10,5,20,04,30,40,2", content, "Content should match");
         }
     }
 
