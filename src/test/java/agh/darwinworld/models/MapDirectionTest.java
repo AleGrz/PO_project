@@ -154,13 +154,13 @@ public class MapDirectionTest {
 
     @Test
     public void testGetValue() {
-        assertEquals(new Vector2D(0, 1), MapDirection.NORTH.getValue());
-        assertEquals(new Vector2D(1, 1), MapDirection.NORTHEAST.getValue());
-        assertEquals(new Vector2D(1, 0), MapDirection.EAST.getValue());
-        assertEquals(new Vector2D(1, -1), MapDirection.SOUTHEAST.getValue());
-        assertEquals(new Vector2D(0, -1), MapDirection.SOUTH.getValue());
-        assertEquals(new Vector2D(-1, -1), MapDirection.SOUTHWEST.getValue());
-        assertEquals(new Vector2D(-1, 0), MapDirection.WEST.getValue());
-        assertEquals(new Vector2D(-1, 1), MapDirection.NORTHWEST.getValue());
+        assertEquals(new Vector2D(0, 1), MapDirection.NORTH.getValue(), "Wrong vector for NORTH.");
+        assertEquals(new Vector2D(1, 1), MapDirection.NORTHEAST.getValue(), "Wrong vector for NORTHEAST.");
+        assertEquals(new Vector2D(1, 0), MapDirection.EAST.getValue(), "Wrong vector for EAST.");
+        assertEquals(new Vector2D(1, -1), MapDirection.SOUTHEAST.getValue(), "Wrong vector for SOUTHEAST.");
+        assertEquals(new Vector2D(0, -1), MapDirection.SOUTH.getValue(), "Wrong vector for SOUTH.");
+        assertEquals(new Vector2D(-1, -1), MapDirection.SOUTHWEST.getValue(), "Wrong vector for SOUTHWEST.");
+        assertEquals(new Vector2D(-1, 0), MapDirection.WEST.getValue(), "Wrong vector for WEST.");
+        assertEquals(new Vector2D(-1, 1), MapDirection.NORTHWEST.getValue(), "Wrong vector for NORTHWEST.");
     }
 }
