@@ -1,5 +1,7 @@
 package agh.darwinworld.controls;
 
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableObjectValue;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -104,10 +106,12 @@ public class CellRegion extends Region {
         getChildren().add(indicator);
 
         energyLabel = new Label();
-        energyLabel.setFont(new Font(10));
+        energyLabel.fontProperty().bind(fontProperty);
         energyLabel.getStyleClass().add("energy");
         energyLabel.layoutXProperty().bind(widthProperty().subtract(energyLabel.widthProperty()).divide(2));
         energyLabel.layoutYProperty().bind(heightProperty().subtract(energyLabel.heightProperty()).divide(2));
+        widthProperty().addListener((observable, oldValue, newValue) -> updateFont());
+        heightProperty().addListener((observable, oldValue, newValue) -> updateFont());
         getChildren().add(energyLabel);
 
         this.hasPlant = hasPlant;
@@ -116,6 +120,20 @@ public class CellRegion extends Region {
         updateContent(currentAnimalAmount, maxAnimalAmount, energy);
         updateBackground();
     }
+
+    /**
+     * Updates cell font size.
+     */
+    private void updateFont() {
+        double size = getWidth() / 3.0;
+        if (size == fontProperty.get().getSize()) return;
+        fontProperty.setValue(new Font(size));
+    }
+
+    /**
+     * Stores font of cell.
+     */
+    SimpleObjectProperty<Font> fontProperty = new SimpleObjectProperty<>(new Font(getWidth() / 3.0));
 
     /**
      * Sets whether the cell is selected.
@@ -183,7 +201,6 @@ public class CellRegion extends Region {
         if (currentAnimalAmount != 0) {
             final Color animalColor = ANIMAL_COLOR_LEAST.interpolate(ANIMAL_COLOR_MOST, (double) currentAnimalAmount / Math.max(maxAnimalAmount, 5));
             content.setBackground(new Background(new BackgroundFill(animalColor, null, null)));
-            System.out.println("Energy: " + energy);
             energyLabel.setText(Integer.toString(energy));
         } else {
             content.setBackground(transparentBackground);

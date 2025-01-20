@@ -351,7 +351,7 @@ public class SimulationPresenter implements Initializable, SimulationStepListene
         int totalCells = cellsToAdd.size();
         final int[] index = {0};
         Timeline timeline = new Timeline();
-        KeyFrame keyFrame = new KeyFrame(Duration.millis((double) totalCells / chunkSize / 20), event -> {
+        KeyFrame keyFrame = new KeyFrame(Duration.millis(Math.max(totalCells / chunkSize / 20, 1)), event -> {
             int start = index[0];
             int end = Math.min(start + chunkSize, totalCells);
             ArrayList<Node> batch = new ArrayList<>(cellsToAdd.subList(start, end));
