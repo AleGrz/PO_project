@@ -21,7 +21,7 @@ public class AnimalTest {
             return new Pair<>(position, move);
         }
     }
-    private Random random;
+    protected Random random;
 
     @BeforeEach
     void setup() {
