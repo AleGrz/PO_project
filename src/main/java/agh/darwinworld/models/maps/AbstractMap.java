@@ -2,6 +2,7 @@ package agh.darwinworld.models.maps;
 
 import agh.darwinworld.models.*;
 import agh.darwinworld.models.animals.Animal;
+import agh.darwinworld.models.animals.AnimalType;
 import agh.darwinworld.models.listeners.MovementHandler;
 import agh.darwinworld.models.listeners.SimulationStepListener;
 import javafx.util.Pair;
@@ -19,6 +20,7 @@ public abstract class AbstractMap implements MovementHandler {
     protected SimulationParameters params;
     protected final List<SimulationStepListener> listeners = new ArrayList<>();
     protected Random random;
+    protected Pair<MoveDirection[], Integer> popularGenome = popularGenome();
 
     /**
      * Sets the simulation parameters and initializes the random number generator.
@@ -158,7 +160,7 @@ public abstract class AbstractMap implements MovementHandler {
             int x = this.random.nextInt(params.width());
             int y = this.random.nextInt(params.height());
             Vector2D v = new Vector2D(x, y);
-            Animal animal = new Animal(this.random, params.animalGenomeLength(), params.startingEnergyAmount());
+            Animal animal = params.animalType().createAnimal(random, params.animalGenomeLength(), params.startingEnergyAmount());
             animals.computeIfAbsent(v, k -> new ArrayList<>());
             animals.get(v).add(animal);
         }
@@ -181,11 +183,14 @@ public abstract class AbstractMap implements MovementHandler {
                     .toList();
 
             if (topAnimals.size() == 2 && topAnimals.getLast().getEnergy() >= params.minimumBreedingEnergy()) {
-                Animal baby = new Animal(topAnimals.getFirst(), topAnimals.getLast(), params.breedingEnergyCost(),
+                Animal baby = params.animalType().createAnimal(topAnimals.getFirst(), topAnimals.getLast(), params.breedingEnergyCost(),
                         params.minimumBreedingEnergy(), params.minimumMutationAmount(), params.maximumMutationAmount(), step);
                 animals.get(position).add(baby);
                 final int max = getMaxAnimalAmount();
-                listeners.forEach(listener -> listener.updateAnimal(position, animals.get(position).size(), max));
+                listeners.forEach(listener -> listener.updateAnimal(
+                        position,
+                        animals.get(position).size(),
+                        max, false));
             }
         }
     }
@@ -271,7 +276,10 @@ public abstract class AbstractMap implements MovementHandler {
         final int max = getMaxAnimalAmount();
         for (Map.Entry<Vector2D, ArrayList<Animal>> entry : animalsToRemove.entrySet()) {
             animals.get(entry.getKey()).removeAll(entry.getValue());
-            listeners.forEach(listener -> listener.updateAnimal(entry.getKey(), animals.get(entry.getKey()).size(), max));
+            listeners.forEach(listener ->
+                    listener.updateAnimal(entry.getKey(),
+                            animals.get(entry.getKey()).size(), max,
+                            false));
         }
         for (Vector2D position : emptyPositions) {
             animals.remove(position);
@@ -301,12 +309,15 @@ public abstract class AbstractMap implements MovementHandler {
         oldPositions.removeAll(updatedAnimals.keySet());
         final int max = getMaxAnimalAmount();
         for (Vector2D position : oldPositions) {
-            listeners.forEach(listener -> listener.updateAnimal(position, 0, max));
-        }
-        for (Vector2D position : updatedAnimals.keySet()) {
-            listeners.forEach(listener -> listener.updateAnimal(position, updatedAnimals.get(position).size(), max));
+            listeners.forEach(listener ->
+                    listener.updateAnimal(position, 0, max, false));
         }
         animals = updatedAnimals;
+        for (Vector2D position : updatedAnimals.keySet()) {
+            listeners.forEach(listener ->
+                    listener.updateAnimal(position, updatedAnimals.get(position).size(), max,
+                            false));
+        }
     }
 
     /**
@@ -315,6 +326,7 @@ public abstract class AbstractMap implements MovementHandler {
      * @param stepNumber The current step number.
      */
     public void step(int stepNumber) {
+        popularGenome = popularGenome();
         removeDeadAnimals();
         moveAnimals(stepNumber);
         feedAnimals(stepNumber);
@@ -345,7 +357,7 @@ public abstract class AbstractMap implements MovementHandler {
                 animalCount(),
                 plantCount(),
                 emptyFieldCount(),
-                popularGenome(),
+                popularGenome,
                 averageLifetime(),
                 averageDescendantsAmount()
         ));
@@ -358,15 +370,7 @@ public abstract class AbstractMap implements MovementHandler {
      */
     public void addStepListener(SimulationStepListener listener) {
         listeners.add(listener);
-        listeners.forEach(l -> l.updateStatistics(
-                0,
-                animalCount(),
-                plantCount(),
-                emptyFieldCount(),
-                popularGenome(),
-                averageLifetime(),
-                averageDescendantsAmount()
-        ));
+        updateStatistics(0);
     }
 
     /**
@@ -376,5 +380,12 @@ public abstract class AbstractMap implements MovementHandler {
      */
     public void removeStepListener(SimulationStepListener listener) {
         listeners.remove(listener);
+    }
+
+    public boolean isGenomeOnPosition(Vector2D position, MoveDirection[] genome) {
+         return animals.containsKey(position) && animals
+                .get(position)
+                .stream()
+                .anyMatch(animal -> Arrays.equals(animal.getGenome(), genome));
     }
 }

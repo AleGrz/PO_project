@@ -15,14 +15,14 @@ public interface SimulationStepListener {
      *
      * @param position the position where the plant is added to.
      */
-    void addPlant(Vector2D position);
+    default void addPlant(Vector2D position) {};
 
     /**
      * Called whenever a plant is removed from the simulation.
      *
      * @param position the position where the plant is removed from.
      */
-    void removePlant(Vector2D position);
+    default void removePlant(Vector2D position) {};
 
     /**
      * Called whenever an animal is updated in the simulation.
@@ -31,7 +31,7 @@ public interface SimulationStepListener {
      * @param animalCount    amount of animals on provided position.
      * @param maxAnimalCount maximum amount of animals on one tile.
      */
-    void updateAnimal(Vector2D position, int animalCount, int maxAnimalCount);
+    default void updateAnimal(Vector2D position, int animalCount, int maxAnimalCount, boolean isPopularGenome) {};
 
     /**
      * Called whenever simulation statistic have been updated.
@@ -54,5 +54,5 @@ public interface SimulationStepListener {
      * @param length   remaining length of the fire. If length is equal
      *                 to or less than 0, it is extinguished.
      */
-    void updateFire(Vector2D position, int length);
+    default void updateFire(Vector2D position, int length) {};
 }

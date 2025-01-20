@@ -301,12 +301,14 @@ public class SimulationPresenter implements Initializable, SimulationStepListene
         cells = new HashMap<>();
         int maxAnimalAmount = simulation.getMap().getMaxAnimalAmount();
         int maxFireLength = p.fireLength();
+        MoveDirection[] popularGenome = simulation.getMap().popularGenome().getKey();
         for (int i = 0; i < p.width(); i++) {
             for (int j = 0; j < p.height(); j++) {
                 Vector2D pos = new Vector2D(i, p.height() - j - 1);
                 int animalAmount = simulation.getMap().getAnimalsOnPosition(pos).size();
                 boolean isPlant = simulation.getMap().isPlantOnPosition(pos);
-                CellRegion cell = new CellRegion(isPlant, animalAmount, maxAnimalAmount, 0, maxFireLength);
+                boolean isPopularGenome = simulation.getMap().isGenomeOnPosition(pos, popularGenome);
+                CellRegion cell = new CellRegion(isPlant, animalAmount, maxAnimalAmount, 0, maxFireLength, isPopularGenome);
                 GridPane.setHgrow(cell, Priority.ALWAYS);
                 GridPane.setVgrow(cell, Priority.ALWAYS);
                 GridPane.setColumnIndex(cell, i + 1);
@@ -378,8 +380,8 @@ public class SimulationPresenter implements Initializable, SimulationStepListene
             modal.initModality(Modality.WINDOW_MODAL);
             modal.initOwner(currentStage);
             modal.initStyle(StageStyle.UNDECORATED);
-
             VBox content = new VBox(10);
+            content.getStyleClass().add("background-full");
             boolean isRunning = simulation.isRunning();
 
             for (int k = 0; k < animals.size(); k++) {
@@ -391,6 +393,9 @@ public class SimulationPresenter implements Initializable, SimulationStepListene
                     modal.close();
                     if (isRunning) simulation.start();
                 });
+                if(Arrays.equals(animals.get(index).getGenome(), simulation.getMap().popularGenome().getKey())) {
+                    button.getStyleClass().add("accent");
+                }
                 content.getChildren().add(button);
             }
 
@@ -426,21 +431,46 @@ public class SimulationPresenter implements Initializable, SimulationStepListene
                 simulation.stop();
                 startStopButton.setText("Start");
                 listeners.forEach(SimulationPauseListener::onSimulationPaused);
+                MoveDirection[] popularGenome = simulation.getMap().popularGenome().getKey();
+                setShowPopularGenome(true);
             } else {
                 simulation.start();
                 startStopButton.setText("Stop");
+                setShowPopularGenome(false);
             }
         } catch (Exception e) {
             AlertHelper.showExceptionAlert(currentStage, e);
         }
     }
 
+    private void setShowPopularGenome(boolean show) {
+        SimulationParameters p = simulation.getParameters();
+        MoveDirection[] popularGenome = simulation.getMap().popularGenome().getKey();
+
+        for (int i = 0; i < p.width(); i++) {
+            for (int j = 0; j < p.height(); j++) {
+                if (show) {
+                    boolean isPopularGenome = simulation.getMap().isGenomeOnPosition(new Vector2D(i, j), popularGenome);
+                    Vector2D pos = new Vector2D(i, j);
+                    Platform.runLater(() -> {
+                        CellRegion cell = cells.get(pos);
+                        if (cell != null) {
+                            cell.updateIndicator(isPopularGenome);
+                        }
+                    });
+                } else {
+                    cells.get(new Vector2D(i, j)).updateIndicator(false);
+                }
+            }
+        }
+    }
+
     @Override
-    public void updateAnimal(Vector2D position, int animalCount, int maxAnimalCount) {
+    public void updateAnimal(Vector2D position, int animalCount, int maxAnimalCount, boolean isPopularGenome) {
         Platform.runLater(() -> {
             CellRegion cell = cells.get(position);
             if (cell != null) {
-                cell.setAnimalAmount(animalCount, maxAnimalCount);
+                cell.setAnimalAmount(animalCount, maxAnimalCount, isPopularGenome);
             }
         });
     }
