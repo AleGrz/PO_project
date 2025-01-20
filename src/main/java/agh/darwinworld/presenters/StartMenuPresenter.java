@@ -211,7 +211,8 @@ public class StartMenuPresenter implements Initializable {
             if (simulationNameTextField.getText().isEmpty()) {
                 throw new UserFriendlyException("Invalid name", "Simulation name cannot be empty.");
             }
-            if(saves.contains(simulationNameTextField.getText())) {
+            String text = simulationNameTextField.getText().length() > 70 ? simulationNameTextField.getText().substring(0, 70) : simulationNameTextField.getText();
+            if(saves.contains(text)) {
                 overwrite = AlertHelper.showConfirmationAlert(currentStage, "Simulation already exists", "Do you want to overwrite the existing simulation?");
                 if (!overwrite) {
                     return;
@@ -242,11 +243,11 @@ public class StartMenuPresenter implements Initializable {
                     throw new UserFriendlyException("Directory error", "Could not create simulations directory.");
                 }
             }
-            String file = new File(dir, simulationNameTextField.getText() + ".json").getPath();
+            String file = new File(dir, text + ".json").getPath();
             params.saveToJson(file);
             if (!overwrite) {
-                listView.getItems().add(simulationNameTextField.getText());
-                saves.add(simulationNameTextField.getText());
+                listView.getItems().add(text);
+                saves.add(text);
             }
         } catch (UserFriendlyException e) {
             AlertHelper.showUserFriendlyExceptionAlert(currentStage, e);

@@ -307,7 +307,7 @@
             <ListView VBox.vgrow="ALWAYS" fx:id="listView" onMouseClicked="#onItemSelected">
             </ListView>
             <FlowPane alignment="CENTER" hgap="20.0">
-                <TextField prefWidth="200.0" promptText="File name" fx:id="simulationNameTextField"/>
+                <TextField prefWidth="200.0" promptText="Simulation name" fx:id="simulationNameTextField" />
                 <Button text="Save" onAction="#onSaveConfig"/>
                 <Button text="Load" disable="true" fx:id="loadButton" onAction="#onLoad"/>
                 <Button text="Delete" disable="true" fx:id="deleteButton" onAction="#onDeleteSimulation"/>

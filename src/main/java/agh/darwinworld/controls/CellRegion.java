@@ -48,6 +48,8 @@ public class CellRegion extends Region {
      */
     public static final Color ANIMAL_COLOR_MOST = Color.web("0x414868");
 
+    public static final Color POPULAR_GENOME_COLOR = Color.web("0x2ac3de");
+
     /**
      * Cached transparent background for better performance.
      */
@@ -64,6 +66,7 @@ public class CellRegion extends Region {
     private static final Background normalBackground = new Background(new BackgroundFill(NORMAL_BACKGROUND, null, null));
 
     private final Region content;
+    private final Region indicator;
     private boolean hasPlant;
     private int fireStageAmount;
     private int currentFireStage;
@@ -77,7 +80,7 @@ public class CellRegion extends Region {
      * @param currentFireStage    current stage of fire in the cell.
      * @param fireStageAmount     total number of fire stages in the cell.
      */
-    public CellRegion(boolean hasPlant, int currentAnimalAmount, int maxAnimalAmount, int currentFireStage, int fireStageAmount) {
+    public CellRegion(boolean hasPlant, int currentAnimalAmount, int maxAnimalAmount, int currentFireStage, int fireStageAmount, boolean isPopularGenome) {
         super();
         this.getStyleClass().add("cell");
         setMaxWidth(Double.MAX_VALUE);
@@ -88,6 +91,16 @@ public class CellRegion extends Region {
         content.minWidthProperty().bind(widthProperty());
         content.minHeightProperty().bind(heightProperty());
         getChildren().add(content);
+
+        indicator = new Region();
+        indicator.setShape(new Circle(1));
+        indicator.minWidthProperty().bind(widthProperty().multiply(0.5));
+        indicator.minHeightProperty().bind(heightProperty().multiply(0.5));
+        indicator.layoutXProperty().bind(widthProperty().subtract(indicator.widthProperty()).divide(2));
+        indicator.layoutYProperty().bind(heightProperty().subtract(indicator.heightProperty()).divide(2));
+
+        getChildren().add(indicator);
+
         this.hasPlant = hasPlant;
         this.currentFireStage = currentFireStage;
         this.fireStageAmount = fireStageAmount;
@@ -113,8 +126,9 @@ public class CellRegion extends Region {
      *
      * @param currentAnimalAmount current number of animals in the cell.
      * @param maxAnimalAmount     maximum number of animals in the cell.
+     * @param isPopularGenome     true if the genome is the most popular, false otherwise.
      */
-    public void setAnimalAmount(int currentAnimalAmount, int maxAnimalAmount) {
+    public void setAnimalAmount(int currentAnimalAmount, int maxAnimalAmount, boolean isPopularGenome) {
         updateContent(currentAnimalAmount, maxAnimalAmount);
     }
 
@@ -146,6 +160,14 @@ public class CellRegion extends Region {
     public void setCurrentFireStage(int fireStage) {
         this.currentFireStage = fireStage;
         updateBackground();
+    }
+
+    public void updateIndicator(boolean isPopularGenome) {
+        if (isPopularGenome) {
+            indicator.setBackground(new Background(new BackgroundFill(POPULAR_GENOME_COLOR, null, null)));
+        } else {
+            indicator.setBackground(transparentBackground);
+        }
     }
 
     private void updateContent(int currentAnimalAmount, int maxAnimalAmount) {
