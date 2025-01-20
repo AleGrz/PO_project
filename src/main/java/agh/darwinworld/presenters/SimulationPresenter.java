@@ -399,7 +399,8 @@ public class SimulationPresenter implements Initializable, SimulationStepListene
                 if(Arrays.equals(animals.get(index).getGenome(), simulation.getMap().popularGenome().getKey())) {
                     button.getStyleClass().add("accent");
                 }
-                content.getChildren().add(button);
+                HBox.setHgrow(button, Priority.ALWAYS);
+                content.getChildren().add(new HBox(button));
             }
 
             content.setPadding(new Insets(5, 5, 5, 5));
