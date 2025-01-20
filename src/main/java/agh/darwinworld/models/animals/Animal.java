@@ -312,7 +312,6 @@ public class Animal implements AnimalListener {
         return newPos;
     }
 
-
     /**
      * Increases the animal's energy by the specified amount and updates the count of eaten plants.
      *
