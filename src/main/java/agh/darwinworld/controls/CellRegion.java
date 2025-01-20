@@ -1,8 +1,10 @@
 package agh.darwinworld.controls;
 
+import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
 
 /**
  * One cell for grid representing one position in the simulation.
@@ -67,6 +69,7 @@ public class CellRegion extends Region {
 
     private final Region content;
     private final Region indicator;
+    private final Label energyLabel;
     private boolean hasPlant;
     private int fireStageAmount;
     private int currentFireStage;
@@ -80,7 +83,7 @@ public class CellRegion extends Region {
      * @param currentFireStage    current stage of fire in the cell.
      * @param fireStageAmount     total number of fire stages in the cell.
      */
-    public CellRegion(boolean hasPlant, int currentAnimalAmount, int maxAnimalAmount, int currentFireStage, int fireStageAmount, boolean isPopularGenome) {
+    public CellRegion(boolean hasPlant, int currentAnimalAmount, int maxAnimalAmount, int currentFireStage, int fireStageAmount, int energy) {
         super();
         this.getStyleClass().add("cell");
         setMaxWidth(Double.MAX_VALUE);
@@ -98,13 +101,19 @@ public class CellRegion extends Region {
         indicator.minHeightProperty().bind(heightProperty().multiply(0.5));
         indicator.layoutXProperty().bind(widthProperty().subtract(indicator.widthProperty()).divide(2));
         indicator.layoutYProperty().bind(heightProperty().subtract(indicator.heightProperty()).divide(2));
-
         getChildren().add(indicator);
+
+        energyLabel = new Label();
+        energyLabel.setFont(new Font(10));
+        energyLabel.getStyleClass().add("energy");
+        energyLabel.layoutXProperty().bind(widthProperty().subtract(energyLabel.widthProperty()).divide(2));
+        energyLabel.layoutYProperty().bind(heightProperty().subtract(energyLabel.heightProperty()).divide(2));
+        getChildren().add(energyLabel);
 
         this.hasPlant = hasPlant;
         this.currentFireStage = currentFireStage;
         this.fireStageAmount = fireStageAmount;
-        updateContent(currentAnimalAmount, maxAnimalAmount);
+        updateContent(currentAnimalAmount, maxAnimalAmount, energy);
         updateBackground();
     }
 
@@ -126,10 +135,10 @@ public class CellRegion extends Region {
      *
      * @param currentAnimalAmount current number of animals in the cell.
      * @param maxAnimalAmount     maximum number of animals in the cell.
-     * @param isPopularGenome     true if the genome is the most popular, false otherwise.
+     * @param energy     average energy of animals in the cell.
      */
-    public void setAnimalAmount(int currentAnimalAmount, int maxAnimalAmount, boolean isPopularGenome) {
-        updateContent(currentAnimalAmount, maxAnimalAmount);
+    public void setAnimalAmount(int currentAnimalAmount, int maxAnimalAmount, int energy) {
+        updateContent(currentAnimalAmount, maxAnimalAmount, energy);
     }
 
     /**
@@ -170,12 +179,15 @@ public class CellRegion extends Region {
         }
     }
 
-    private void updateContent(int currentAnimalAmount, int maxAnimalAmount) {
+    private void updateContent(int currentAnimalAmount, int maxAnimalAmount, int energy) {
         if (currentAnimalAmount != 0) {
             final Color animalColor = ANIMAL_COLOR_LEAST.interpolate(ANIMAL_COLOR_MOST, (double) currentAnimalAmount / Math.max(maxAnimalAmount, 5));
             content.setBackground(new Background(new BackgroundFill(animalColor, null, null)));
+            System.out.println("Energy: " + energy);
+            energyLabel.setText(Integer.toString(energy));
         } else {
             content.setBackground(transparentBackground);
+            energyLabel.setText("");
         }
     }
 

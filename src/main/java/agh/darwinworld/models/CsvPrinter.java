@@ -36,19 +36,20 @@ public class CsvPrinter implements SimulationStepListener, SimulationPauseListen
 
     @Override
     public void updateStatistics(int step, int animalCount, int plantCount, int emptyFieldCount, Pair<MoveDirection[], Integer> popularGenome,
-                                 int averageLifetime, int averageDescendantsAmount) {
+                                 int averageLifetime, int averageDescendantsAmount, int averageEnergy) {
+
         String popularGenomeString = popularGenome == null ? "MISSING" :
                 Arrays.stream(popularGenome.getKey())
                         .map(x -> Integer.toString(x.ordinal()))
                         .collect(Collectors.joining(""));
         content += step + "," + animalCount + "," + plantCount + "," + emptyFieldCount + "," + popularGenomeString + ","
-                + averageLifetime + "," + averageDescendantsAmount + "\n";
+                + averageLifetime + "," + averageDescendantsAmount + "," + averageEnergy + "\n";
     }
 
     @Override
     public void onSimulationPaused() {
         try (FileWriter writer = new FileWriter(filename)) {
-            writer.write("step,animalCount,plantCount,emptyFieldCount,popularGenome,averageLifetime,averageDescendantsAmount\n");
+            writer.write("step,animalCount,plantCount,emptyFieldCount,popularGenome,averageLifetime,averageDescendantsAmount,averageEnergy\n");
             writer.write(content);
         } catch (IOException e) {
             throw new RuntimeException("Error while writing to file: " + e.getMessage());

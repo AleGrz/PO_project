@@ -150,6 +150,18 @@ public abstract class AbstractMap implements MovementHandler {
         return childrenAmount / animalCount();
     }
 
+    public int averageEnergy() {
+        int totalEnergy = 0;
+        int animalCount = 0;
+        for (List<Animal> animalList : animals.values()) {
+            for (Animal animal : animalList) {
+                totalEnergy += animal.getEnergy();
+                animalCount++;
+            }
+        }
+        return animalCount == 0 ? 0 : totalEnergy / animalCount;
+    }
+
     /**
      * Populates the map with a specified number of animals at random positions.
      *
@@ -190,7 +202,7 @@ public abstract class AbstractMap implements MovementHandler {
                 listeners.forEach(listener -> listener.updateAnimal(
                         position,
                         animals.get(position).size(),
-                        max, false));
+                        max, getEnergyOnPosition(position)));
             }
         }
     }
@@ -279,7 +291,7 @@ public abstract class AbstractMap implements MovementHandler {
             listeners.forEach(listener ->
                     listener.updateAnimal(entry.getKey(),
                             animals.get(entry.getKey()).size(), max,
-                            false));
+                            getEnergyOnPosition(entry.getKey())));
         }
         for (Vector2D position : emptyPositions) {
             animals.remove(position);
@@ -310,13 +322,13 @@ public abstract class AbstractMap implements MovementHandler {
         final int max = getMaxAnimalAmount();
         for (Vector2D position : oldPositions) {
             listeners.forEach(listener ->
-                    listener.updateAnimal(position, 0, max, false));
+                    listener.updateAnimal(position, 0, max, getEnergyOnPosition(position)));
         }
         animals = updatedAnimals;
         for (Vector2D position : updatedAnimals.keySet()) {
             listeners.forEach(listener ->
                     listener.updateAnimal(position, updatedAnimals.get(position).size(), max,
-                            false));
+                            getEnergyOnPosition(position)));
         }
     }
 
@@ -346,6 +358,11 @@ public abstract class AbstractMap implements MovementHandler {
         return positions.subList(0, Math.min(amount, positions.size()));
     }
 
+    public int getEnergyOnPosition(Vector2D position) {
+        if (!animals.containsKey(position)) return 0;
+        return (int) animals.get(position).stream().mapToInt(Animal::getEnergy).average().orElse(0);
+    }
+
     /**
      * Updates statistics for all listeners.
      *
@@ -359,7 +376,8 @@ public abstract class AbstractMap implements MovementHandler {
                 emptyFieldCount(),
                 popularGenome,
                 averageLifetime(),
-                averageDescendantsAmount()
+                averageDescendantsAmount(),
+                averageEnergy()
         ));
     }
 

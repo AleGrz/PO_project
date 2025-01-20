@@ -60,7 +60,7 @@ public class FireMap extends AbstractMap implements MovementHandler {
             listeners.forEach(listener -> listener.updateFire(position, fire.get(position)));
             final int max = getMaxAnimalAmount();
             listeners.forEach(listener -> listener.updateAnimal(position, 0, max,
-                    false));
+                    0));
             if (animals.containsKey(position)) {
                 for (Animal animal : animals.get(position)) {
                     animal.forceKill(step);

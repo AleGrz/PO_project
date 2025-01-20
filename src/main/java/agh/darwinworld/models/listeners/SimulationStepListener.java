@@ -31,7 +31,7 @@ public interface SimulationStepListener {
      * @param animalCount    amount of animals on provided position.
      * @param maxAnimalCount maximum amount of animals on one tile.
      */
-    default void updateAnimal(Vector2D position, int animalCount, int maxAnimalCount, boolean isPopularGenome) {};
+    default void updateAnimal(Vector2D position, int animalCount, int maxAnimalCount, int energy) {};
 
     /**
      * Called whenever simulation statistic have been updated.
@@ -45,7 +45,7 @@ public interface SimulationStepListener {
      * @param averageDescendantsAmount average descendants amount of the animals.
      */
     void updateStatistics(int step, int animalCount, int plantCount, int emptyFieldCount, Pair<MoveDirection[], Integer> popularGenome,
-                          int averageLifetime, int averageDescendantsAmount);
+                          int averageLifetime, int averageDescendantsAmount, int averageEnergy);
 
     /**
      * Called whenever a fire is updated in the simulation.

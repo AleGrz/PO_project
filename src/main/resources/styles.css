@@ -42,3 +42,7 @@
 .indicator {
     -fx-background-color: #1a1b26;
 }
+
+.energy {
+    -fx-text-fill: #1a1b26;
+}

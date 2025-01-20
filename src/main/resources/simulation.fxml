@@ -122,6 +122,18 @@
                             <Font size="10.0"/>
                         </font>
                     </Label>
+                    <Label contentDisplay="RIGHT" text="Average energy: ">
+                        <graphic>
+                            <Label fx:id="averageEnergyLabel" text="PLACEHOLDER">
+                                <font>
+                                    <Font size="10.0"/>
+                                </font>
+                            </Label>
+                        </graphic>
+                        <font>
+                            <Font size="10.0"/>
+                        </font>
+                    </Label>
                 </FlowPane>
                 <LineChart fx:id="dataLineChart" GridPane.rowIndex="2">
                     <xAxis>

@@ -24,6 +24,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Labeled;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -58,6 +59,8 @@ public class SimulationPresenter implements Initializable, SimulationStepListene
     private Label averageLifetimeLabel;
     @FXML
     private Label averageDescendantsAmountLabel;
+    @FXML
+    private Label averageEnergyLabel;
     @FXML
     private Label heightLabel;
     @FXML
@@ -148,7 +151,8 @@ public class SimulationPresenter implements Initializable, SimulationStepListene
                 "Plant count",
                 "Empty field count",
                 "Average lifetime",
-                "Average descendants amount"};
+                "Average descendants amount",
+                "Average energy"};
         for (String seriesName : seriesNames) {
             XYChart.Series<Number, Number> series = new XYChart.Series<>();
             series.setName(seriesName);
@@ -301,14 +305,13 @@ public class SimulationPresenter implements Initializable, SimulationStepListene
         cells = new HashMap<>();
         int maxAnimalAmount = simulation.getMap().getMaxAnimalAmount();
         int maxFireLength = p.fireLength();
-        MoveDirection[] popularGenome = simulation.getMap().popularGenome().getKey();
         for (int i = 0; i < p.width(); i++) {
             for (int j = 0; j < p.height(); j++) {
                 Vector2D pos = new Vector2D(i, p.height() - j - 1);
                 int animalAmount = simulation.getMap().getAnimalsOnPosition(pos).size();
                 boolean isPlant = simulation.getMap().isPlantOnPosition(pos);
-                boolean isPopularGenome = simulation.getMap().isGenomeOnPosition(pos, popularGenome);
-                CellRegion cell = new CellRegion(isPlant, animalAmount, maxAnimalAmount, 0, maxFireLength, isPopularGenome);
+                int energy = simulation.getMap().getEnergyOnPosition(pos);
+                CellRegion cell = new CellRegion(isPlant, animalAmount, maxAnimalAmount, 0, maxFireLength, energy);
                 GridPane.setHgrow(cell, Priority.ALWAYS);
                 GridPane.setVgrow(cell, Priority.ALWAYS);
                 GridPane.setColumnIndex(cell, i + 1);
@@ -385,7 +388,7 @@ public class SimulationPresenter implements Initializable, SimulationStepListene
             boolean isRunning = simulation.isRunning();
 
             for (int k = 0; k < animals.size(); k++) {
-                Button button = new Button("Animal " + (k + 1));
+                Button button = new Button("\uD83D\uDC12" + (k + 1)+" \t\uD83D\uDDF2" + animals.get(k).getEnergy());
                 button.setFont(new Font(11));
                 final int index = k;
                 button.setOnAction(event -> {
@@ -466,11 +469,11 @@ public class SimulationPresenter implements Initializable, SimulationStepListene
     }
 
     @Override
-    public void updateAnimal(Vector2D position, int animalCount, int maxAnimalCount, boolean isPopularGenome) {
+    public void updateAnimal(Vector2D position, int animalCount, int maxAnimalCount, int energy) {
         Platform.runLater(() -> {
             CellRegion cell = cells.get(position);
             if (cell != null) {
-                cell.setAnimalAmount(animalCount, maxAnimalCount, isPopularGenome);
+                cell.setAnimalAmount(animalCount, maxAnimalCount, energy);
             }
         });
     }
@@ -487,7 +490,8 @@ public class SimulationPresenter implements Initializable, SimulationStepListene
 
     @Override
     public void updateStatistics(int step, int animalCount, int plantCount, int emptyFieldCount,
-                                 Pair<MoveDirection[], Integer> popularGenome, int averageLifetime, int averageDescendantsAmount) {
+                                 Pair<MoveDirection[], Integer> popularGenome, int averageLifetime,
+                                 int averageDescendantsAmount, int averageEnergy) {
         Platform.runLater(() -> {
             this.stepLabel.setText(Integer.toString(step));
             this.animalCountLabel.setText(Integer.toString(animalCount));
@@ -500,16 +504,19 @@ public class SimulationPresenter implements Initializable, SimulationStepListene
             this.popularGenomeAmountLabel.setText(Integer.toString(popularGenome.getValue()));
             this.averageLifetimeLabel.setText(Integer.toString(averageLifetime));
             this.averageDescendantsAmountLabel.setText(Integer.toString(averageDescendantsAmount));
+            this.averageEnergyLabel.setText(Integer.toString(averageEnergy));
             XYChart.Series<Number, Number> animalCountSeries = dataLineChart.getData().get(0);
             XYChart.Series<Number, Number> plantCountSeries = dataLineChart.getData().get(1);
             XYChart.Series<Number, Number> emptyFieldCountSeries = dataLineChart.getData().get(2);
             XYChart.Series<Number, Number> averageLifetimeSeries = dataLineChart.getData().get(3);
             XYChart.Series<Number, Number> averageDescendantsAmountSeries = dataLineChart.getData().get(4);
+            XYChart.Series<Number, Number> averageEnergySeries = dataLineChart.getData().get(5);
             animalCountSeries.getData().add(new XYChart.Data<>(step, animalCount));
             plantCountSeries.getData().add(new XYChart.Data<>(step, plantCount));
             emptyFieldCountSeries.getData().add(new XYChart.Data<>(step, emptyFieldCount));
             averageLifetimeSeries.getData().add(new XYChart.Data<>(step, averageLifetime));
             averageDescendantsAmountSeries.getData().add(new XYChart.Data<>(step, averageDescendantsAmount));
+            averageEnergySeries.getData().add(new XYChart.Data<>(step, averageEnergy));
         });
     }
 
