@@ -201,7 +201,7 @@ public class CellRegion extends Region {
         if (currentAnimalAmount != 0) {
             final Color animalColor = ANIMAL_COLOR_LEAST.interpolate(ANIMAL_COLOR_MOST, (double) currentAnimalAmount / Math.max(maxAnimalAmount, 5));
             content.setBackground(new Background(new BackgroundFill(animalColor, null, null)));
-            energyLabel.setText(Integer.toString(energy));
+            energyLabel.setText(energy==-1 ? "☠": Integer.toString(energy));
         } else {
             content.setBackground(transparentBackground);
             energyLabel.setText("");

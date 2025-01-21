@@ -24,7 +24,6 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Labeled;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -368,6 +367,7 @@ public class SimulationPresenter implements Initializable, SimulationStepListene
         timeline.getKeyFrames().add(keyFrame);
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
+        setShowPopularGenome(true);
     }
 
     private void handleCellClick(MouseEvent mouseEvent, Vector2D pos) {
@@ -387,8 +387,10 @@ public class SimulationPresenter implements Initializable, SimulationStepListene
             content.getStyleClass().add("background-full");
             boolean isRunning = simulation.isRunning();
 
+            List<Button> buttons = new ArrayList<>();
             for (int k = 0; k < animals.size(); k++) {
-                Button button = new Button("\uD83D\uDC12" + (k + 1)+" \t\uD83D\uDDF2" + animals.get(k).getEnergy());
+                int e = animals.get(k).getEnergy();
+                Button button = new Button("\uD83D\uDC12" + (k + 1) + (e == -1?  "☠": "\t\uD83D\uDDF2" + e));
                 button.setFont(new Font(11));
                 final int index = k;
                 button.setOnAction(event -> {
@@ -396,12 +398,19 @@ public class SimulationPresenter implements Initializable, SimulationStepListene
                     modal.close();
                     if (isRunning) simulation.start();
                 });
-                if(Arrays.equals(animals.get(index).getGenome(), simulation.getMap().popularGenome().getKey())) {
+                if (Arrays.equals(animals.get(index).getGenome(), simulation.getMap().popularGenome().getKey())) {
                     button.getStyleClass().add("accent");
                 }
-                HBox.setHgrow(button, Priority.ALWAYS);
-                content.getChildren().add(new HBox(button));
+                buttons.add(button);
+                content.getChildren().add(button);
             }
+
+            Platform.runLater(() -> {
+                double maxWidth = buttons.stream().mapToDouble(Button::getWidth).max().orElse(0);
+                for (Button button : buttons) {
+                    button.setMinWidth(maxWidth);
+                }
+            });
 
             content.setPadding(new Insets(5, 5, 5, 5));
             ScrollPane scrollPane = new ScrollPane(content);
