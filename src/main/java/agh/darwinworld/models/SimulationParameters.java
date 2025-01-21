@@ -144,7 +144,7 @@ public record SimulationParameters(
         if (maxMutation > genomeLength) {
             throw new UserFriendlyException("Incorrect values!", "Maximum mutation amount must be less than or equal to animal genome length.");
         }
-        if (minBreedEnergy<breedEnergyCost) {
+        if (minBreedEnergy < breedEnergyCost) {
             throw new IllegalArgumentException("Minimum breeding energy must be greater than or equal to breeding energy cost.");
         }
         return new SimulationParameters(

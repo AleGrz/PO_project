@@ -1,5 +1,6 @@
 package agh.darwinworld.models.maps;
 
+import agh.darwinworld.models.MapDirection;
 import agh.darwinworld.models.MoveDirection;
 import agh.darwinworld.models.SimulationParameters;
 import agh.darwinworld.models.Vector2D;
@@ -153,6 +154,51 @@ public class FireMapTest {
         fireMap.step(fireMap.params.fireInterval()+2);
         fireMap.step(fireMap.params.fireInterval()+3);
         assertEquals(63, fireMap.plantCount());
+    }
+
+    @Test
+    void testFireKillsAnimals() {
+        fireMap.populateAnimals(10);
+        fireMap.growPlants(1000);
+        fireMap.step(fireMap.params.fireInterval());
+        fireMap.step(fireMap.params.fireInterval()+1);
+        fireMap.step(fireMap.params.fireInterval()+2);
+        fireMap.step(fireMap.params.fireInterval()+3);
+        fireMap.step(fireMap.params.fireInterval()+4);
+        fireMap.step(fireMap.params.fireInterval()+5);
+        fireMap.step(fireMap.params.fireInterval()+6);
+        fireMap.step(fireMap.params.fireInterval()+7);
+        fireMap.step(fireMap.params.fireInterval()+8);
+        fireMap.step(fireMap.params.fireInterval()+9);
+        fireMap.step(fireMap.params.fireInterval()+10);
+        fireMap.step(fireMap.params.fireInterval()+11);
+        fireMap.step(fireMap.params.fireInterval()+12);
+        fireMap.step(fireMap.params.fireInterval()+13);
+        fireMap.step(fireMap.params.fireInterval()+14);
+        assertEquals(0, fireMap.animalCount());
+    }
+
+    @Test
+    void testMove() {
+        Vector2D position = new Vector2D(5, 5);
+        Pair<Vector2D, MapDirection> newPosition = fireMap.move(position, MapDirection.NORTH);
+        assertEquals(new Vector2D(5, 6), newPosition.getKey());
+        assertEquals(MapDirection.NORTH, newPosition.getValue());
+
+        Vector2D position2 = new Vector2D(0, 0);
+        Pair<Vector2D, MapDirection> newPosition2 = fireMap.move(position2, MapDirection.SOUTHEAST);
+        assertEquals(new Vector2D(1, 0), newPosition2.getKey());
+        assertEquals(MapDirection.SOUTHEAST, newPosition2.getValue());
+
+        Vector2D position3 = new Vector2D(9, 9);
+        Pair<Vector2D, MapDirection> newPosition3 = fireMap.move(position3, MapDirection.NORTHWEST);
+        assertEquals(new Vector2D(8, 9), newPosition3.getKey());
+        assertEquals(MapDirection.NORTHWEST, newPosition3.getValue());
+
+        Vector2D position4 = new Vector2D(9, 5);
+        Pair<Vector2D, MapDirection> newPosition4 = fireMap.move(position4, MapDirection.EAST);
+        assertEquals(new Vector2D(9, 5), newPosition4.getKey());
+        assertEquals(MapDirection.EAST, newPosition4.getValue());
     }
 
 }

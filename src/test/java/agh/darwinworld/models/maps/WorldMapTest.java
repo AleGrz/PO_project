@@ -1,5 +1,6 @@
 package agh.darwinworld.models.maps;
 
+import agh.darwinworld.models.MapDirection;
 import agh.darwinworld.models.MoveDirection;
 import agh.darwinworld.models.SimulationParameters;
 import agh.darwinworld.models.Vector2D;
@@ -19,7 +20,7 @@ public class WorldMapTest {
     @BeforeEach
     void setUp() {
         params = new SimulationParameters(10, 10, 1, 100, 5,
-                10, 2, 1, 5, 1,
+                10, 2, 8, 5, 1,
                 2, 8, 5, 5, 10, 5, MapType.WORLD,
                 AnimalType.ANIMAL);
         worldMap = new WorldMap();
@@ -133,5 +134,28 @@ public class WorldMapTest {
         worldMap.step(1);
         assertTrue(worldMap.animalCount() > 0);
         assertTrue(worldMap.plantCount() > 0);
+    }
+
+    @Test
+    void testMove() {
+        Vector2D position = new Vector2D(5, 5);
+        Pair<Vector2D, MapDirection> newPosition = worldMap.move(position, MapDirection.NORTH);
+        assertEquals(new Vector2D(5, 6), newPosition.getKey());
+        assertEquals(MapDirection.NORTH, newPosition.getValue());
+
+        Vector2D position2 = new Vector2D(0, 0);
+        Pair<Vector2D, MapDirection> newPosition2 = worldMap.move(position2, MapDirection.SOUTHEAST);
+        assertEquals(new Vector2D(0, 0), newPosition2.getKey());
+        assertEquals(MapDirection.NORTHWEST, newPosition2.getValue());
+
+        Vector2D position3 = new Vector2D(9, 9);
+        Pair<Vector2D, MapDirection> newPosition3 = worldMap.move(position3, MapDirection.NORTHEAST);
+        assertEquals(new Vector2D(9, 9), newPosition3.getKey());
+        assertEquals(MapDirection.SOUTHWEST, newPosition3.getValue());
+
+        Vector2D position4 = new Vector2D(9, 5);
+        Pair<Vector2D, MapDirection> newPosition4 = worldMap.move(position4, MapDirection.EAST);
+        assertEquals(new Vector2D(0, 5), newPosition4.getKey());
+        assertEquals(MapDirection.EAST, newPosition4.getValue());
     }
 }
