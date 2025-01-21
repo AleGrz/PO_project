@@ -67,7 +67,7 @@ public record SimulationParameters(
         validateInt(minimumBreedingEnergy, "Minimum breeding energy", 1, null);
         validateInt(breedingEnergyCost, "Breeding energy cost", 1, null);
         validateInt(minimumMutationAmount, "Minimum mutation amount", 0, null);
-        validateInt(maximumMutationAmount, "Maximum mutation amount", 1, null);
+        validateInt(maximumMutationAmount, "Maximum mutation amount", 0, null);
         validateInt(animalGenomeLength, "Animal genome length", 1, null);
         validateInt(fireInterval, "Fire interval", 1, null);
         validateInt(fireLength, "Fire length", 1, null);
@@ -128,7 +128,7 @@ public record SimulationParameters(
             AnimalType animalType
     ) throws UserFriendlyException {
         int minMutation = getValidatedIntField(minimumMutationAmount, "Minimum mutation amount", 0, null);
-        int maxMutation = getValidatedIntField(maximumMutationAmount, "Maximum mutation amount", 1, null);
+        int maxMutation = getValidatedIntField(maximumMutationAmount, "Maximum mutation amount", 0, null);
         int genomeLength = getValidatedIntField(animalGenomeLength, "Animal genome length", 1, null);
         if (minMutation > maxMutation) {
             throw new UserFriendlyException("Incorrect values!", "Minimum mutation amount must be less than or equal to maximum mutation amount.");
