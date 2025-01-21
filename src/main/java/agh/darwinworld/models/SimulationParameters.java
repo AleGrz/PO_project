@@ -81,6 +81,9 @@ public record SimulationParameters(
         if (maximumMutationAmount > animalGenomeLength) {
             throw new IllegalArgumentException("Maximum mutation amount must be less than or equal to animal genome length.");
         }
+        if (minimumBreedingEnergy<breedingEnergyCost) {
+            throw new IllegalArgumentException("Minimum breeding energy must be greater than or equal to breeding energy cost.");
+        }
     }
 
     /**
@@ -130,6 +133,8 @@ public record SimulationParameters(
         int minMutation = getValidatedIntField(minimumMutationAmount, "Minimum mutation amount", 0, null);
         int maxMutation = getValidatedIntField(maximumMutationAmount, "Maximum mutation amount", 0, null);
         int genomeLength = getValidatedIntField(animalGenomeLength, "Animal genome length", 1, null);
+        int minBreedEnergy = getValidatedIntField(minimumBreedingEnergy, "Minimum breeding energy", 1, null);
+        int breedEnergyCost = getValidatedIntField(breedingEnergyCost, "Breeding energy cost", 1, null);
         if (minMutation > maxMutation) {
             throw new UserFriendlyException("Incorrect values!", "Minimum mutation amount must be less than or equal to maximum mutation amount.");
         }
@@ -138,6 +143,9 @@ public record SimulationParameters(
         }
         if (maxMutation > genomeLength) {
             throw new UserFriendlyException("Incorrect values!", "Maximum mutation amount must be less than or equal to animal genome length.");
+        }
+        if (minBreedEnergy<breedEnergyCost) {
+            throw new IllegalArgumentException("Minimum breeding energy must be greater than or equal to breeding energy cost.");
         }
         return new SimulationParameters(
                 getValidatedIntField(width, "Width", 1, 100),
