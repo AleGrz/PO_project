@@ -81,7 +81,7 @@ public record SimulationParameters(
         if (maximumMutationAmount > animalGenomeLength) {
             throw new IllegalArgumentException("Maximum mutation amount must be less than or equal to animal genome length.");
         }
-        if (minimumBreedingEnergy<breedingEnergyCost) {
+        if (minimumBreedingEnergy < breedingEnergyCost) {
             throw new IllegalArgumentException("Minimum breeding energy must be greater than or equal to breeding energy cost.");
         }
     }
@@ -200,26 +200,26 @@ public record SimulationParameters(
     }
 
     public void saveToJson(String path) throws UserFriendlyException {
-        JSONObject json = new JSONObject();
-        json.put("width", width);
-        json.put("height", height);
-        json.put("startingPlantAmount", startingPlantAmount);
-        json.put("plantGrowingAmount", plantGrowingAmount);
-        json.put("plantEnergyAmount", plantEnergyAmount);
-        json.put("startingAnimalAmount", startingAnimalAmount);
-        json.put("startingEnergyAmount", startingEnergyAmount);
-        json.put("minimumBreedingEnergy", minimumBreedingEnergy);
-        json.put("breedingEnergyCost", breedingEnergyCost);
-        json.put("minimumMutationAmount", minimumMutationAmount);
-        json.put("maximumMutationAmount", maximumMutationAmount);
-        json.put("animalGenomeLength", animalGenomeLength);
-        json.put("fireInterval", fireInterval);
-        json.put("fireLength", fireLength);
-        json.put("refreshTime", refreshTime);
-        json.put("seed", seed);
-        json.put("mapType", mapType.ordinal());
-        json.put("animalType", animalType.ordinal());
         try (FileWriter writer = new FileWriter(path)) {
+            JSONObject json = new JSONObject();
+            json.put("width", width);
+            json.put("height", height);
+            json.put("startingPlantAmount", startingPlantAmount);
+            json.put("plantGrowingAmount", plantGrowingAmount);
+            json.put("plantEnergyAmount", plantEnergyAmount);
+            json.put("startingAnimalAmount", startingAnimalAmount);
+            json.put("startingEnergyAmount", startingEnergyAmount);
+            json.put("minimumBreedingEnergy", minimumBreedingEnergy);
+            json.put("breedingEnergyCost", breedingEnergyCost);
+            json.put("minimumMutationAmount", minimumMutationAmount);
+            json.put("maximumMutationAmount", maximumMutationAmount);
+            json.put("animalGenomeLength", animalGenomeLength);
+            json.put("fireInterval", fireInterval);
+            json.put("fireLength", fireLength);
+            json.put("refreshTime", refreshTime);
+            json.put("seed", seed);
+            json.put("mapType", mapType.ordinal());
+            json.put("animalType", animalType.ordinal());
             writer.write(json.toString());
         } catch (Exception e) {
             throw new UserFriendlyException("Failed to save simulation parameters to file: "+path, e.toString());

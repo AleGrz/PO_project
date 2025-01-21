@@ -249,8 +249,8 @@ public class StartMenuPresenter implements Initializable {
                 listView.getItems().add(text);
                 saves.add(text);
             }
-        } catch (UserFriendlyException e) {
-            AlertHelper.showUserFriendlyExceptionAlert(currentStage, e);
+        } catch (Exception e) {
+            AlertHelper.showUserFriendlyExceptionAlert(currentStage, new UserFriendlyException("Save error", e.toString()));
         }
     }
 
