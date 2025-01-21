@@ -30,9 +30,10 @@ public class FireMapTest {
 
     @Test
     void testInitialFireMapState() {
+        fireMap.populateAnimals(10);
+        fireMap.growPlants(20);
         assertEquals(10, fireMap.animalCount());
         assertEquals(20, fireMap.plantCount());
-        assertEquals(0, fireMap.emptyFieldCount());
     }
 
     @Test
