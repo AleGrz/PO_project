@@ -1,7 +1,6 @@
 package agh.darwinworld.controls;
 
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableObjectValue;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -98,6 +97,7 @@ public class CellRegion extends Region {
         getChildren().add(content);
 
         indicator = new Region();
+        indicator.setDisable(true);
         indicator.setShape(new Circle(1));
         indicator.minWidthProperty().bind(widthProperty().multiply(0.5));
         indicator.minHeightProperty().bind(heightProperty().multiply(0.5));
@@ -106,6 +106,7 @@ public class CellRegion extends Region {
         getChildren().add(indicator);
 
         energyLabel = new Label();
+        energyLabel.setDisable(true);
         energyLabel.fontProperty().bind(fontProperty);
         energyLabel.getStyleClass().add("energy");
         energyLabel.layoutXProperty().bind(widthProperty().subtract(energyLabel.widthProperty()).divide(2));
