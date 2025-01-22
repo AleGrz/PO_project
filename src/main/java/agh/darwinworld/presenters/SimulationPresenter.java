@@ -234,6 +234,7 @@ public class SimulationPresenter implements Initializable, SimulationStepListene
     }
 
     private void stopSimulationThread() {
+        listeners.forEach(SimulationPauseListener::onSimulationPaused);
         Stage stage = (Stage) rootBorderPane.getScene().getWindow();
         if (simulationThread != null && simulationThread.isAlive()) {
             try {

@@ -151,7 +151,6 @@ public class StartMenuPresenter implements Initializable {
                 presenter.addPauseListener(csvListener);
             }
             Stage simulationStage = new Stage();
-            simulationStage.initOwner(currentStage);
             simulationStage.getIcons().addAll(currentStage.getIcons());
             simulationStage.setTitle("Simulation");
             simulationStage.setScene(new Scene(root));

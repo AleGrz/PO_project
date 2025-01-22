@@ -38,7 +38,7 @@ public class CsvPrinter implements SimulationStepListener, SimulationPauseListen
     public void updateStatistics(int step, int animalCount, int plantCount, int emptyFieldCount, Pair<MoveDirection[], Integer> popularGenome,
                                  int averageLifetime, int averageDescendantsAmount, int averageEnergy) {
 
-        String popularGenomeString = popularGenome == null ? "MISSING" :
+        String popularGenomeString = popularGenome.getKey() == null ? "MISSING" :
                 Arrays.stream(popularGenome.getKey())
                         .map(x -> Integer.toString(x.ordinal()))
                         .collect(Collectors.joining(""));
